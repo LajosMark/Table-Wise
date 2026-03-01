@@ -53,8 +53,53 @@
                    HorizontalOptions="Center"
                    Margin="0,10,0,20" />
 
-            <CollectionView HeightRequest="100">
-                
+            <Label Text="Kategóriák" 
+       FontSize="20" 
+       FontAttributes="Bold" 
+       Margin="20,10,0,10" 
+       TextColor="Black" />
+
+            <CollectionView HeightRequest="120"
+                SelectionMode="Single">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Pizzák</x:String>
+                        <x:String>Burgerek</x:String>
+                        <x:String>Italok</x:String>
+                        <x:String>Desszertek</x:String>
+                        <x:String>Saláták</x:String>
+                    </x:Array>
+                </CollectionView.ItemsSource>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout Spacing="5" Padding="10,0">
+                            <Border StrokeShape="RoundRectangle 25"
+                        HeightRequest="60"
+                        WidthRequest="60"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="2,2" Radius="5" Opacity="0.1" />
+                                </Border.Shadow>
+
+                                <Label Text="🍽️" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" 
+                           FontSize="25" />
+                            </Border>
+
+                            <Label Text="{Binding .}" 
+                       HorizontalOptions="Center" 
+                       FontSize="12" 
+                       TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
             </CollectionView>
 
             <Label Text="Népszerű ételek" FontSize="18" FontAttributes="Bold" />
