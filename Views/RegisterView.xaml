@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.RegisterView"
+             Title="">
+    <ContentPage.Resources>
+        <Style x:Key="errorMessage" TargetType="Label">
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="StrokeShape" Value="RoundRectangle 20,20,20,20"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,5,0,15"/>
+            <Setter Property="BackgroundColor" Value="AliceBlue"/>
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Padding="10">
+        <Label 
+            Text="Register a new account"
+            FontSize="24"
+            FontAttributes="Bold"
+            Padding="5"
+            Margin="0,0,0,20"
+            />
+
+        <Label Text="Name:"/>
+        <Border >
+            <StackLayout>
+                <Entry Placeholder="Name"  
+                       Text="{Binding RegisterData.name}"/>
+                <Label Text="{Binding RegisterError.name[0]}" Style="{StaticResource errorMessage}"/>
+            </StackLayout>
+        </Border>
+
+        <Label Text="Email:"/>
+        <Border >
+            <StackLayout>
+                <Entry Placeholder="Email"  Keyboard="Email"
+                       Text="{Binding RegisterData.email}"/>
+                <Label Text="{Binding RegisterError.email[0]}" Style="{StaticResource errorMessage}"/>
+            </StackLayout>
+        </Border>
+
+        <Label Text="Password:"/>
+        <Border >
+            <StackLayout>
+                <Entry Placeholder="Password" 
+                       IsPassword="True" 
+                       Text="{Binding RegisterData.password}"/>
+                <Label Text="{Binding RegisterError.password[0]}" Style="{StaticResource errorMessage}"/>
+            </StackLayout>
+        </Border>
+
+        <Label Text="Confirm password:"/>
+        <Border >
+            <StackLayout>
+                <Entry Placeholder="Confirm password" 
+                       IsPassword="True" 
+                       Text="{Binding RegisterData.confirm_password}"/>
+                <Label Text="{Binding RegisterError.confirm_password[0]}" Style="{StaticResource errorMessage}"/>
+            </StackLayout>
+        </Border>
+
+        <Button Text="Register" Margin="0,10,0,15"
+                Command="{Binding onRegisterUserCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>
