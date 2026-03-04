@@ -3,110 +3,259 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TableWise.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout>
+    <Grid>
+        <ScrollView x:Name="MainScrollView">
+            <VerticalStackLayout Spacing="20" Padding="0,0,0,20">
 
-            <CarouselView x:Name="PromocioCarousel"
-                  HeightRequest="200"
-                  HorizontalOptions="Fill"
-                  Loop="True"
-                  IndicatorView="indicatorView">
+                <CarouselView x:Name="PromocioCarousel"
+                          HeightRequest="200"
+                          HorizontalOptions="Fill"
+                          Loop="True"
+                          IndicatorView="indicatorView">
+                    <CarouselView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>diakedvezmeny.png</x:String>
+                            <x:String>dolgozznalunk.png</x:String>
+                            <x:String>egyetfizet.png</x:String>
+                        </x:Array>
+                    </CarouselView.ItemsSource>
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <ContentView Padding="10,0">
+                                <Border StrokeThickness="0" HeightRequest="200">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="20" />
+                                    </Border.StrokeShape>
+                                    <Image Source="{Binding .}" Aspect="AspectFill" />
+                                </Border>
+                            </ContentView>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
 
-                <CarouselView.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>diakedvezmeny.png</x:String>
-                        <x:String>dolgozznalunk.png</x:String>
-                        <x:String>egyetfizet.png</x:String>
-                    </x:Array>
-                </CarouselView.ItemsSource>
-
-                <CarouselView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal" 
-                               SnapPointsAlignment="Center" 
-                               SnapPointsType="MandatorySingle" />
-                </CarouselView.ItemsLayout>
-
-                <CarouselView.ItemTemplate>
-                    <DataTemplate>
-                        <ContentView Padding="10,0">
-                            <Border StrokeThickness="0"
-                            HeightRequest="200"
-                            HorizontalOptions="Fill">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="20" />
-                                </Border.StrokeShape>
-
-                                <Image Source="{Binding .}" 
-                               Aspect="AspectFill"
-                               HeightRequest="200"
-                               HorizontalOptions="Fill" />
-                            </Border>
-                        </ContentView>
-                    </DataTemplate>
-                </CarouselView.ItemTemplate>
-            </CarouselView>
-
-            <IndicatorView x:Name="indicatorView"
+                <IndicatorView x:Name="indicatorView"
                            ItemsSource="{Binding ItemsSource, Source={x:Reference PromocioCarousel}}"
-                   IndicatorColor="LightGray"
-                   SelectedIndicatorColor="DarkOrange"
-                   HorizontalOptions="Center"
-                   Margin="0,10,0,20" />
+                           IndicatorColor="LightGray"
+                           SelectedIndicatorColor="DarkOrange"
+                           HorizontalOptions="Center" />
 
-            <Label Text="Kategóriák" 
-       FontSize="20" 
-       FontAttributes="Bold" 
-       Margin="20,10,0,10" 
-       TextColor="Black" />
+                <Label Text="Kategóriák" FontSize="20" FontAttributes="Bold" Margin="20,0" />
+                <CollectionView ItemsSource="{Binding Categories}" 
+                            HeightRequest="120" 
+                            SelectionMode="Single"
+                            SelectionChanged="OnCategorySelected">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Spacing="5" Padding="10,0">
+                                <Border StrokeShape="RoundRectangle 25" HeightRequest="60" WidthRequest="60" BackgroundColor="#F5F5F5" StrokeThickness="0">
+                                    <Image Source="{Binding Icon}" Aspect="AspectFit" />
+                                </Border>
+                                <Label Text="{Binding Name}" HorizontalOptions="Center" FontSize="12" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!-- pizzák -->
+                <Label Text="🍕 Pizzák" FontSize="22" FontAttributes="Bold" Margin="0,10" />
+                <VerticalStackLayout x:Name="PizzaSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Pizzas}">
+                    
 
-            <CollectionView HeightRequest="120"
-                SelectionMode="Single">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Pizzák</x:String>
-                        <x:String>Burgerek</x:String>
-                        <x:String>Italok</x:String>
-                        <x:String>Desszertek</x:String>
-                        <x:String>Saláták</x:String>
-                    </x:Array>
-                </CollectionView.ItemsSource>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <VerticalStackLayout Spacing="5" Padding="10,0">
-                            <Border StrokeShape="RoundRectangle 25"
-                        HeightRequest="60"
-                        WidthRequest="60"
-                        BackgroundColor="#F5F5F5"
-                        StrokeThickness="0">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 15" Margin="0,10" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFoodItemTapped" />
+                                </Border.GestureRecognizers>
                                 <Border.Shadow>
-                                    <Shadow Brush="Black" Offset="2,2" Radius="5" Opacity="0.1" />
+                                    <Shadow Brush="Black" Offset="0,2" Opacity="0.1" Radius="5" />
                                 </Border.Shadow>
 
-                                <Label Text="🍽️" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center" 
-                           FontSize="25" />
+                                <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
+                                    <Image Grid.Column="0" Source="{Binding Image}" Aspect="AspectFill" HeightRequest="80" WidthRequest="80">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" Rect="0,0,80,80" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" MaxLines="2" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontAttributes="Bold" TextColor="DarkOrange" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
                             </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+                <!-- burgerek -->
+                <Label Text="🍔 Burgerek" FontSize="22" FontAttributes="Bold" Margin="0,10" />
+                <VerticalStackLayout x:Name="BurgerSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Burgers}">
+                    
 
-                            <Label Text="{Binding .}" 
-                       HorizontalOptions="Center" 
-                       FontSize="12" 
-                       TextColor="Gray" />
-                        </VerticalStackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 15" Margin="0,10" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFoodItemTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Opacity="0.1" Radius="5" />
+                                </Border.Shadow>
 
-            <Label Text="Népszerű ételek" FontSize="18" FontAttributes="Bold" />
-            <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween">
-                
-            </FlexLayout>
-        </VerticalStackLayout>
-    </ScrollView>
+                                <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
+                                    <Image Grid.Column="0" Source="{Binding Image}" Aspect="AspectFill" HeightRequest="80" WidthRequest="80">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" Rect="0,0,80,80" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" MaxLines="2" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontAttributes="Bold" TextColor="DarkOrange" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Italok -->
+                <Label Text="🥤 Italok" FontSize="22" FontAttributes="Bold" Margin="0,10" />
+                <VerticalStackLayout x:Name="DrinkSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Drinks}">
+                    
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 15" Margin="0,10" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFoodItemTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Opacity="0.1" Radius="5" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
+                                    <Image Grid.Column="0" Source="{Binding Image}" Aspect="AspectFill" HeightRequest="80" WidthRequest="80">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" Rect="0,0,80,80" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" MaxLines="2" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontAttributes="Bold" TextColor="DarkOrange" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Desszertek -->
+                <Label Text="🍰 Desszertek" FontSize="22" FontAttributes="Bold" Margin="0,10" />
+                <VerticalStackLayout x:Name="DessertSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Desserts}">
+                    
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 15" Margin="0,10" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFoodItemTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Opacity="0.1" Radius="5" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
+                                    <Image Grid.Column="0" Source="{Binding Image}" Aspect="AspectFill" HeightRequest="80" WidthRequest="80">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" Rect="0,0,80,80" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" MaxLines="2" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontAttributes="Bold" TextColor="DarkOrange" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Saláták -->
+                <Label Text="🥗 Saláták" FontSize="22" FontAttributes="Bold" Margin="0,10" />
+                <VerticalStackLayout x:Name="SaladSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Salads}">
+                    
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 15" Margin="0,10" Padding="10" BackgroundColor="White" StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFoodItemTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Opacity="0.1" Radius="5" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
+                                    <Image Grid.Column="0" Source="{Binding Image}" Aspect="AspectFill" HeightRequest="80" WidthRequest="80">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" Rect="0,0,80,80" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" MaxLines="2" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontAttributes="Bold" TextColor="DarkOrange" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout BackgroundColor="#F5F5F5" Padding="30" Margin="0,20,0,0">
+                    <Label Text="© 2026 TableWise Restaurant" HorizontalOptions="Center" TextColor="Gray" />
+                    <Label Text="Minden jog fenntartva." HorizontalOptions="Center" FontSize="10" TextColor="Gray" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Text="↑" 
+            FontSize="25"
+            BackgroundColor="DarkOrange"
+            TextColor="White"
+            HeightRequest="55"
+            WidthRequest="55"
+            CornerRadius="27"
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            Margin="20"
+            Clicked="OnScrollToTopClicked" />
+    </Grid>
 
 </ContentPage>

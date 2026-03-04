@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.FoodDetailPage"
+             Title="FoodDetailPage">
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+            <Image Source="{Binding Image}" 
+                   Aspect="AspectFill" 
+                   HeightRequest="300" 
+                   HorizontalOptions="Fill" />
+
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <HorizontalStackLayout HorizontalOptions="Fill">
+                    <Label Text="{Binding Name}" FontSize="28" FontAttributes="Bold" TextColor="Black" WidthRequest="250" />
+                    <Label Text="{Binding Price, StringFormat='{0} Ft'}" FontSize="22" TextColor="DarkOrange" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <Label Text="Leírás" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
+                <Label Text="{Binding Description}" FontSize="16" TextColor="Gray" LineHeight="1.2" />
+
+                <Label Text="Összetevők" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
+                <Label Text="🍕 Prémium alapanyagok, titkos recept alapján készül." TextColor="DimGray" />
+
+                <Button Text="Kosárba teszem" 
+                        BackgroundColor="DarkOrange" 
+                        TextColor="White" 
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        HeightRequest="60"
+                        Margin="0,30,0,0" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
