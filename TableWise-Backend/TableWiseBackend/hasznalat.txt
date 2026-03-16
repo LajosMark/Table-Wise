@@ -1,0 +1,13 @@
+DOCKER
+    docker compose up
+
+Docker NÉLKÜL
+    (cd TableWiseBackend)
+    
+    Indítás SEEDER-rel
+        npm start
+        npm run start
+    Indátás seeder NÉLKÜL
+        npm run dev
+    Csak SEEDER
+        npm run seed
