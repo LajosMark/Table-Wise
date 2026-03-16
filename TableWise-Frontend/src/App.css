@@ -1,0 +1,56 @@
+.mheader {
+    box-shadow: 0 0 15px black;
+    border-radius: 0 0 15px 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.mheader .title {
+    font-weight: 600;
+
+}
+
+.mfoodcategories {
+    box-shadow: 0 0 15px black;
+    border-radius: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 2px;
+
+    >* {
+        flex: 0 0 auto;
+    }
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.mfoodcategories::-webkit-scrollbar {
+    height: 6px;
+}
+
+.mfoodcategories::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.mfoodcategory {
+    width: 25%;
+    max-height: 130px;
+}
+
+.mfoodcategoryname{
+    text-align: start;
+    border-bottom: 2px solid black;
+}
+
+@media only screen and (max-width: 600px) {
+    .mfoodcategory {
+        width: 50%;
+    }
+
+    .mfoodcategories::-webkit-scrollbar {
+        height: 0;
+    }
+}
