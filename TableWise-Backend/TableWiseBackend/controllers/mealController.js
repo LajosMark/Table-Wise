@@ -9,12 +9,12 @@ router.get('/', async (req, res) => {
         const meals = await Meal.find();
 
         res.status(200).json({
-            success: true,
+
             count: meals.length,
             data: meals
         });
     } catch (error) {
-        res.status(500).json({ success: false, msg: error.message });
+        res.status(500).json({ msg: error.message });
     }
 });
 
@@ -24,12 +24,12 @@ router.get('/:id', async (req, res) => {
         const meal = await Meal.findById(req.params.id);
 
         if (!meal) {
-            return res.status(404).json({ success: false, msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Étel nem található' });
         }
 
-        res.status(200).json({ success: true, data: meal });
+        res.status(200).json({ data: meal });
     } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+        res.status(400).json({ msg: error.message });
     }
 });
 
@@ -39,11 +39,11 @@ router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
         const meal = await Meal.create(req.body);
 
         res.status(201).json({
-            success: true,
+
             data: meal
         });
     } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+        res.status(400).json({ msg: error.message });
     }
 });
 
@@ -56,12 +56,12 @@ router.put('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
         });
 
         if (!meal) {
-            return res.status(404).json({ success: false, msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Étel nem található' });
         }
 
-        res.status(200).json({ success: true, data: meal });
+        res.status(200).json({ data: meal });
     } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+        res.status(400).json({ msg: error.message });
     }
 });
 
@@ -71,13 +71,13 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
         const meal = await Meal.findById(req.params.id);
 
         if (!meal) {
-            return res.status(404).json({ success: false, msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Étel nem található' });
         }
 
         await meal.deleteOne();
-        res.status(200).json({ success: true, data: {} });
+        res.status(200).json({ data: {} });
     } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+        res.status(400).json({ msg: error.message });
     }
 });
 
