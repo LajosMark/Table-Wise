@@ -9,6 +9,8 @@ const workScheduleRoutes = require('./controllers/workScheduleController')
 const mealRoutes = require('./controllers/mealController')
 const mealCategoryController = require('./controllers/mealCategoryController');
 const ingredientController = require('./controllers/ingridientController');
+const orderController = require('./controllers/orderController');
+const fridgeItemController = require('./controllers/fridgeItemController');
 
 const PORT = process.env.NODE_DOCKER_PORT || 3000;
 
@@ -39,6 +41,8 @@ app.use('/api/schedules', workScheduleRoutes);
 app.use('/api/meals', mealRoutes);
 app.use('/api/mealCategories', mealCategoryController);
 app.use('/api/ingridients', ingredientController);
+app.use('/api/orders', orderController);
+app.use('/api/fridgeItems', fridgeItemController);
 app.listen(PORT, () => {
     console.log(`Server Started at port ${PORT}`);
 });

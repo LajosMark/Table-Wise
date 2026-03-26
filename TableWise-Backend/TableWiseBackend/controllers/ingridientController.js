@@ -8,7 +8,7 @@ router.get('/', protect, async (req, res) => {
     try {
         const ingredients = await Ingredient.find()
             .populate('mealId', 'name')
-            .populate('storageItemId', 'name unit');
+            .populate('fridgeItemId', 'name unit');
 
         res.status(200).json(ingredients);
     } catch (error) {
@@ -20,7 +20,7 @@ router.get('/', protect, async (req, res) => {
 router.get('/meal/:mealId', protect, async (req, res) => {
     try {
         const ingredients = await Ingredient.find({ mealId: req.params.mealId })
-            .populate('storageItemId', 'name unit');
+            .populate('fridgeItemId', 'name unit');
 
         res.status(200).json(ingredients);
     } catch (error) {

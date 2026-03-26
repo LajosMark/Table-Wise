@@ -9,6 +9,7 @@ const { Meal } = require('../models/mealModel')
 const { MealCategory } = require('../models/mealCategoryModel')
 const { Ingredient } = require('../models/ingridientModel')
 const { Order } = require('../models/orderModel')
+const { FridgeItem } = require('../models/fridgeItemModel')
 
 //Data import
 const { Data } = require('./seedData')
@@ -31,6 +32,7 @@ const seedDB = async () => {
         await collectionSeeder(WorkSchedule, Data.WorkSchedules)
         await collectionSeeder(Ingredient, Data.Ingridients)
         await collectionSeeder(Order, Data.Orders)
+        await collectionSeeder(FridgeItem, Data.FridgeItems)
 
         console.log('All collections seeded successfully!')
     } catch (err) {

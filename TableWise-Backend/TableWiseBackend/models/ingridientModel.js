@@ -10,10 +10,10 @@ const IngredientSchema = new mongoose.Schema({
         required: [true, 'Please add a meal ID'],
         ref: 'Meal'
     },
-    storageItemId: {
+    fridgeItemId: {
         type: Number,
-        required: [true, 'Please add a storage item ID'],
-        ref: 'StorageItem'
+        required: [true, 'Please add a fridge item ID'],
+        ref: 'FridgeItem'
     },
     amountOfIngredient: {
         type: Number,
