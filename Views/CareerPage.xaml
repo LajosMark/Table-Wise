@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.CareerPage"
+             Title="">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label Text="Csatlakozz hozzánk! 🤝" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10" />
+            <Label Text="Szeretnél egy dinamikus csapat tagja lenni? Nézd meg aktuális ajánlatainkat!" HorizontalTextAlignment="Center" TextColor="Gray" />
+
+            <Frame CornerRadius="15" HasShadow="True" Padding="15">
+                <HorizontalStackLayout Spacing="15">
+                    <Label Text="🍕" FontSize="35" VerticalOptions="Center" />
+                    <VerticalStackLayout>
+                        <Label Text="Pizzaszakács" FontAttributes="Bold" FontSize="18" />
+                        <Label Text="Teljes munkaidő • Versenyképes bér" TextColor="Gray" />
+                        <Button Text="Jelentkezem" Margin="0,10,0,0" HeightRequest="40" BackgroundColor="DarkOrange" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <Frame CornerRadius="15" HasShadow="True" Padding="15">
+                <HorizontalStackLayout Spacing="15">
+                    <Label Text="🛵" FontSize="35" VerticalOptions="Center" />
+                    <VerticalStackLayout>
+                        <Label Text="Futár" FontAttributes="Bold" FontSize="18" />
+                        <Label Text="Rugalmas beosztás • Azonnali kezdés" TextColor="Gray" />
+                        <Button Text="Jelentkezem" Margin="0,10,0,0" HeightRequest="40" BackgroundColor="DarkOrange" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

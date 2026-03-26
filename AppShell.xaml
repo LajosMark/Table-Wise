@@ -37,6 +37,27 @@
         ContentTemplate="{DataTemplate views:LoginView}"
         IsVisible="{Binding isNotLoggedIn}"/>
 
+    <ShellContent 
+    Title="AboutUs" 
+    Icon="login.png" 
+    ContentTemplate="{DataTemplate views:AboutUsPage}"/>
+
+    <ShellContent 
+Title="Karrier" 
+Icon="login.png" 
+ContentTemplate="{DataTemplate views:CareerPage}"/>
+
+    <ShellContent 
+Title="Nyitvatartás" 
+Icon="login.png" 
+ContentTemplate="{DataTemplate views:OpeningHours}"/>
+
+    <ShellContent 
+    Title="WorkSchedule" 
+    Icon="login.png" 
+    ContentTemplate="{DataTemplate views:WorkSchedulePage}"
+    IsVisible="{Binding isNotLoggedIn}"/>
+
     <Shell.FlyoutFooter>
         <VerticalStackLayout>
             <Button Text="Logout" Margin="10" ImageSource="logout_white.png" HeightRequest="40"

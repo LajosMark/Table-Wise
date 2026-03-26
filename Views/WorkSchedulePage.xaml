@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             x:Class="TableWise.Views.WorkSchedulePage"
+             xmlns:vm="clr-namespace:TableWise.ViewModels"
+             x:DataType="vm:WorkScheduleViewModel"
+             Title="Munkaidő Beosztás"
+             BackgroundColor="#F8F9FA">
+    <ScrollView>
+
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <VerticalStackLayout IsVisible="{Binding IsWeekView}" Spacing="15">
+                <Label Text="Melyik héten dolgoznál? 📅" 
+           FontSize="22" 
+           FontAttributes="Bold" 
+           TextColor="Black" 
+           HorizontalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding Weeks}" HeightRequest="300">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Grid Padding="5">
+                                <Button Text="{Binding}" 
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkScheduleViewModel}}, Path=SelectWeekCommand}"
+                        CommandParameter="{Binding}"
+                        BackgroundColor="DarkOrange"
+                        TextColor="White"
+                        FontSize="18"
+                        HeightRequest="60"
+                        CornerRadius="10" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding IsDayView}" Spacing="10">
+                <Button Text="⬅ Vissza a hetekhez" 
+            Command="{Binding BackToWeeksCommand}" 
+            HorizontalOptions="Start" 
+            BackgroundColor="Gray" 
+            TextColor="White"
+            Margin="0,0,0,10" />
+
+                <Label Text="Melyik napon jönnél? 👇" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding Days}" HeightRequest="500">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="sys:DateTime">
+                            <Grid Padding="5">
+                                <Button Text="{Binding StringFormat='{0:yyyy. MM. dd. (dddd)}'}" 
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkScheduleViewModel}}, Path=SelectDayCommand}"
+                        CommandParameter="{Binding .}"
+                        BackgroundColor="#212121"
+                        TextColor="White"
+                        FontSize="16"
+                        HeightRequest="60"
+                        Margin="10,2"
+                        CornerRadius="10" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding IsTimeView}" Spacing="20">
+                <Button Text="⬅ Vissza a napokhoz" 
+                      Command="{Binding BackToDaysCommand}" 
+                      HorizontalOptions="Start" 
+                      BackgroundColor="Gray" />
+
+                <Label Text="{Binding SelectedDate, StringFormat='Beosztás: {0:yyyy. MM. dd.}'}" FontAttributes="Bold" FontSize="18" />
+                <Label Text="{Binding TimeRangeText}" FontSize="32" HorizontalOptions="Center" TextColor="DarkOrange" />
+
+                <Label Text="{Binding StartHour, StringFormat='Kezdés: {0:F0}:00'}" 
+       FontAttributes="Bold" 
+       TextColor="Black" />
+
+                <Slider Minimum="0" 
+        Maximum="23" 
+        Value="{Binding StartHour}" 
+        ThumbColor="DarkOrange" />
+
+                <Label Text="{Binding EndHour, StringFormat='Befejezés: {0:F0}:00'}" 
+       FontAttributes="Bold" 
+       TextColor="Black" />
+
+                <Slider Minimum="0" 
+        Maximum="23" 
+        Value="{Binding EndHour}" 
+        ThumbColor="DarkOrange" />
+
+                <Button Text="BEKÜLDÉS" Command="{Binding SubmitCommand}" HeightRequest="60" CornerRadius="30" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

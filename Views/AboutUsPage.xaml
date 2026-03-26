@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.AboutUsPage"
+             Title="">
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20">
+
+            <Image Source="restaurant_building.png" 
+                   HeightRequest="150" 
+                   HorizontalOptions="Center" 
+                   Margin="0,20" />
+
+            <Label Text="TableWise Restaurant" 
+                   FontSize="28" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   TextColor="DarkOrange" />
+
+            <Label Text="Verzió 1.0.4 (2026)" 
+                   FontSize="12" 
+                   TextColor="Gray" 
+                   HorizontalOptions="Center" 
+                   Margin="0,-15,0,0" />
+
+            <BoxView HeightRequest="1" Color="#F0F0F0" Margin="0,10" />
+
+            <Label Text="Történetünk" FontSize="20" FontAttributes="Bold" />
+            <Label Text="A TableWise nem csak egy étterem, hanem egy közösségi élmény. 2024-ben indultunk azzal a céllal, hogy a technológiát és a gasztronómiát ötvözve a leggyorsabb és legfinomabb kiszolgálást nyújtsuk vendégeinknek." 
+                   FontSize="16" 
+                   TextColor="#444" 
+                   LineHeight="1.4" />
+
+            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="15" Margin="0,10">
+                <Label Grid.Column="0" Text="📍" FontSize="24" />
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Címünk" FontAttributes="Bold" />
+                    <Label Text="1061 Budapest, Andrássy út 1." TextColor="Gray" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="15">
+                <Label Grid.Column="0" Text="📞" FontSize="24" />
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Telefonszám" FontAttributes="Bold" />
+                    <Label Text="+36 30 123 4567" TextColor="Gray" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="0,20">
+                <Button Text="Facebook" BackgroundColor="#1877F2" TextColor="White" CornerRadius="10" />
+                <Button Text="Instagram" BackgroundColor="#E4405F" TextColor="White" CornerRadius="10" />
+            </HorizontalStackLayout>
+
+            <Label Text="Készítette: A TableWise Dev Csapata 💻" 
+                   FontSize="10" 
+                   TextColor="Silver" 
+                   HorizontalOptions="Center" 
+                   Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
