@@ -89,7 +89,7 @@ module.exports.Data = {
             { "_id": 10, "mealId": 9, "discount": 0, "amount": 2 }
         ],
 
-    StorageItems:
+    FridgeItems:
         [
             { "_id": 1, "name": "Tomato", "amount": 50, "typeOfAmount": "kg", "pricePerUnit": 800, "categoryId": 1 },
             { "_id": 2, "name": "Mozzarella", "amount": 20, "typeOfAmount": "kg", "pricePerUnit": 3200, "categoryId": 2 },
@@ -101,19 +101,5 @@ module.exports.Data = {
             { "_id": 8, "name": "Tomato Paste", "amount": 40, "typeOfAmount": "can", "pricePerUnit": 600, "categoryId": 8 },
             { "_id": 9, "name": "Burger Buns", "amount": 60, "typeOfAmount": "pcs", "pricePerUnit": 150, "categoryId": 9 },
             { "_id": 10, "name": "Cola Syrup", "amount": 10, "typeOfAmount": "l", "pricePerUnit": 2000, "categoryId": 10 }
-        ],
-
-    StorageCategories:
-        [
-            { "_id": 1, "name": "Vegetables" },
-            { "_id": 2, "name": "Dairy" },
-            { "_id": 3, "name": "Meat" },
-            { "_id": 4, "name": "Spices" },
-            { "_id": 5, "name": "Flour & Grains" },
-            { "_id": 6, "name": "Oil & Fats" },
-            { "_id": 7, "name": "Frozen Foods" },
-            { "_id": 8, "name": "Canned Goods" },
-            { "_id": 9, "name": "Bakery" },
-            { "_id": 10, "name": "Beverage Stock" }
         ]
 }
