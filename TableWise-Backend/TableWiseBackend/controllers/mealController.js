@@ -10,7 +10,6 @@ router.get('/', async (req, res) => {
 
         res.status(200).json({
 
-            count: meals.length,
             data: meals
         });
     } catch (error) {

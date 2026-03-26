@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 const userRoutes = require('./controllers/userController')
@@ -34,7 +35,6 @@ database.once('connected', () => {
 });
 
 app.use(express.json());
-
 app.use('/api/users', userRoutes);
 app.use('/api/hours', workHourRoutes);
 app.use('/api/schedules', workScheduleRoutes);
@@ -43,6 +43,7 @@ app.use('/api/mealCategories', mealCategoryController);
 app.use('/api/ingridients', ingredientController);
 app.use('/api/orders', orderController);
 app.use('/api/fridgeItems', fridgeItemController);
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.listen(PORT, () => {
     console.log(`Server Started at port ${PORT}`);
 });
