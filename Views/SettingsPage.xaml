@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.SettingsPage"
+             Title="SettingsPage">
+    <VerticalStackLayout Padding="30" Spacing="20">
+
+        <Label Text="Beállítások" 
+           FontSize="28" 
+           FontAttributes="Bold" 
+           HorizontalOptions="Center" 
+           Margin="0,0,0,20" />
+
+        <Border Stroke="LightGray" StrokeThickness="1" Padding="20">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Sötét mód" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="Váltás világos és sötét téma között" FontSize="12" TextColor="Gray" />
+                </VerticalStackLayout>
+
+                <Switch Grid.Column="1" 
+                    x:Name="ThemeSwitch"
+                    Toggled="OnThemeToggled" 
+                    VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+    </VerticalStackLayout>
+</ContentPage>

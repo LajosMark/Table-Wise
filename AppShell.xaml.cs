@@ -2,6 +2,8 @@
 using System.Xml.Linq;
 using TableWise.Services;
 using TableWise.Views;
+using Microsoft.Maui.Devices.Sensors; // shake funkcióhoz
+using Microsoft.Maui.Devices; // shake funkcióhoz
 
 namespace TableWise
 {
@@ -31,6 +33,7 @@ namespace TableWise
         public AppShell()
         {
             InitializeComponent();
+            StartListeningToShake();
 
             getUser();
 
@@ -61,6 +64,57 @@ namespace TableWise
             OnPropertyChanged(nameof(isLoggedIn));
             OnPropertyChanged(nameof(isNotLoggedIn));
             OnPropertyChanged(nameof(name));
+        }
+
+        // shake funkció
+
+        private void StartListeningToShake()
+        {
+            if (Accelerometer.Default.IsSupported)
+            {
+                // Feliratkozunk az eseményre
+                Accelerometer.Default.ShakeDetected += OnShakeDetected;
+
+                // Elindítjuk a figyelést
+                if (!Accelerometer.Default.IsMonitoring)
+                {
+                    Accelerometer.Default.Start(SensorSpeed.UI);
+                }
+            }
+        }
+
+        private void OnShakeDetected(object sender, EventArgs e)
+        {
+            // Ez a sor a Visual Studio Output ablakába ír (Ctrl+Alt+O)
+            System.Diagnostics.Debug.WriteLine(">>> SZENZOR: Rázást érzékeltem! <<<");
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                // 1. Felugró ablak - ha ez megnyílik, a szenzor MŰKÖDIK!
+                await Shell.Current.DisplayAlert("Szenzor Teszt", "A rázás sikeres!", "OK");
+
+                try
+                {
+                    // 2. Próbáljuk meg a navigációt
+                    await Shell.Current.GoToAsync("//MainPage");
+                }
+                catch (Exception ex)
+                {
+                    // Ha a navigációval van baj, itt kiírja miért
+                    await Shell.Current.DisplayAlert("Hiba", ex.Message, "OK");
+                }
+            });
+        }
+
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+            //    Ha bezárják az appot vagy elnavigálnak, állítsuk le a figyelést
+            if (Parent == null && Accelerometer.Default.IsMonitoring)
+            {
+                Accelerometer.Default.ShakeDetected -= OnShakeDetected;
+                Accelerometer.Default.Stop();
+            }
         }
     }
 }

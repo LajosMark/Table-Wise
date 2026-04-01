@@ -52,6 +52,11 @@ ContentTemplate="{DataTemplate views:OpeningHours}"/>
     ContentTemplate="{DataTemplate views:WorkSchedulePage}"
     IsVisible="{Binding isNotLoggedIn}"/>
 
+    <ShellContent 
+        Title="Beállítások"  
+        ContentTemplate="{DataTemplate views:SettingsPage}"
+        />
+
     <Shell.FlyoutFooter>
         <VerticalStackLayout>
             <Button Text="Logout" Margin="10" ImageSource="logout_white.png" HeightRequest="40"

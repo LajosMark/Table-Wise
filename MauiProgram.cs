@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using TableWise.ViewModels;
 using TableWise.Views;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+using Microsoft.Maui.Controls.Maps;
 
 namespace TableWise
 {
@@ -11,6 +14,7 @@ namespace TableWise
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiMaps()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
