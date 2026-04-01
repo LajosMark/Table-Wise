@@ -46,7 +46,7 @@
 
                 <Label Text="Melyik napon jönnél? 👇" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
 
-                <CollectionView ItemsSource="{Binding Days}" HeightRequest="500">
+                <CollectionView ItemsSource="{Binding Days}" HeightRequest="600">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="sys:DateTime">
                             <Grid Padding="5">
