@@ -4,63 +4,84 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TableWise"
-    
     xmlns:views="clr-namespace:TableWise.Views"
     Shell.FlyoutBehavior="Flyout"
     FlowDirection="LeftToRight"
     FlyoutIsPresented="{Binding IsPresented}"
-    Title="TableWise">
+    Title="TableWise"
+    
+    Shell.ForegroundColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+    
+    Shell.TitleColor="{AppThemeBinding Light=#333333, Dark=White}"
+    
+    Shell.BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}"
+    
+    FlyoutBackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
 
     <Shell.FlyoutHeader>
-        <HorizontalStackLayout BackgroundColor="AliceBlue"
-                               Padding="10,20,10,20"
-                               IsVisible="{Binding isLoggedIn}">
-            <Label Text="Logged in: " FontAttributes="Bold"/>
-            <Label Text="{Binding name}"/>
+        <HorizontalStackLayout BackgroundColor="{AppThemeBinding Light=#F0F5F3, Dark=#252525}"
+                               Padding="20,30,10,30"
+                               IsVisible="{Binding isLoggedIn}"
+                               Spacing="5">
+            <Label Text="👤" FontSize="20" VerticalOptions="Center"/>
+            <Label Text="Bejelentkezve: " 
+                   FontAttributes="Bold" 
+                   TextColor="{AppThemeBinding Light=#333333, Dark=White}"
+                   VerticalOptions="Center"/>
+            <Label Text="{Binding name}" 
+                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"/>
         </HorizontalStackLayout>
     </Shell.FlyoutHeader>
 
     <ShellContent
-        Title="Home"
+        Title="Kezdőlap"
+        Icon="home_icon.png"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
     <ShellContent 
-        Title="Register" 
+        Title="Regisztráció" 
         ContentTemplate="{DataTemplate views:RegisterView}" 
         IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
-        Title="Login" 
+        Title="Bejelentkezés" 
         ContentTemplate="{DataTemplate views:LoginView}"
         IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
-    Title="AboutUs" 
-    ContentTemplate="{DataTemplate views:AboutUsPage}"/>
+        Title="Rólunk" 
+        ContentTemplate="{DataTemplate views:AboutUsPage}"/>
 
     <ShellContent 
-Title="Karrier" 
-ContentTemplate="{DataTemplate views:CareerPage}"/>
+        Title="Karrier" 
+        ContentTemplate="{DataTemplate views:CareerPage}"/>
 
     <ShellContent 
-Title="Nyitvatartás" 
-ContentTemplate="{DataTemplate views:OpeningHours}"/>
+        Title="Nyitvatartás" 
+        ContentTemplate="{DataTemplate views:OpeningHours}"/>
 
     <ShellContent 
-    Title="Beosztás"  
-    ContentTemplate="{DataTemplate views:WorkSchedulePage}"
-    IsVisible="{Binding isNotLoggedIn}"/>
-
+        Title="Beosztás"  
+        ContentTemplate="{DataTemplate views:WorkSchedulePage}"
+        IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
         Title="Beállítások"  
-        ContentTemplate="{DataTemplate views:SettingsPage}"
-        />
+        ContentTemplate="{DataTemplate views:SettingsPage}" />
 
     <Shell.FlyoutFooter>
-        <VerticalStackLayout>
-            <Button Text="Logout" Margin="10" ImageSource="logout_white.png" HeightRequest="40"
+        <VerticalStackLayout Padding="10">
+            <Button Text="KIJELENTKEZÉS" 
+                    Margin="10" 
+                    ImageSource="logout_white.png" 
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
                     ContentLayout="Right, 20"
+                    BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=#333333}"
+                    TextColor="White"
                     Command="{Binding logoutCommand}"
                     IsVisible="{Binding isLoggedIn}"/>
         </VerticalStackLayout>

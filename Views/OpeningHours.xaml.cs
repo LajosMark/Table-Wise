@@ -1,10 +1,10 @@
-using Microsoft.Maui.Devices.Sensors;
+Ôªøusing Microsoft.Maui.Devices.Sensors;
 
 namespace TableWise.Views;
 
 public partial class OpeningHours : ContentPage
 {
-    // Az Ètterem koordin·t·i (De·k tÈr pÈlda)
+    // Az √©tterem koordin√°t√°i (De√°k t√©r p√©lda)
     double restaurantLat = 47.4979;
     double restaurantLon = 19.0503;
 
@@ -15,25 +15,26 @@ public partial class OpeningHours : ContentPage
 
     private async void OnOpenMapClicked(object sender, EventArgs e)
     {
-        // Az Èttermed pontos koordin·t·i
         double lat = 47.4979;
         double lon = 19.0503;
-        string restaurantName = "TableWise …tterem";
+        string restaurantName = "TableWise √âtterem";
 
-        // LÈtrehozzuk a helyszÌn objektumot
         var location = new Location(lat, lon);
-
-        // Be·llÌtjuk, hogy mi jelenjen meg cÌmkekÈnt a tÈrkÈpen
         var options = new MapLaunchOptions { Name = restaurantName };
 
         try
         {
-            // Ez a b˚vˆs sor nyitja meg a gy·ri tÈrkÈp appot
-            await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(location, options);
+            // 1. K√©nyszer√≠tj√ºk a f≈ësz√°lat a megnyit√°shoz
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(location, options);
+            });
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Hiba", "Nem tal·lhatÛ tÈrkÈpalkalmaz·s a kÈsz¸lÈken.", "OK");
+            // Most m√°r az ex-et is haszn√°ljuk, hogy l√°ssuk a hib√°t a kimeneten!
+            System.Diagnostics.Debug.WriteLine($"‚ùå T√©rk√©p hiba: {ex.Message}");
+            await DisplayAlert("Hiba", "Nem siker√ºlt megnyitni a t√©rk√©pet.", "OK");
         }
     }
 
@@ -44,25 +45,32 @@ public partial class OpeningHours : ContentPage
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted) return;
 
+            // 2. R√∂videbb timeout √©s Cancellation handling
+            // N√©ha a GPS lek√©rdez√©s "beragad", mik√∂zben v√°ltasz a Google Maps-re
             var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest
             {
                 DesiredAccuracy = GeolocationAccuracy.Medium,
-                Timeout = TimeSpan.FromSeconds(5)
+                Timeout = TimeSpan.FromSeconds(3) // 5-r≈ël levettem 3-ra
             });
 
             if (location != null)
             {
-                LocationLabel.Text = $"Lat: {Math.Round(location.Latitude, 3)}, Lon: {Math.Round(location.Longitude, 3)}";
+                // UI friss√≠t√©s szigor√∫an a f≈ësz√°lon
+                MainThread.BeginInvokeOnMainThread(() => {
+                    LocationLabel.Text = $"Lat: {Math.Round(location.Latitude, 3)}, Lon: {Math.Round(location.Longitude, 3)}";
 
-                Location restaurantLoc = new Location(restaurantLat, restaurantLon);
-                double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
+                    Location restaurantLoc = new Location(restaurantLat, restaurantLon);
+                    double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
 
-                DistanceLabel.Text = $"{Math.Round(distance, 2)} km-re vagyunk tıled";
+                    DistanceLabel.Text = $"{Math.Round(distance, 2)} km-re vagyunk t≈ëled";
+                });
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Hiba", "Nem siker¸lt a GPS lekÈrdezÈs.", "OK");
+            System.Diagnostics.Debug.WriteLine($"‚ùå GPS hiba: {ex.Message}");
+            // Csak akkor dobunk Alert-et, ha t√©nyleg hiba van, nem csak lemondtuk
+            await DisplayAlert("Hiba", "Ellen≈ërizd a GPS be√°ll√≠t√°sokat!", "OK");
         }
     }
 }

@@ -2,31 +2,56 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TableWise.Views.SettingsPage"
-             Title="SettingsPage">
+             Title=""
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+
     <VerticalStackLayout Padding="30" Spacing="20">
 
         <Label Text="Beállítások" 
-           FontSize="28" 
-           FontAttributes="Bold" 
-           HorizontalOptions="Center" 
-           Margin="0,0,0,20" />
+               FontSize="28" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center" 
+               TextColor="{AppThemeBinding Light=#333333, Dark=White}"
+               Margin="0,0,0,20" />
 
-        <Border Stroke="LightGray" StrokeThickness="1" Padding="20">
+        <Border Stroke="{AppThemeBinding Light=#69A481, Dark=#444444}" 
+                StrokeThickness="1" 
+                Padding="20"
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="15" />
             </Border.StrokeShape>
 
             <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                 <VerticalStackLayout Grid.Column="0" Spacing="2">
-                    <Label Text="Sötét mód" FontSize="18" FontAttributes="Bold" />
-                    <Label Text="Váltás világos és sötét téma között" FontSize="12" TextColor="Gray" />
+                    <Label Text="Sötét mód" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    <Label Text="Váltás világos és sötét téma között" 
+                           FontSize="12" 
+                           TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" />
                 </VerticalStackLayout>
 
                 <Switch Grid.Column="1" 
-                    x:Name="ThemeSwitch"
-                    Toggled="OnThemeToggled" 
-                    VerticalOptions="Center" />
+                        x:Name="ThemeSwitch"
+                        OnColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+                        ThumbColor="{AppThemeBinding Light=White, Dark=#FFFFFF}"
+                        Toggled="OnThemeToggled" 
+                        VerticalOptions="Center" />
             </Grid>
+        </Border>
+
+        <Border StrokeThickness="0" 
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1A1A1A}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15" />
+            </Border.StrokeShape>
+            <Label Text="💡 Tipp: A sötét mód kíméli a szemet és az akkumulátort is!" 
+                   FontSize="12" 
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light=Gray, Dark=#888888}" />
         </Border>
 
     </VerticalStackLayout>

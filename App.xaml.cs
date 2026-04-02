@@ -14,9 +14,13 @@ namespace TableWise
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = hungarianCulture;
 
             
-            MainPage = new AppShell();
+            
         }
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
 
+            return new Window(new AppShell());
+        }
 
     }
 }
