@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace TableWise
 {
@@ -20,6 +22,17 @@ namespace TableWise
         {
 
             return new Window(new AppShell());
+        }
+
+
+        protected override void OnSleep()
+        {
+            WeakReferenceMessenger.Default.Send(new AppSleepMessage());
+        }
+
+        protected override void OnResume()
+        {
+            WeakReferenceMessenger.Default.Send(new AppResumeMessage());
         }
 
     }

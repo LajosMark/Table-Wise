@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TableWise.Models"
+             xmlns:local="clr-namespace:TableWise"
              x:Class="TableWise.MainPage"
+             x:DataType="local:MainPage"
              Title=""
              BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
     <Grid>
@@ -21,7 +24,7 @@
                         </x:Array>
                     </CarouselView.ItemsSource>
                     <CarouselView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="x:String">
                             <ContentView Padding="10,0">
                                 <Border StrokeThickness="0" HeightRequest="200">
                                     <Border.StrokeShape>
@@ -40,7 +43,6 @@
                                SelectedIndicatorColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
                                HorizontalOptions="Center" />
 
-                <!--  Képek megjavítását ne felejtsem el  -->
                 <Label Text="Kategóriák" 
                        FontSize="20" 
                        FontAttributes="Bold" 
@@ -55,16 +57,16 @@
                         <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:Category">
                             <VerticalStackLayout Spacing="5" Padding="10,0">
                                 <Border StrokeShape="RoundRectangle 25" 
                                         HeightRequest="60" 
                                         WidthRequest="60" 
-                                        Padding="10"
+                                        Padding="0"
                                         BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2C2C2C}" 
                                         StrokeThickness="2"
                                         Stroke="{AppThemeBinding Light=#69A481, Dark=Yellow}">
-                                    <Image Source="{Binding Icon}" Aspect="AspectFit" />
+                                    <Image Source="{Binding Icon}" Aspect="AspectFit" HorizontalOptions="Fill" VerticalOptions="Fill" />
                                 </Border>
                                 <Label Text="{Binding Name}" 
                                        HorizontalOptions="Center" 
@@ -74,6 +76,8 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+                
+                <!--    Pizzák    -->
 
                 <Label Text="🍕 Pizzák" 
                        FontSize="22" 
@@ -83,7 +87,7 @@
 
                 <VerticalStackLayout x:Name="PizzaSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Pizzas}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:FoodItem">
                             <Border StrokeShape="RoundRectangle 15" 
                                     Margin="0,10" 
                                     Padding="10" 
@@ -126,6 +130,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
+                
+                <!--    Burgerek    -->
 
                 <Label Text="🍔 Burgerek" 
                        FontSize="22" 
@@ -137,7 +143,7 @@
 
 
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:FoodItem">
                             <Border StrokeShape="RoundRectangle 15" 
                     Margin="0,10" 
                     Padding="10" 
@@ -180,6 +186,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
+                
+                <!--    Italok    -->
 
                 <Label Text="🥤 Italok" 
        FontSize="22" 
@@ -189,7 +197,7 @@
 
                 <VerticalStackLayout x:Name="DrinkSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Drinks}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:FoodItem">
                             <Border StrokeShape="RoundRectangle 15" 
                     Margin="0,10" 
                     Padding="10" 
@@ -232,6 +240,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
+                
+                <!--    Desszertek    -->
 
                 <Label Text="🍰 Desszertek" 
                        FontSize="22" 
@@ -241,7 +251,7 @@
 
                 <VerticalStackLayout x:Name="DessertSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Desserts}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:FoodItem">
                             <Border StrokeShape="RoundRectangle 15" 
                                     Margin="0,10" 
                                     Padding="10" 
@@ -284,6 +294,8 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
+                
+                <!--    Saláták    -->
 
                 <Label Text="🥗 Saláták" 
                        FontSize="22" 
@@ -293,7 +305,7 @@
 
                 <VerticalStackLayout x:Name="SaladSection" Padding="20,0" BindableLayout.ItemsSource="{Binding Salads}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:FoodItem">
                             <Border StrokeShape="RoundRectangle 15" 
                                     Margin="0,10" 
                                     Padding="10" 
