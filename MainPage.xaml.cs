@@ -160,5 +160,6 @@ namespace TableWise
                 await Navigation.PushAsync(new FoodDetailPage(tappedFood));
             }
         }
+        
     }
 }

@@ -10,6 +10,8 @@ namespace TableWise
         {
             InitializeComponent();
 
+            MainPage = new TableWise.Views.LoadingPage();
+
             // 1. Magyar nyelv beállítása
             var hungarianCulture = new CultureInfo("hu-HU");
             CultureInfo.DefaultThreadCurrentCulture = hungarianCulture;
@@ -26,10 +28,33 @@ namespace TableWise
             }
         }
 
+        protected override async void OnStart()
+        {
+            // 2. ELLENŐRZÉS
+            await Task.Delay(2000);
+
+            var access = Connectivity.Current.NetworkAccess;
+
+            if (access == NetworkAccess.Internet)
+            {
+                // 3. HA VAN NET -> ÁTVÁLTUNK AZ APPSHELL-RE
+                MainThread.BeginInvokeOnMainThread(() => {
+                    MainPage = new AppShell();
+                });
+            }
+            else
+            {
+                // 4. HA NINCS NET
+                bool retry = await MainPage.DisplayAlert("Hiba ❌", "Nincs internet!", "Újra", "Kilépés");
+                if (retry) OnStart();
+                else Quit();
+            }
+        }
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
             // Itt adjuk vissza az AppShell-t
-            return new Window(new AppShell());
+            return new Window(MainPage);
         }
 
         protected override void OnSleep()
