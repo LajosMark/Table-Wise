@@ -1,9 +1,11 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 
 const app = express();
+app.use(cors());
 const userRoutes = require('./controllers/userController')
 const workHourRoutes = require('./controllers/workHourController')
 const workScheduleRoutes = require('./controllers/workScheduleController')
