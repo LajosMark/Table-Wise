@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Hosting;
 using TableWise.ViewModels;
 using TableWise.Views;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
-using Microsoft.Maui.Controls.Maps;
 
 namespace TableWise
 {
@@ -15,6 +16,7 @@ namespace TableWise
             builder
                 .UseMauiApp<App>()
                 .UseMauiMaps()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

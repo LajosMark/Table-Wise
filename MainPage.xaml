@@ -2,12 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:TableWise.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:TableWise"
              x:Class="TableWise.MainPage"
              x:DataType="local:MainPage"
              Title=""
-             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}" >
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior 
+    StatusBarColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}"
+    StatusBarStyle="{AppThemeBinding Light=DarkContent, Dark=LightContent}" />
+    </ContentPage.Behaviors>
+
     <Grid>
+        
         <ScrollView x:Name="MainScrollView">
             <VerticalStackLayout Spacing="20" Padding="0,0,0,20">
 

@@ -10,23 +10,34 @@ namespace TableWise
         {
             InitializeComponent();
 
-            // Magyar nyelv
-            var hungarianCulture = new System.Globalization.CultureInfo("hu-HU");
-            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = hungarianCulture;
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = hungarianCulture;
+            // 1. Magyar nyelv beállítása
+            var hungarianCulture = new CultureInfo("hu-HU");
+            CultureInfo.DefaultThreadCurrentCulture = hungarianCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = hungarianCulture;
 
-            
-            
+            // 2. Téma visszatöltése a memóriából (Preferences)
+            // Ha még sose mentettünk semmit, az alapértelmezett (Unspecified) marad
+            string savedTheme = Preferences.Default.Get("AppTheme", "Unspecified");
+
+            if (Enum.TryParse(savedTheme, out AppTheme theme))
+            {
+                Application.Current.UserAppTheme = theme;
+
+            }
         }
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
-
+            // Itt adjuk vissza az AppShell-t
             return new Window(new AppShell());
         }
 
-
         protected override void OnSleep()
         {
+            // 3. Mentés, mielőtt elaludna az app (Biztonsági mentés)
+            // Elmentjük az aktuális témát, hogy újraindításkor tudjuk, mi volt
+            Preferences.Default.Set("AppTheme", Application.Current.UserAppTheme.ToString());
+
             WeakReferenceMessenger.Default.Send(new AppSleepMessage());
         }
 
@@ -34,6 +45,5 @@ namespace TableWise
         {
             WeakReferenceMessenger.Default.Send(new AppResumeMessage());
         }
-
     }
 }

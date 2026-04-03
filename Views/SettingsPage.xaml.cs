@@ -14,5 +14,7 @@ public partial class SettingsPage : ContentPage
         if (Application.Current == null) return;
 
         Application.Current.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
+
+        Preferences.Default.Set("AppTheme", Application.Current.UserAppTheme.ToString());
     }
 }

@@ -42,20 +42,29 @@ public partial class OpeningHours : ContentPage
     {
         try
         {
+            // 1. Jogosultság kérése
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-            if (status != PermissionStatus.Granted) return;
-
-            // 2. Rövidebb timeout és Cancellation handling
-            // Néha a GPS lekérdezés "beragad", miközben váltasz a Google Maps-re
-            var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest
+            if (status != PermissionStatus.Granted)
             {
-                DesiredAccuracy = GeolocationAccuracy.Medium,
-                Timeout = TimeSpan.FromSeconds(3) // 5-ről levettem 3-ra
-            });
+                await DisplayAlert("Hiba", "Engedélyezned kell a helyhozzáférést a távolságméréshez!", "OK");
+                return;
+            }
+
+            // 2. Először megpróbáljuk a legutolsó ismert pozíciót lekérni (ez azonnali!)
+            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+
+            // 3. Ha nincs elmentett pozíció, vagy frissebbet akarunk, kérünk egy újat
+            if (location == null)
+            {
+                location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest
+                {
+                    DesiredAccuracy = GeolocationAccuracy.Medium,
+                    Timeout = TimeSpan.FromSeconds(10) // 3-ról felemeltem 10-re a biztonság kedvéért
+                });
+            }
 
             if (location != null)
             {
-                // UI frissítés szigorúan a főszálon
                 MainThread.BeginInvokeOnMainThread(() => {
                     LocationLabel.Text = $"Lat: {Math.Round(location.Latitude, 3)}, Lon: {Math.Round(location.Longitude, 3)}";
 
@@ -65,12 +74,15 @@ public partial class OpeningHours : ContentPage
                     DistanceLabel.Text = $"{Math.Round(distance, 2)} km-re vagyunk tőled";
                 });
             }
+            else
+            {
+                await DisplayAlert("GPS hiba", "Nem sikerült meghatározni a pozíciódat. Próbáld újra kint!", "OK");
+            }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"❌ GPS hiba: {ex.Message}");
-            // Csak akkor dobunk Alert-et, ha tényleg hiba van, nem csak lemondtuk
-            await DisplayAlert("Hiba", "Ellenőrizd a GPS beállításokat!", "OK");
+            await DisplayAlert("Hiba", "Ellenőrizd a GPS beállításokat és az internetkapcsolatot!", "OK");
         }
     }
 }
