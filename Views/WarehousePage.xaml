@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TableWise.Models"
+             x:Class="TableWise.Views.WarehousePage"
+             Title="Raktárkészlet 📦">
+
+    <Grid RowDefinitions="*, Auto">
+
+        <CollectionView Grid.Row="0" x:Name="InventoryList" Margin="20">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:InventoryItem">
+                    <VerticalStackLayout Spacing="5" Margin="0,0,0,20">
+
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="{Binding CurrentAmount}" />
+                                <Label Text="{Binding Unit}" />
+                            </HorizontalStackLayout>
+                        </Grid>
+
+                        <ProgressBar Progress="{Binding Progress}" 
+                                     ProgressColor="{Binding StatusColor}"
+                                     HeightRequest="15" />
+
+                        <Label Text="⚠️ Alacsony készlet! Rendelés szükséges!" 
+                               TextColor="Red" 
+                               FontSize="10" 
+                               IsVisible="{Binding ShowWarning}" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="1" 
+                Text="📦 Összes készlet feltöltése"
+                Clicked="OnRestockClicked"
+                Margin="20"
+                BackgroundColor="#69A481"
+                TextColor="White"
+                CornerRadius="25"
+                FontAttributes="Bold" />
+    </Grid>
+</ContentPage>

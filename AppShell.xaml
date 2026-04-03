@@ -37,9 +37,12 @@
 
     <ShellContent
         Title="Kezdőlap"
-        Icon="home_icon.png"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+    <ShellContent
+        Title="Menü"
+        ContentTemplate="{DataTemplate views:MenuPage}"/>
 
     <ShellContent 
         Title="Regisztráció" 
@@ -67,6 +70,9 @@
         Title="Beosztás"  
         ContentTemplate="{DataTemplate views:WorkSchedulePage}"
         IsVisible="{Binding isLoggedIn}"/>
+    <ShellContent 
+        Title="Raktár"  
+        ContentTemplate="{DataTemplate views:WarehousePage}"/>
     <ShellContent 
         Title="Beállítások"  
         ContentTemplate="{DataTemplate views:SettingsPage}" />
