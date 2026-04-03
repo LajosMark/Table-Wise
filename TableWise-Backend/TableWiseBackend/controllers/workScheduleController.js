@@ -3,29 +3,23 @@ const { WorkSchedule } = require('../models/workScheduleModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
-// Bárki
-router.post('/', protect, async (req, res) => {
-    try {
-        const exists = await WorkSchedule.findOne({
-            usersId: req.body.usersId,
-            workHoursId: req.body.workHoursId
-        });
-
-        if (exists) {
-            return res.status(400).json({ msg: 'Ez a hozzárendelés már létezik' });
-        }
-
-        const schedule = await WorkSchedule.create(req.body);
-        res.status(201).json({ data: schedule });
-    } catch (error) {
-        res.status(400).json({ msg: error.message });
-    }
-});
-
 // Csak Admin és Manager
 router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const schedules = await WorkSchedule.find()
+            .populate('usersId', 'name email')
+            .populate('workHoursId');
+        res.status(200).json({ data: schedules });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+});
+
+// Csak Admin és Manager
+router.get('/users/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+    try {
+        const id = req.params.id        
+        const schedules = await WorkSchedule.find({ usersId: id })
             .populate('usersId', 'name email')
             .populate('workHoursId');
         res.status(200).json({ data: schedules });
@@ -42,6 +36,25 @@ router.get('/my', protect, async (req, res) => {
         res.status(200).json({ data: mySchedules });
     } catch (error) {
         res.status(500).json({ msg: error.message });
+    }
+});
+
+// Bejelentkezett
+router.post('/', protect, async (req, res) => {
+    try {
+        const exists = await WorkSchedule.findOne({
+            usersId: req.body.usersId,
+            workHoursId: req.body.workHoursId
+        });
+
+        if (exists) {
+            return res.status(400).json({ msg: 'Ez a hozzárendelés már létezik' });
+        }
+
+        const schedule = await WorkSchedule.create(req.body);
+        res.status(201).json({ data: schedule });
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
     }
 });
 
