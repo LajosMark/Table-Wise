@@ -2,6 +2,7 @@ const express = require('express');
 const { MealCategory } = require('../models/mealCategoryModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
+const { Meal } = require('../models/mealModel');
 
 //(Publikus)
 router.get('/', async (req, res) => {
@@ -25,6 +26,21 @@ router.get('/:id', async (req, res) => {
     try {
 
         const categories = await MealCategory.find({ _id: req.params.id });
+
+        res.status(200).json({
+
+            data: categories
+        });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+});
+
+router.get('/:id/meals', async (req, res) => {
+
+    try {
+
+        const categories = await Meal.find({ categoryId: req.params.id });
 
         res.status(200).json({
 

@@ -10,6 +10,7 @@ const { MealCategory } = require('../models/mealCategoryModel')
 const { Ingredient } = require('../models/ingridientModel')
 const { Order } = require('../models/orderModel')
 const { FridgeItem } = require('../models/fridgeItemModel')
+const Counter = require('../models/counterModel');
 
 //Data import
 const { Data } = require('./seedData')
@@ -25,6 +26,8 @@ const collectionSeeder = async (Model, Data) => {
 const seedDB = async () => {
     try {
         mongoose.connect(process.env.DATABASE_URL)
+
+        await collectionSeeder(Counter, Data.Counters)
         await collectionSeeder(User, Data.Users)
         await collectionSeeder(Meal, Data.Meals)
         await collectionSeeder(MealCategory, Data.MealCategories)

@@ -10,6 +10,7 @@ db.createCollection("storageCategories");
 db.createCollection("mealCategories");
 db.createCollection("workSchedules");
 db.createCollection("workHours");
+db.createCollection("counter");
 
 print("Adatbázis inicializálás sikeres!");
 print("Tablewise adatbázis létrehozva!");

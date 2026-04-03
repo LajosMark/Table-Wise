@@ -36,7 +36,7 @@ module.exports.Data = {
         [
 
             { "name": "Bruschetta", "ingridientId": 101, "price": 1200, "isAvailable": true, "categoryId": 1 },
-            { "name": "Tomato Soup", "ingridientId": 102, "price": 1100, "isAvailable": true, "categoryId": 2 },
+            { "name": "Tomato Soup", "ingridientId": 102, "price": 1100, "isAvailable": true, "categoryId": 1 },
             { "name": "Grilled Chicken", "ingridientId": 103, "price": 3500, "isAvailable": true, "categoryId": 3 },
             { "name": "Pizza Margherita", "ingridientId": 104, "price": 2800, "isAvailable": true, "categoryId": 4 },
             { "name": "Pasta Carbonara", "ingridientId": 105, "price": 3100, "isAvailable": true, "categoryId": 5 },
@@ -100,5 +100,15 @@ module.exports.Data = {
         { "_id": 8, "name": "Tomato Paste", "amount": 40, "typeOfAmount": "can", "pricePerUnit": 600, "warningAmountPercentage": 10 },
         { "_id": 9, "name": "Burger Buns", "amount": 60, "typeOfAmount": "pcs", "pricePerUnit": 150, "warningAmountPercentage": 15 },
         { "_id": 10, "name": "Cola Syrup", "amount": 10, "typeOfAmount": "l", "pricePerUnit": 2000, "warningAmountPercentage": 2 }
+    ],
+    Counters: [
+        { _id: "userId", seq: 0 },
+        { _id: "mealId", seq: 0 },
+        { _id: "mealCategoryId", seq: 0 },
+        { _id: "workHourId", seq: 0 },
+        { _id: "workScheduleId", seq: 0 },
+        { _id: "ingredientId", seq: 0 },
+        { _id: "orderId", seq: 0 },
+        { _id: "fridgeItemId", seq: 0 },
     ]
 }
