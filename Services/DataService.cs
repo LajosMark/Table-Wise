@@ -2,17 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TableWise.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TableWise.Services
 {
     public static class DataService
     {
-        static string url = "http://localhost:3000";
+        static string url = "http://10.0.2.2:3000";
 
         public static async Task<RegErrorModel> register(RegisterModel user)
         {
@@ -80,6 +83,76 @@ namespace TableWise.Services
                 return JsonConvert.DeserializeObject<AuthResponseModel>(serializedData);
             }
             return null;
+        }
+
+        public static async Task<List<Category>> GetCategories()
+        {
+            try
+            {
+                HttpClient client = new HttpClient();
+                var response = await client.GetAsync(url + "/api/mealCategories");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                    // 1. Most a CSOMAGOT (CategoryResponse) deszerializáljuk:
+                    var wrapper = System.Text.Json.JsonSerializer.Deserialize<CategoryResponse>(result, options);
+
+                    // 2. Csak a benne lévő listát adjuk vissza:
+                    return wrapper?.Categories ?? new List<Category>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"HIBA: {ex.Message}");
+            }
+            return new List<Category>();
+        }
+
+        public static async Task<List<FoodItem>> GetMealsByCategory(int categoryId)
+        {
+            try
+            {
+                HttpClient client = new HttpClient();
+                // Fontos: Itt is a 10.0.2.2:3000-et használd!
+                var response = await client.GetAsync($"{url}/api/mealCategories/{categoryId}/meals");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"NYERS JSON (Ételek): {result}");
+
+                    var options = new System.Text.Json.JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    // Kicsomagoljuk a FoodResponse dobozt
+                    var wrapper = System.Text.Json.JsonSerializer.Deserialize<FoodResponse>(result, options);
+
+                    return wrapper?.Meals ?? new List<FoodItem>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Hiba az ételek lekérésekor (CatID: {categoryId}): {ex.Message}");
+            }
+            return new List<FoodItem>();
+        }
+
+        public class CategoryResponse
+        {
+            [JsonPropertyName("data")] // Ha a JSON-ben "data": [...] van, akkor ez marad!
+            public List<Category> Categories { get; set; }
+        }
+
+        public class FoodResponse
+        {
+            [JsonPropertyName("data")] // Ha a JSON-ben "data": [...] van az ételeknél is
+            public List<FoodItem> Meals { get; set; }
         }
     }
 }

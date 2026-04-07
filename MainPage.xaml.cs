@@ -1,6 +1,8 @@
-﻿using TableWise.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.Collections.ObjectModel;
+using TableWise.Models;
 using TableWise.Views;
-using CommunityToolkit.Mvvm.Messaging;
+using TableWise.Services;
 
 namespace TableWise
 {
@@ -8,24 +10,22 @@ namespace TableWise
     public class AppSleepMessage { }
     public class AppResumeMessage { }
 
+
+
     public partial class MainPage : ContentPage
     {
         // 1. Osztály szintű változó a biztonságos eléréshez
         private IDispatcherTimer _carouselTimer;
 
-        public List<Category> Categories { get; set; }
-        public List<FoodItem> Pizzas { get; set; }
-        public List<FoodItem> Burgers { get; set; }
-        public List<FoodItem> Drinks { get; set; }
-        public List<FoodItem> Desserts { get; set; }
-        public List<FoodItem> Salads { get; set; }
+        public ObservableCollection<Category> Categories { get; set; } = new ObservableCollection<Category>();
+        public ObservableCollection<CategoryGroup> FoodGroups { get; set; } = new ObservableCollection<CategoryGroup>();
 
         public MainPage()
         {
             InitializeComponent();
 
-            // Adatok betöltése
-            LoadMockData();
+
+
 
             BindingContext = this;
 
@@ -42,6 +42,51 @@ namespace TableWise
             });
 
             StartCarouselTimer();
+        }
+
+        // Ez a metódus fut le minden alkalommal, amikor az oldal megjelenik
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await RefreshCategoriesFromApi();
+        }
+
+        private async Task RefreshCategoriesFromApi()
+        {
+            if (Categories.Count > 0) return;
+
+            try
+            {
+                var liveCategories = await DataService.GetCategories();
+
+                if (liveCategories != null)
+                {
+                    // 1. Először ürítünk mindent a főszálon
+                    MainThread.BeginInvokeOnMainThread(() => {
+                        Categories.Clear();
+                        FoodGroups.Clear();
+                    });
+                    foreach (var cat in liveCategories)
+                    {
+                        var meals = await DataService.GetMealsByCategory(cat.Id);
+
+                        // EZZEL nézzük meg, jön-e tényleg adat:
+                        await DisplayAlert("DEBUG", $"Kategória: {cat.Name}\nID: {cat.Id}\nÉtelek száma: {meals?.Count ?? 0}", "OK");
+
+                        MainThread.BeginInvokeOnMainThread(() => {
+                            Categories.Add(cat);
+                            if (meals != null && meals.Count > 0)
+                            {
+                                FoodGroups.Add(new CategoryGroup(cat.Name, meals));
+                            }
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hiba", $"Kivétel történt: {ex.Message}", "OK");
+            }
         }
 
         private void StartCarouselTimer()
@@ -83,71 +128,25 @@ namespace TableWise
             }
         }
 
-        private void LoadMockData()
-        {
-            Categories = new List<Category>
-            {
-                new Category { Name = "Pizzák", Icon = "ham_pizza.jpg" },
-                new Category { Name = "Burgerek", Icon = "cheese_burger.jpg" },
-                new Category { Name = "Italok", Icon = "limonade.jpg" },
-                new Category { Name = "Desszertek", Icon = "chocolate_cake.jpg" },
-                new Category { Name = "Saláták", Icon = "chicken_salad.jpg" }
-            };
-
-            Pizzas = new List<FoodItem>
-            {
-                new FoodItem { Name = "HamHam", Description = "Paradicsomszósz, sonka, mozzarella", Price = 1900, Image = "ham_pizza.jpg" },
-                new FoodItem { Name = "Margherita", Description = "Paradicsomszósz, mozzarella, bazsalikom", Price = 2500, Image = "ham_pizza.jpg" },
-                new FoodItem { Name = "Prosciutto", Description = "Sonka, gomba, sajt", Price = 2800, Image = "ham_pizza.jpg" },
-                new FoodItem { Name = "Quattro Formaggi", Description = "Négyféle sajt", Price = 3100, Image = "ham_pizza.jpg" },
-                new FoodItem { Name = "Séf Kedvence", Description = "Meglepetés", Price = 3100, Image = "ham_pizza.jpg" }
-            };
-
-            Burgers = new List<FoodItem>
-            {
-                new FoodItem { Name = "Sajtburger", Description = "Marhahús, sajt, hagyma", Price = 1900, Image = "cheese_burger.jpg" },
-                new FoodItem { Name = "BBQ Burger", Description = "BBQ szósz, bacon", Price = 2500, Image = "cheese_burger.jpg" }
-            };
-
-            Drinks = new List<FoodItem>
-            {
-                new FoodItem { Name = "Limonádé", Description = "Friss citrommal", Price = 1200, Image = "limonade.jpg" }
-            };
-
-            Desserts = new List<FoodItem>
-            {
-                new FoodItem { Name = "Csoki Torta", Description = "Belga csokival", Price = 1200, Image = "chocolate_cake.jpg" }
-            };
-
-            Salads = new List<FoodItem>
-            {
-                new FoodItem { Name = "Csirkés Saláta", Description = "Friss zöldségekkel", Price = 1200, Image = "chicken_salad.jpg" }
-            };
-        }
-
         private async void OnScrollToTopClicked(object sender, EventArgs e)
         {
-            await MainScrollView.ScrollToAsync(0, 0, true);
+            FoodCollectionView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
         }
 
         private async void OnCategorySelected(object sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection.FirstOrDefault() is Category selectedCategory)
             {
-                Element targetElement = null;
-                switch (selectedCategory.Name)
+                // Megkeressük a csoportot, aminek a neve megegyezik a választott kategóriával
+                var targetGroup = FoodGroups.FirstOrDefault(g => g.Name == selectedCategory.Name);
+
+                if (targetGroup != null)
                 {
-                    case "Pizzák": targetElement = PizzaSection; break;
-                    case "Burgerek": targetElement = BurgerSection; break;
-                    case "Italok": targetElement = DrinkSection; break;
-                    case "Desszertek": targetElement = DessertSection; break;
-                    case "Saláták": targetElement = SaladSection; break;
+                    // A CollectionView magától oda tud görgetni a csoporthoz!
+                    // Itt a 'FoodCollectionView' a CollectionView x:Name-je legyen!
+                    FoodCollectionView.ScrollTo(targetGroup, position: ScrollToPosition.Start, animate: true);
                 }
 
-                if (targetElement != null)
-                {
-                    await MainScrollView.ScrollToAsync(targetElement, ScrollToPosition.Start, true);
-                }
                 ((CollectionView)sender).SelectedItem = null;
             }
         }

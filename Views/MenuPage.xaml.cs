@@ -22,14 +22,7 @@ public partial class MenuPage : ContentPage
 
     private void LoadMockData()
     {
-        Categories = new List<Category>
-            {
-                new Category { Name = "Pizzák", Icon = "ham_pizza.jpg" },
-                new Category { Name = "Burgerek", Icon = "cheese_burger.jpg" },
-                new Category { Name = "Italok", Icon = "limonade.jpg" },
-                new Category { Name = "Desszertek", Icon = "chocolate_cake.jpg" },
-                new Category { Name = "Saláták", Icon = "chicken_salad.jpg" }
-            };
+
 
         Pizzas = new List<FoodItem>
             {

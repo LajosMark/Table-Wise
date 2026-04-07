@@ -5,7 +5,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:roundIcon="@mipmap/logo"
-        android:label="TableWise">
+        android:label="TableWise"
+		android:usesCleartextTraffic="true">
 	</application>
 
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
