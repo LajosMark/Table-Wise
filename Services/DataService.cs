@@ -12,7 +12,7 @@ namespace TableWise.Services
 {
     public static class DataService
     {
-        static string url = "https://bgs.jedlik.eu";
+        static string url = "http://localhost:3000";
 
         public static async Task<RegErrorModel> register(RegisterModel user)
         {
