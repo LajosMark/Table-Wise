@@ -31,7 +31,7 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
 });
 
 // Admin és Manager
-router.put('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const workHour = await WorkHour.findByIdAndUpdate(req.params.id, req.body, {
             new: true,

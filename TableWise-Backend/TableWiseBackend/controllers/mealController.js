@@ -47,7 +47,7 @@ router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
 });
 
 // 4. UPDATE MEAL - Étel módosítása (Csak Admin és Manager)
-router.put('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.findByIdAndUpdate(req.params.id, req.body, {
             new: true,

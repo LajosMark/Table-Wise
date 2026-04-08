@@ -59,7 +59,7 @@ router.post('/', protect, async (req, res) => {
 });
 
 // Elfogadás (isAccepted) Admin és Manager
-router.put('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const schedule = await WorkSchedule.findByIdAndUpdate(
             req.params.id,

@@ -66,7 +66,7 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 });
 
 // (Csak Admin)
-router.put('/:id', protect, authorize('admin'), async (req, res) => {
+router.patch('/:id', protect, authorize('admin'), async (req, res) => {
     try {
         const MealCategory = await MealCategory.findByIdAndUpdate(req.params.id, req.body, {
             new: true,

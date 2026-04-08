@@ -39,7 +39,7 @@ router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
 });
 
 // Csak Admin és Manager
-router.put('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const ingredient = await Ingredient.findByIdAndUpdate(req.params.id, req.body, {
             new: true,

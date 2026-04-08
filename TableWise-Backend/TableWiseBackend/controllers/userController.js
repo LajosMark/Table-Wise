@@ -86,7 +86,7 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res, next) =
 });
 
 // Admin és Manager vagy saját
-router.put('/:id', protect, async (req, res) => {
+router.patch('/:id', protect, async (req, res) => {
     try {
         if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
             return res.status(403).json({ msg: 'Csak a saját profilodat módosíthatod!' });
