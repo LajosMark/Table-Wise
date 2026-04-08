@@ -31,61 +31,43 @@
     </ContentPage.Resources>
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="5" VerticalOptions="Center">
+        <VerticalStackLayout Padding="30" VerticalOptions="Center" Spacing="5">
+            <Label Text="📝" FontSize="50" HorizontalOptions="Center" Margin="0,0,0,10"/>
+            <Label Text="Regisztráció" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,30" />
 
-            <Label Text="✨" FontSize="50" HorizontalOptions="Center" Margin="0,0,0,10"/>
-
-            <Label Text="Hozd létre a fiókod!"
-                   FontSize="26"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="{AppThemeBinding Light=#333333, Dark=White}"
-                   Margin="0,0,0,25" />
-
-            <Label Text="Teljes név" Margin="5,0" FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+            <Label Text="Teljes név" FontAttributes="Bold" TextColor="#69A481"/>
             <Border>
-                <VerticalStackLayout>
-                    <Entry Placeholder="Gipsz Jakab" Text="{Binding RegisterData.name}"/>
-                    <Label Text="{Binding RegisterError.name[0]}" Style="{StaticResource errorMessage}"/>
-                </VerticalStackLayout>
+                <Entry Placeholder="Gipsz Jakab" Text="{Binding RegisterData.name, Mode=TwoWay}"/>
             </Border>
 
-            <Label Text="Email cím" Margin="5,0" FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+            <Label Text="Szerepkör" FontAttributes="Bold" TextColor="#69A481"/>
             <Border>
-                <VerticalStackLayout>
-                    <Entry Placeholder="pelda@email.com" Keyboard="Email" Text="{Binding RegisterData.email}"/>
-                    <Label Text="{Binding RegisterError.email[0]}" Style="{StaticResource errorMessage}"/>
-                </VerticalStackLayout>
+                <Picker Title="Válassz szerepkört..."
+            ItemsSource="{Binding Roles}"
+            SelectedItem="{Binding RegisterData.role, Mode=TwoWay}"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            Margin="10,0" />
             </Border>
 
-            <Label Text="Jelszó" Margin="5,0" FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+            <Label Text="Email cím" FontAttributes="Bold" TextColor="#69A481"/>
             <Border>
-                <VerticalStackLayout>
-                    <Entry Placeholder="••••••••" IsPassword="True" Text="{Binding RegisterData.password}"/>
-                    <Label Text="{Binding RegisterError.password[0]}" Style="{StaticResource errorMessage}"/>
-                </VerticalStackLayout>
+                <Entry Placeholder="pelda@email.com" Keyboard="Email" Text="{Binding RegisterData.email, Mode=TwoWay}"/>
             </Border>
 
-            <Label Text="Jelszó megerősítése" Margin="5,0" FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+            <Label Text="Jelszó" FontAttributes="Bold" TextColor="#69A481"/>
             <Border>
-                <VerticalStackLayout>
-                    <Entry Placeholder="••••••••" IsPassword="True" Text="{Binding RegisterData.confirm_password}"/>
-                    <Label Text="{Binding RegisterError.confirm_password[0]}" Style="{StaticResource errorMessage}"/>
-                </VerticalStackLayout>
+                <Entry Placeholder="••••••••" IsPassword="True" Text="{Binding RegisterData.password, Mode=TwoWay}"/>
             </Border>
+
+            <Label Text="{Binding InfoMessage}" Style="{StaticResource errorMessage}" />
 
             <Button Text="REGISZTRÁCIÓ" 
-                    Margin="0,15,0,20"
-                    HeightRequest="55"
-                    CornerRadius="25"
-                    FontAttributes="Bold"
-                    BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
-                    TextColor="{AppThemeBinding Light=White, Dark=Black}"
-                    Command="{Binding onRegisterUserCommand}"/>
+            Margin="0,20,0,10"
+            HeightRequest="55"
+            CornerRadius="25"
+            BackgroundColor="#D2042D"
+            TextColor="White"
+            Command="{Binding RegisterCommand}" />
 
         </VerticalStackLayout>
     </ScrollView>

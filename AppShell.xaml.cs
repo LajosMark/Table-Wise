@@ -1,19 +1,13 @@
 ﻿using System.Windows.Input;
-using System.Xml.Linq;
 using TableWise.Services;
 using TableWise.Views;
-using Microsoft.Maui.Devices.Sensors; // shake funkcióhoz
-using Microsoft.Maui.Devices; // shake funkcióhoz
 
 namespace TableWise
 {
     public partial class AppShell : Shell
     {
-
         public string name { get; set; }
-
         private bool isPresented;
-
         public bool IsPresented
         {
             get { return isPresented; }
@@ -21,26 +15,28 @@ namespace TableWise
             {
                 isPresented = value;
                 OnPropertyChanged();
-                getUser();
+                getUser(); // Frissítjük a felhasználót, ha nyílik a menü
             }
         }
 
         public bool isLoggedIn { get; set; }
-
         public bool isNotLoggedIn { get => !isLoggedIn; }
 
+        public bool IsAdminOrManager { get; set; }
         public ICommand logoutCommand { get; set; }
+
         public AppShell()
         {
             InitializeComponent();
             StartListeningToShake();
-
             getUser();
 
-            logoutCommand = new Command(async () => {
-                await DataService.logout();
+            logoutCommand = new Command(() => {
+                DataService.Logout(); // A tiszta metódus hívása
                 IsPresented = false;
-                await Shell.Current.GoToAsync("//MainPage");
+                // Itt dől el hova küldjük ki: LoginPage-re érdemes
+                Shell.Current.GoToAsync("//MainPage");
+                getUser(); // UI frissítése
             });
 
             BindingContext = this;
@@ -48,34 +44,74 @@ namespace TableWise
 
         private async void getUser()
         {
-            var authUser = await DataService.getAuthenticatedUser();
-            if (authUser != null)
+            var user = await DataService.GetCurrentUserAsync();
+
+            if (user != null)
             {
-                // be vagyok jelentkezve
                 isLoggedIn = true;
-                name = authUser.name;
+                name = $"{user.name} ({user.role})";
+
+                IsAdminOrManager = (user.role.ToLower() == "admin" || user.role.ToLower() == "manager");
+
+                HeaderContainer.Content = CreateHeader(name);
             }
             else
             {
-                // nem vagyok bejelentkezve
                 isLoggedIn = false;
-                name = null;
+                IsAdminOrManager = false; // Kijelentkezve senki sem admin
+                name = string.Empty;
+                HeaderContainer.Content = null;
             }
+
             OnPropertyChanged(nameof(isLoggedIn));
             OnPropertyChanged(nameof(isNotLoggedIn));
+            OnPropertyChanged(nameof(IsAdminOrManager));
             OnPropertyChanged(nameof(name));
         }
 
-        // shake funkció
+        // Segédfüggvény a szebb kódért
+        private HorizontalStackLayout CreateHeader(string userName)
+        {
+            var layout = new HorizontalStackLayout
+            {
+                Padding = new Thickness(20, 30, 10, 30),
+                Spacing = 5
+            };
+
+            // 🎨 DINAMIKUS HÁTTÉRSZÍN BEÁLLÍTÁSA
+            // Light mód: #F0F5F3 | Dark mód: #252525
+            layout.SetAppThemeColor(VisualElement.BackgroundColorProperty,
+                                    Color.FromArgb("#F0F5F3"),
+                                    Color.FromArgb("#252525"));
+
+            var iconLabel = new Label { Text = "👤", FontSize = 20, VerticalOptions = LayoutOptions.Center };
+
+            var nameLabel = new Label
+            {
+                Text = userName,
+                FontAttributes = FontAttributes.Bold,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            // 🎨 DINAMIKUS SZÖVEGSZÍN BEÁLLÍTÁSA a névnek
+            // Light mód: #69A481 | Dark mód: Yellow (Sárga)
+            nameLabel.SetAppThemeColor(Label.TextColorProperty,
+                                       Color.FromArgb("#69A481"),
+                                       Colors.Yellow);
+
+            layout.Children.Add(iconLabel);
+            layout.Children.Add(nameLabel);
+
+            return layout;
+        }
+
+        // --- SHAKE FUNKCIÓ ---
 
         private void StartListeningToShake()
         {
             if (Accelerometer.Default.IsSupported)
             {
-                // Feliratkozunk az eseményre
                 Accelerometer.Default.ShakeDetected += OnShakeDetected;
-
-                // Elindítjuk a figyelést
                 if (!Accelerometer.Default.IsMonitoring)
                 {
                     Accelerometer.Default.Start(SensorSpeed.UI);
@@ -85,31 +121,17 @@ namespace TableWise
 
         private void OnShakeDetected(object sender, EventArgs e)
         {
-            // Ez a sor a Visual Studio Output ablakába ír (Ctrl+Alt+O)
             System.Diagnostics.Debug.WriteLine(">>> SZENZOR: Rázást érzékeltem! <<<");
-
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                // 1. Felugró ablak - ha ez megnyílik, a szenzor MŰKÖDIK!
                 await Shell.Current.DisplayAlert("Szenzor Teszt", "A rázás sikeres!", "OK");
-
-                try
-                {
-                    // 2. Próbáljuk meg a navigációt
-                    await Shell.Current.GoToAsync("//MainPage");
-                }
-                catch (Exception ex)
-                {
-                    // Ha a navigációval van baj, itt kiírja miért
-                    await Shell.Current.DisplayAlert("Hiba", ex.Message, "OK");
-                }
+                await Shell.Current.GoToAsync("//MainPage");
             });
         }
 
         protected override void OnParentSet()
         {
             base.OnParentSet();
-            //    Ha bezárják az appot vagy elnavigálnak, állítsuk le a figyelést
             if (Parent == null && Accelerometer.Default.IsMonitoring)
             {
                 Accelerometer.Default.ShakeDetected -= OnShakeDetected;

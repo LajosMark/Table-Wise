@@ -8,17 +8,15 @@ namespace TableWise.Models;
 
 public class InventoryItem
 {
-    public string Name { get; set; }
-    public double CurrentAmount { get; set; }
-    public double MaxAmount { get; set; }
-    public string Unit { get; set; }
+    public string id { get; set; }
+    public string name { get; set; }
+    public double amount { get; set; } // Aktuális mennyiség
+    public string typeOfAmount { get; set; } // Mértékegység (kg, db)
+    public double warningAmountPercentage { get; set; } // Mikor jelezzen
+    public double pricePerUnit { get; set; }
 
-
-    public double Progress => CurrentAmount / MaxAmount;
-
-
-    public Color StatusColor => Progress <= 0.15 ? Colors.Red : Colors.SeaGreen;
-
-
-    public bool ShowWarning => Progress <= 0.15;
+    // Számolt tulajdonságok a UI-hoz
+    public double Progress => amount / 100; // Feltételezve, hogy 100 a max, vagy a backendről jön a max
+    public Color StatusColor => (amount <= warningAmountPercentage) ? Colors.Red : Colors.Green;
+    public bool ShowWarning => amount <= warningAmountPercentage;
 }

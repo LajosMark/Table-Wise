@@ -4,9 +4,9 @@ namespace TableWise.Views;
 
 public partial class RegisterView : ContentPage
 {
-	public RegisterView(RegisterViewModel vm)
-	{
-		InitializeComponent();
-        BindingContext = vm;
+    public RegisterView()
+    {
+        InitializeComponent();
+        BindingContext = new RegisterViewModel();
     }
 }

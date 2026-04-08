@@ -46,9 +46,9 @@
                FontAttributes="Bold"
                TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
         <Border>
-            <Entry Placeholder="pelda@email.com" 
-                   Keyboard="Email"
-                   Text="{Binding Email}"/>
+            <Entry Placeholder="email@pelda.hu" 
+                Text="{Binding UserEmail, Mode=TwoWay}" 
+                Keyboard="Email" />
         </Border>
 
         <Label Text="Jelszó" 
@@ -57,8 +57,8 @@
                TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
         <Border>
             <Entry Placeholder="••••••••" 
-                   IsPassword="True" 
-                   Text="{Binding Password}"/>
+                IsPassword="True" 
+                Text="{Binding UserPassword, Mode=TwoWay}" />
         </Border>
 
         <Button Text="BEJELENTKEZÉS" 
@@ -68,7 +68,7 @@
                 FontAttributes="Bold"
                 BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
                 TextColor="{AppThemeBinding Light=White, Dark=Black}"
-                Command="{Binding onLoginCommand}" />
+                Command="{Binding LoginCommand}" />
 
         <Label Text="{Binding ErrorMessage}" 
                Style="{StaticResource errorMessage}"

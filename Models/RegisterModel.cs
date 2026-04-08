@@ -11,7 +11,9 @@ namespace TableWise.Models
         // tulajdonság nevek a backend-ből jönnek
         public string name { get; set; }
         public string email { get; set; }
+        public string role { get; set; }
         public string password { get; set; }
         public string confirm_password { get; set; }
+        
     }
 }

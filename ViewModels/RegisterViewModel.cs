@@ -1,43 +1,80 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TableWise.Models;
 using TableWise.Services;
 
-
 namespace TableWise.ViewModels
 {
-    public partial class RegisterViewModel: ObservableObject
+    public partial class RegisterViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private RegisterModel registerData = new RegisterModel();
+        // Belső mezők
+        private RegisterModel _registerData = new RegisterModel();
+        private string _infoMessage;
 
-        [ObservableProperty]
-        private RegErrorModel registerError = new RegErrorModel();
-
-        /// <summary>
-        /// onRegisterUserCommand
-        /// </summary>
-        [RelayCommand]
-        private async void onRegisterUser()
+        // Manuális tulajdonságok (Brute Force mód 🛡️)
+        public RegisterModel RegisterData
         {
-            RegisterError = new RegErrorModel();
-            RegisterError = await DataService.register(RegisterData);
-            if (
-                RegisterError.name.Length == 0 &&
-                RegisterError.email.Length == 0 &&
-                RegisterError.password.Length == 0 &&
-                RegisterError.confirm_password.Length == 0
-                )
+            get => _registerData;
+            set => SetProperty(ref _registerData, value);
+        }
+
+        public string InfoMessage
+        {
+            get => _infoMessage;
+            set => SetProperty(ref _infoMessage, value);
+        }
+
+        // Parancs kézi létrehozása
+        public IAsyncRelayCommand RegisterCommand { get; }
+
+        // Add ezt a listát a RegisterViewModel osztályba
+        public List<string> Roles { get; } = new List<string> { "employee", "admin", "manager"};
+
+        public RegisterViewModel()
+        {
+            // Alapértelmezett érték beállítása, hogy ne legyen üres
+            RegisterData.role = Roles[0];
+            RegisterCommand = new AsyncRelayCommand(OnRegisterUser);
+        }
+
+        private async Task OnRegisterUser()
+        {
+            // 1. Megálló: Adatok ellenőrzése
+            if (RegisterData == null || string.IsNullOrWhiteSpace(RegisterData.email))
             {
-                // nincs hiba
-                // üzenet
-                await App.Current.MainPage.DisplayAlert("", "Registration successful", "OK");
-                await Shell.Current.GoToAsync("//MainPage");
+                await App.Current.MainPage.DisplayAlert("Hiba", "Üres adatok!", "OK");
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine(">>>> Küldés a szerverre... <<<<");
+
+                // 2. Megálló: A hálózati hívás előtt
+                var result = await DataService.RegisterAsync(
+                    RegisterData.name,
+                    RegisterData.email,
+                    RegisterData.password,
+                    RegisterData.role);
+
+                // 3. Megálló: Megjött a válasz?
+                System.Diagnostics.Debug.WriteLine($">>>> Válasz érkezett: {result.Success} - {result.Message} <<<<");
+
+                if (result.Success)
+                {
+                    await App.Current.MainPage.DisplayAlert("Siker", "Sikeres regisztráció!", "OK");
+                    await Shell.Current.GoToAsync("//MainPage");
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Szerver hiba", result.Message, "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                // 4. Megálló: Ha összeomlik a hálózat
+                await App.Current.MainPage.DisplayAlert("Crash", ex.Message, "OK");
             }
         }
     }

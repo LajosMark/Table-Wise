@@ -70,9 +70,6 @@ namespace TableWise
                     {
                         var meals = await DataService.GetMealsByCategory(cat.Id);
 
-                        // EZZEL nézzük meg, jön-e tényleg adat:
-                        await DisplayAlert("DEBUG", $"Kategória: {cat.Name}\nID: {cat.Id}\nÉtelek száma: {meals?.Count ?? 0}", "OK");
-
                         MainThread.BeginInvokeOnMainThread(() => {
                             Categories.Add(cat);
                             if (meals != null && meals.Count > 0)
@@ -128,9 +125,14 @@ namespace TableWise
             }
         }
 
-        private async void OnScrollToTopClicked(object sender, EventArgs e)
+        private void OnScrollToTopClicked(object sender, EventArgs e)
         {
-            FoodCollectionView.ScrollTo(0, position: ScrollToPosition.Start, animate: true);
+            // Csak ha az előző nem válna be:
+            var firstItem = FoodGroups.FirstOrDefault()?.FirstOrDefault();
+            if (firstItem != null)
+            {
+                FoodCollectionView.ScrollTo(firstItem, position: ScrollToPosition.Start, animate: true);
+            }
         }
 
         private async void OnCategorySelected(object sender, SelectionChangedEventArgs e)

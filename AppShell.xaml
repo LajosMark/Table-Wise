@@ -19,20 +19,7 @@
     FlyoutBackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
 
     <Shell.FlyoutHeader>
-        <HorizontalStackLayout BackgroundColor="{AppThemeBinding Light=#F0F5F3, Dark=#252525}"
-                               Padding="20,30,10,30"
-                               IsVisible="{Binding isLoggedIn}"
-                               Spacing="5">
-            <Label Text="👤" FontSize="20" VerticalOptions="Center"/>
-            <Label Text="Bejelentkezve: " 
-                   FontAttributes="Bold" 
-                   TextColor="{AppThemeBinding Light=#333333, Dark=White}"
-                   VerticalOptions="Center"/>
-            <Label Text="{Binding name}" 
-                   TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
-                   FontAttributes="Bold"
-                   VerticalOptions="Center"/>
-        </HorizontalStackLayout>
+        <ContentView x:Name="HeaderContainer" />
     </Shell.FlyoutHeader>
 
     <ShellContent
@@ -45,9 +32,9 @@
         ContentTemplate="{DataTemplate views:MenuPage}"/>
 
     <ShellContent 
-        Title="Regisztráció" 
-        ContentTemplate="{DataTemplate views:RegisterView}" 
-        IsVisible="{Binding isNotLoggedIn}"/>
+    Title="Regisztráció" 
+    ContentTemplate="{DataTemplate views:RegisterView}" 
+    IsVisible="{Binding IsAdminOrManager}"/>
 
     <ShellContent 
         Title="Bejelentkezés" 
@@ -56,11 +43,13 @@
 
     <ShellContent 
         Title="Rólunk" 
-        ContentTemplate="{DataTemplate views:AboutUsPage}"/>
+        ContentTemplate="{DataTemplate views:AboutUsPage}"
+        IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
         Title="Karrier" 
-        ContentTemplate="{DataTemplate views:CareerPage}"/>
+        ContentTemplate="{DataTemplate views:CareerPage}"
+        IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
         Title="Nyitvatartás" 
@@ -72,7 +61,8 @@
         IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
         Title="Raktár"  
-        ContentTemplate="{DataTemplate views:WarehousePage}"/>
+        ContentTemplate="{DataTemplate views:WarehousePage}"
+        IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
         Title="Beállítások"  
         ContentTemplate="{DataTemplate views:SettingsPage}" />

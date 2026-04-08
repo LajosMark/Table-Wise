@@ -1,32 +1,65 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TableWise.Services;
 
 namespace TableWise.ViewModels
 {
+    // A 'partial' marad, de most mi magunk adjuk meg a tulajdonságokat
     public partial class LoginViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string email = "";
+        private string _userEmail = "";
+        private string _userPassword = "";
+        private string _errorMessage;
 
-        [ObservableProperty]
-        private string password = "";
-
-        [ObservableProperty]
-        private string errorMessage;
-
-        [RelayCommand]
-        private async void onLogin()
+        // KÉZZEL MEGÍRT TULAJDONSÁGOK (Így a fordító garantáltan látja őket)
+        public string UserEmail
         {
-            ErrorMessage = await DataService.login(Email, Password);
-            if (ErrorMessage == null)
+            get => _userEmail;
+            set => SetProperty(ref _userEmail, value);
+        }
+
+        public string UserPassword
+        {
+            get => _userPassword;
+            set => SetProperty(ref _userPassword, value);
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
+        }
+
+        // A parancsot is kézzel hozzuk létre
+        public IAsyncRelayCommand LoginCommand { get; }
+
+        public LoginViewModel()
+        {
+            LoginCommand = new AsyncRelayCommand(OnLogin);
+        }
+
+        private async Task OnLogin()
+        {
+            ErrorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
             {
+                ErrorMessage = "Kérlek tölts ki minden mezőt!";
+                return;
+            }
+
+            // Hívás a DataService-be
+            bool success = await DataService.LoginAsync(UserEmail, UserPassword);
+
+            if (success)
+            {
+                ErrorMessage = null;
                 await Shell.Current.GoToAsync("//MainPage");
+            }
+            else
+            {
+                ErrorMessage = "Érvénytelen email vagy jelszó!";
             }
         }
     }

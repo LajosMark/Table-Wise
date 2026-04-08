@@ -13,10 +13,10 @@
                     <VerticalStackLayout Spacing="5" Margin="0,0,0,20">
 
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            <Label Text="{Binding name}" FontAttributes="Bold" FontSize="16" />
                             <HorizontalStackLayout Grid.Column="1" Spacing="5">
-                                <Label Text="{Binding CurrentAmount}" />
-                                <Label Text="{Binding Unit}" />
+                                <Label Text="{Binding amount}" />
+                                <Label Text="{Binding typeOfAmount}" />
                             </HorizontalStackLayout>
                         </Grid>
 
@@ -33,13 +33,13 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="1" 
+        <!--<Button Grid.Row="1" 
                 Text="📦 Összes készlet feltöltése"
                 Clicked="OnRestockClicked"
                 Margin="20"
                 BackgroundColor="#69A481"
                 TextColor="White"
                 CornerRadius="25"
-                FontAttributes="Bold" />
+                FontAttributes="Bold" />-->
     </Grid>
 </ContentPage>
