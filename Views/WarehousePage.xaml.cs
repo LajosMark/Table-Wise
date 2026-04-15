@@ -11,6 +11,7 @@ public partial class WarehousePage : ContentPage
     public WarehousePage()
     {
         InitializeComponent();
+        BindingContext = this;
         InventoryList.ItemsSource = Stock;
     }
 
@@ -23,8 +24,12 @@ public partial class WarehousePage : ContentPage
 
     private async Task LoadStockAsync()
     {
+        // 1. Kérjük le az adatokat
         var items = await DataService.GetFridgeItemsAsync();
+
         Stock.Clear();
+
+        // 3. Adjuk hozzá a szerverről jötteket
         foreach (var item in items)
         {
             Stock.Add(item);

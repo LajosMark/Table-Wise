@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TableWise.ViewModels"
+             xmlns:models="clr-namespace:TableWise.Models"
+             x:Class="TableWise.Views.MySchedulePage"
+             x:DataType="vm:MyScheduleViewModel"
+             Title="Beosztásom 🗓️">
+
+    <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadSchedulesCommand}">
+        <Grid>
+            <VerticalStackLayout VerticalOptions="Center" 
+                                 HorizontalOptions="Center"
+                                 IsVisible="{Binding MySchedules.Count, Converter={StaticResource IntToBoolInverter}}">
+                <Label Text="📭" FontSize="50" HorizontalTextAlignment="Center"/>
+                <Label Text="Nincs tervezett műszakod." TextColor="Gray"/>
+            </VerticalStackLayout>
+
+            <CollectionView ItemsSource="{Binding MySchedules}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:WorkHour">
+                        <Border Margin="10,5" Padding="15" StrokeShape="RoundRectangle 12">
+                            <HorizontalStackLayout Spacing="20">
+                                <Label Text="📅" FontSize="24" VerticalOptions="Center"/>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding DisplayDate}" FontAttributes="Bold" FontSize="16"/>
+                                    <Label Text="{Binding DisplayTime}" TextColor="Gray"/>
+                                    <Label Text="{Binding TotalHours, StringFormat='{0:F1} óra'}" 
+                                           TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </RefreshView>
+</ContentPage>
