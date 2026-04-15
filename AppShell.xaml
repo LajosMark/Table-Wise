@@ -56,13 +56,17 @@
         ContentTemplate="{DataTemplate views:OpeningHours}"/>
 
     <ShellContent 
-        Title="Beosztás"  
+        Title="Beosztás Kérés"  
         ContentTemplate="{DataTemplate views:WorkSchedulePage}"
+        IsVisible="{Binding isLoggedIn}"/>
+    <ShellContent 
+        Title="Beosztás"  
+        ContentTemplate="{DataTemplate views:MySchedulePage}"
         IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
         Title="Raktár"  
         ContentTemplate="{DataTemplate views:WarehousePage}"
-        IsVisible="{Binding isLoggedIn}"/>
+        IsVisible="{Binding IsAdminOrManager}"/>
     <ShellContent 
         Title="Beállítások"  
         ContentTemplate="{DataTemplate views:SettingsPage}" />

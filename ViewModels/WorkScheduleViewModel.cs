@@ -1,48 +1,92 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using TableWise.Services;
 
 namespace TableWise.ViewModels
 {
     public partial class WorkScheduleViewModel : ObservableObject
     {
-        // 1. NÉZET VEZÉRLŐK
-        [ObservableProperty] private bool isWeekView = true;
-        [ObservableProperty] private bool isDayView = false;
-        [ObservableProperty] private bool isTimeView = false;
+        // --- PRIVÁT VÁLTOZÓK ---
+        private bool _isWeekView = true;
+        private bool _isDayView = false;
+        private bool _isTimeView = false;
+        private string _selectedWeekText;
+        private DateTime _selectedDate = DateTime.Now;
+        private double _startHour = 8;
+        private double _endHour = 16;
 
-        // 2. ADATOK
-        [ObservableProperty] private string selectedWeekText;
-        [ObservableProperty] private DateTime selectedDate = DateTime.Now;
+        // --- PUBLIKUS TULAJDONSÁGOK (A XAML ezekhez kötődik) ---
+        public bool IsWeekView
+        {
+            get => _isWeekView;
+            set => SetProperty(ref _isWeekView, value);
+        }
 
-        // 3. CSÚSZKÁK (Egyszerűen, hiba nélkül)
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(TimeRangeText))]
-        private double startHour = 8;
+        public bool IsDayView
+        {
+            get => _isDayView;
+            set => SetProperty(ref _isDayView, value);
+        }
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(TimeRangeText))]
-        private double endHour = 16;
+        public bool IsTimeView
+        {
+            get => _isTimeView;
+            set => SetProperty(ref _isTimeView, value);
+        }
 
-        // 4. LISTÁK (Ami hiányzott!)
+        public string SelectedWeekText
+        {
+            get => _selectedWeekText;
+            set => SetProperty(ref _selectedWeekText, value);
+        }
+
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => SetProperty(ref _selectedDate, value);
+        }
+
+        public double StartHour
+        {
+            get => _startHour;
+            set
+            {
+                if (SetProperty(ref _startHour, value))
+                {
+                    OnPropertyChanged(nameof(TimeRangeText));
+                }
+            }
+        }
+
+        public double EndHour
+        {
+            get => _endHour;
+            set
+            {
+                if (SetProperty(ref _endHour, value))
+                {
+                    OnPropertyChanged(nameof(TimeRangeText));
+                }
+            }
+        }
+
+        // Listák és számolt mezők
         public ObservableCollection<string> Weeks { get; } = new ObservableCollection<string>();
         public ObservableCollection<DateTime> Days { get; } = new ObservableCollection<DateTime>();
-
-        // 5. IDŐ KIÍRÁSA
         public string TimeRangeText => $"{Math.Floor(StartHour)}:00 - {Math.Floor(EndHour)}:00";
 
-        // 6. KONSTRUKTOR (Feltöltjük a heteket rögtön)
+        // --- KONSTRUKTOR ---
         public WorkScheduleViewModel()
         {
             Weeks.Clear();
             Weeks.Add("Ezen a héten");
             Weeks.Add("Jövő héten");
             Weeks.Add("2 hét múlva");
-
-            isWeekView = true;
         }
 
-        // 7. PARANCSOK (Navigáció)
+        // --- PARANCSOK ---
+
         [RelayCommand]
         private void SelectWeek(string week)
         {
@@ -52,32 +96,28 @@ namespace TableWise.ViewModels
 
             DateTime today = DateTime.Now;
             DateTime startDay;
-            int daysToShow = 7; // Alapesetben egy teljes hét
+            int daysToShow = 7;
 
             if (week == "Ezen a héten")
             {
                 startDay = today.AddDays(1);
-                // Kiszámoljuk, hány nap van hátra vasárnapig (DayOfWeek.Sunday = 0)
                 int currentDayNum = (int)today.DayOfWeek;
-                if (currentDayNum == 0) currentDayNum = 7; // Ha vasárnap van, legyen 7
-
-                daysToShow = 8 - currentDayNum; // Pl. Csütörtök(4): 8-4 = 4 nap (Cs, P, Szo, V)
+                if (currentDayNum == 0) currentDayNum = 7;
+                daysToShow = 8 - currentDayNum;
             }
             else if (week == "Jövő héten")
             {
-                // Megkeressük a következő hétfőt
                 int daysUntilMonday = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
                 if (daysUntilMonday == 0) daysUntilMonday = 7;
                 startDay = today.AddDays(daysUntilMonday);
             }
-            else // "2 hét múlva"
+            else
             {
                 int daysUntilMonday = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
                 if (daysUntilMonday == 0) daysUntilMonday = 7;
                 startDay = today.AddDays(daysUntilMonday + 7);
             }
 
-            // Csak a meghatározott számú napot adjuk hozzá
             for (int i = 0; i < daysToShow; i++)
             {
                 Days.Add(startDay.AddDays(i));
@@ -101,7 +141,6 @@ namespace TableWise.ViewModels
         [RelayCommand]
         private void BackToDays() { IsDayView = true; IsTimeView = false; }
 
-        // 8. BEKÜLDÉS (Itt ellenőrizzük a 10 órát, így nem romlik el a UI!)
         [RelayCommand]
         private async Task Submit()
         {
@@ -117,8 +156,17 @@ namespace TableWise.ViewModels
                 return;
             }
 
-            await Application.Current.MainPage.DisplayAlert("Siker", "Beosztás mentve!", "OK");
-            BackToWeeks();
+            var result = await DataService.SubmitWorkScheduleAsync(SelectedDate, (int)Math.Floor(StartHour), (int)Math.Floor(EndHour));
+
+            if (result.Success)
+            {
+                await Application.Current.MainPage.DisplayAlert("Siker", result.Message, "OK");
+                BackToWeeks();
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Hiba", result.Message, "OK");
+            }
         }
     }
 }
