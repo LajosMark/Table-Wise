@@ -41,10 +41,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/hours', workHourRoutes);
 app.use('/api/schedules', workScheduleRoutes);
 app.use('/api/meals', mealRoutes);
-app.use('/api/mealCategories', mealCategoryController);
+app.use('/api/meal-categories', mealCategoryController);
 app.use('/api/ingridients', ingredientController);
 app.use('/api/orders', orderController);
-app.use('/api/fridgeItems', fridgeItemController);
+app.use('/api/fridge-items', fridgeItemController);
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.listen(PORT, () => {
     console.log(`Server Started at port ${PORT}`);

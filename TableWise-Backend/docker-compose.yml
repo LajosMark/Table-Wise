@@ -6,7 +6,7 @@ services:
     ports:
       - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
     volumes:
-      - db2:/data/db2
+      - db:/data/db
       - ./database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
   app:
     depends_on:
@@ -23,4 +23,4 @@ services:
     stdin_open: true
     tty: true
 volumes:
-  db2:
+  db:
