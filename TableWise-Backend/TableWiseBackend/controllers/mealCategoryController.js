@@ -54,11 +54,11 @@ router.get('/:id/meals', async (req, res) => {
 // (Csak Admin)
 router.post('/', protect, authorize('admin'), async (req, res) => {
     try {
-        const MealCategory = await MealCategory.create(req.body);
+        const PostMealCategory = await MealCategory.create(req.body);
 
         res.status(201).json({
 
-            data: MealCategory
+            data: PostMealCategory
         });
     } catch (error) {
         res.status(400).json({ msg: error.message });
@@ -68,16 +68,16 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // (Csak Admin)
 router.patch('/:id', protect, authorize('admin'), async (req, res) => {
     try {
-        const MealCategory = await MealCategory.findByIdAndUpdate(req.params.id, req.body, {
+        const PatchMealCategory = await MealCategory.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
 
-        if (!MealCategory) {
+        if (!PatchMealCategory) {
             return res.status(404).json({ msg: 'Kategória nem található' });
         }
 
-        res.status(200).json({ data: MealCategory });
+        res.status(200).json({ data: PatchMealCategory });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }
@@ -86,13 +86,13 @@ router.patch('/:id', protect, authorize('admin'), async (req, res) => {
 // (Csak Admin)
 router.delete('/:id', protect, authorize('admin'), async (req, res) => {
     try {
-        const MealCategory = await MealCategory.findById(req.params.id);
+        const DeleteMealCategory = await MealCategory.findById(req.params.id);
 
-        if (!MealCategory) {
+        if (!DeleteMealCategory) {
             return res.status(404).json({ msg: 'Kategória nem található' });
         }
 
-        await MealCategory.deleteOne();
+        await DeleteMealCategory.deleteOne();
 
         res.status(200).json({ data: {} });
     } catch (error) {
