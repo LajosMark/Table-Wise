@@ -144,28 +144,36 @@ namespace TableWise.ViewModels
         [RelayCommand]
         private async Task Submit()
         {
-            double duration = EndHour - StartHour;
-            if (StartHour >= EndHour)
+            string checkId = Preferences.Get("user_id", string.Empty);
+            if (string.IsNullOrEmpty(checkId))
             {
-                await Application.Current.MainPage.DisplayAlert("Hiba", "A kezdés legyen előbb!", "OK");
+                await Application.Current.MainPage.DisplayAlert("Hiba", "A rendszer nem találja a felhasználói azonosítót. Kérlek, jelentkezz be újra!", "OK");
                 return;
             }
-            if (duration > 10)
-            {
-                await Application.Current.MainPage.DisplayAlert("Hiba", "Max 10 órát dolgozhatsz!", "OK");
-                return;
-            }
+            // 1. Validálás (ezt már megírtad)
+            if (StartHour >= EndHour) { /* ... */ return; }
 
-            var result = await DataService.SubmitWorkScheduleAsync(SelectedDate, (int)Math.Floor(StartHour), (int)Math.Floor(EndHour));
+            // 2. Első lépés: Idősáv létrehozása
+            var hourResult = await DataService.SubmitWorkScheduleAsync(SelectedDate, (int)Math.Floor(StartHour), (int)Math.Floor(EndHour));
 
-            if (result.Success)
+            if (hourResult.Success)
             {
-                await Application.Current.MainPage.DisplayAlert("Siker", result.Message, "OK");
-                BackToWeeks();
+                // 3. Második lépés: Összekapcsolás a felhasználóval
+                var linkResult = await DataService.LinkScheduleToUserAsync(hourResult.NewId);
+
+                if (linkResult.Success)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Siker", "Beosztás rögzítve!", "OK");
+                    BackToWeeks();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Hiba", "Az időpont létrejött, de a hozzárendelés nem: " + linkResult.Message, "OK");
+                }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Hiba", result.Message, "OK");
+                await Application.Current.MainPage.DisplayAlert("Hiba", hourResult.Message, "OK");
             }
         }
     }

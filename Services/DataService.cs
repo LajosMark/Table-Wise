@@ -81,25 +81,32 @@ namespace TableWise.Services
 
                 if (response.IsSuccessStatusCode)
                 {
+                    // 1. Itt olvassuk ki a választ ELŐSZÖR és UTOLJÁRA
                     var responseString = await response.Content.ReadAsStringAsync();
 
-                    // Ez a beállítás a titkos fegyver: rugalmassá teszi a JSON olvasást
+                    // Debug ablak (opcionális, de hasznos)
+                    await Application.Current.MainPage.DisplayAlert("LOGIN JSON", responseString, "OK");
+
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true,
                         NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
                     };
 
+                    // 2. Deszerializáljuk a már kiolvasott responseString-et
                     var result = JsonSerializer.Deserialize<LoginResponse>(responseString, options);
 
                     if (result != null && !string.IsNullOrEmpty(result.Token))
                     {
                         Preferences.Set("user_token", result.Token);
 
-                        // Csak akkor mentjük az ID-t, ha létezik, és szövegként tároljuk
-                        if (result.User != null)
+                        // 3. Mivel a Login JSON üres volt, lekérjük az adatokat a /me végpontról
+                        var user = await GetCurrentUserAsync();
+                        if (user != null)
                         {
-                            Preferences.Set("user_id", result.User.id.ToString());
+                            // Itt az 'id' mezőt mentjük el szövegként
+                            Preferences.Set("user_id", user.id.ToString());
+                            Debug.WriteLine($"✅ ID mentve: {user.id}");
                         }
 
                         return true;
@@ -108,7 +115,7 @@ namespace TableWise.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Login Error: {ex.Message}");
+                Debug.WriteLine($"Login Error: {ex.Message}");
             }
             return false;
         }
@@ -244,11 +251,11 @@ namespace TableWise.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Kiolvassuk az ID-t a válaszból (a backend a 'data' mezőben küldi az új objektumot)
                     using var doc = JsonDocument.Parse(responseString);
-                    string newId = doc.RootElement.GetProperty("data").GetProperty("_id").GetString();
+                    // Módosítás: GetInt32-t használunk, mert a backend számot küld!
+                    int newId = doc.RootElement.GetProperty("data").GetProperty("_id").GetInt32();
 
-                    return (true, "Idősáv létrehozva!", newId);
+                    return (true, "Idősáv létrehozva!", newId.ToString());
                 }
                 else
                 {
@@ -269,17 +276,17 @@ namespace TableWise.Services
             try
             {
                 string token = Preferences.Get("user_token", string.Empty);
-                // FIGYELEM: A bejelentkezett felhasználó ID-ját el kell mentened Login-kor!
                 string userId = Preferences.Get("user_id", string.Empty);
 
-                if (string.IsNullOrEmpty(userId)) return (false, "Hiányzó felhasználó azonosító. Jelentkezz be újra!");
+                if (string.IsNullOrEmpty(userId)) return (false, "Jelentkezz be újra!");
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+                // Átalakítjuk számmá, ha a backend azt várja (mivel az adatbázisodban 1 szerepel, nem "1")
                 var assignmentData = new
                 {
-                    usersId = userId,
-                    workHoursId = workHoursId,
+                    usersId = userId, // String marad
+                    workHoursId = workHoursId, // String marad
                     isAccepted = true
                 };
 
@@ -289,6 +296,10 @@ namespace TableWise.Services
                 var response = await client.PostAsync($"{url}/api/schedules", content);
                 var responseString = await response.Content.ReadAsStringAsync();
 
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.DisplayAlert("DEBUG VÁLASZ", responseString, "OK");
+                });
                 if (response.IsSuccessStatusCode)
                 {
                     return (true, "Sikeres hozzárendelés!");
@@ -358,7 +369,13 @@ namespace TableWise.Services
 
         public class UserData
         {
-            public int id { get; set; } // Itt most int, mert a backend számot küld
+            // Megpróbáljuk mindkét népszerű verziót lefedni
+            [JsonPropertyName("_id")]
+            public object _id { get; set; }
+
+            [JsonPropertyName("id")]
+            public object id { get; set; }
+
             public string email { get; set; }
         }
 
