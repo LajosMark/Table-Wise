@@ -35,16 +35,16 @@ module.exports.Data = {
     Meals:
         [
 
-            { "name": "Bruschetta", "ingridientId": 101, "price": 1200, "isAvailable": true, "categoryId": 1 },
-            { "name": "Tomato Soup", "ingridientId": 102, "price": 1100, "isAvailable": true, "categoryId": 1 },
-            { "name": "Grilled Chicken", "ingridientId": 103, "price": 3500, "isAvailable": true, "categoryId": 3 },
-            { "name": "Pizza Margherita", "ingridientId": 104, "price": 2800, "isAvailable": true, "categoryId": 4 },
-            { "name": "Pasta Carbonara", "ingridientId": 105, "price": 3100, "isAvailable": true, "categoryId": 5 },
-            { "name": "Greek Salad", "ingridientId": 106, "price": 2200, "isAvailable": true, "categoryId": 6 },
-            { "name": "Tiramisu", "ingridientId": 107, "price": 1500, "isAvailable": true, "categoryId": 7 },
-            { "name": "Espresso", "ingridientId": 108, "price": 600, "isAvailable": true, "categoryId": 8 },
-            { "name": "French Fries", "ingridientId": 109, "price": 900, "isAvailable": true, "categoryId": 9 },
-            { "name": "Small Pizza", "ingridientId": 110, "price": 1800, "isAvailable": true, "categoryId": 10 }
+            { "name": "Bruschetta", "price": 1200, "isAvailable": true, "categoryId": 1 },
+            { "name": "Tomato Soup", "price": 1100, "isAvailable": true, "categoryId": 1 },
+            { "name": "Grilled Chicken", "price": 3500, "isAvailable": true, "categoryId": 3 },
+            { "name": "Pizza Margherita", "price": 2800, "isAvailable": true, "categoryId": 4 },
+            { "name": "Pasta Carbonara", "price": 3100, "isAvailable": true, "categoryId": 5 },
+            { "name": "Greek Salad", "price": 2200, "isAvailable": true, "categoryId": 6 },
+            { "name": "Tiramisu", "price": 1500, "isAvailable": true, "categoryId": 7 },
+            { "name": "Espresso", "price": 600, "isAvailable": true, "categoryId": 8 },
+            { "name": "French Fries", "price": 900, "isAvailable": true, "categoryId": 9 },
+            { "name": "Small Pizza", "price": 1800, "isAvailable": true, "categoryId": 10 }
         ],
 
     MealCategories:
@@ -63,16 +63,16 @@ module.exports.Data = {
 
     Ingridients:
         [
-            { "mealId": 101, "fridgeItemId": 1, "amountOfIngredient": 2 },
-            { "mealId": 102, "fridgeItemId": 8, "amountOfIngredient": 1 },
-            { "mealId": 103, "fridgeItemId": 3, "amountOfIngredient": 1 },
-            { "mealId": 104, "fridgeItemId": 5, "amountOfIngredient": 1 },
-            { "mealId": 104, "fridgeItemId": 2, "amountOfIngredient": 1 },
-            { "mealId": 105, "fridgeItemId": 6, "amountOfIngredient": 1 },
-            { "mealId": 106, "fridgeItemId": 1, "amountOfIngredient": 3 },
-            { "mealId": 107, "fridgeItemId": 2, "amountOfIngredient": 1 },
-            { "mealId": 109, "fridgeItemId": 7, "amountOfIngredient": 1 },
-            { "mealId": 110, "fridgeItemId": 5, "amountOfIngredient": 1 }
+            {"_id": 1, "mealId": 1, "fridgeItemId": 1, "amountOfIngredient": 2 },
+            {"_id": 2, "mealId": 2, "fridgeItemId": 8, "amountOfIngredient": 1 },
+            {"_id": 3, "mealId": 3, "fridgeItemId": 3, "amountOfIngredient": 1 },
+            {"_id": 4, "mealId": 4, "fridgeItemId": 5, "amountOfIngredient": 1 },
+            {"_id": 5, "mealId": 5, "fridgeItemId": 2, "amountOfIngredient": 1 },
+            {"_id": 6, "mealId": 6, "fridgeItemId": 6, "amountOfIngredient": 1 },
+            {"_id": 7, "mealId": 7, "fridgeItemId": 1, "amountOfIngredient": 3 },
+            {"_id": 8, "mealId": 8, "fridgeItemId": 2, "amountOfIngredient": 1 },
+            {"_id": 9, "mealId": 9, "fridgeItemId": 7, "amountOfIngredient": 1 },
+            {"_id": 10, "mealId": 10, "fridgeItemId": 5, "amountOfIngredient": 1 }
         ],
 
     Orders:

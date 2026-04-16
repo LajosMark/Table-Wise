@@ -10,10 +10,6 @@ const MealSchema = new mongoose.Schema({
         required: [true, 'Please add a name'],
         trim: true
     },
-    ingridientId: {
-        type: Number,
-        required: [true, 'Please add an ingredient ID']
-    },
     price: {
         type: Number,
         required: [true, 'Please add a price']
