@@ -32,7 +32,7 @@
 - PUT /:id
 - DELETE /:id
 
-## Meal Categories - /api/mealCategories
+## Meal Categories - /api/meal-categories
 - GET /
 - GET /:id
 - GET /:id/meals
@@ -54,7 +54,7 @@
 - PATCH /:id
 - DELETE /:id
 
-## Fridge Items - /api/fridgeItems
+## Fridge Items - /api/fridge-items
 - GET /
 - GET /:id
 - POST /
