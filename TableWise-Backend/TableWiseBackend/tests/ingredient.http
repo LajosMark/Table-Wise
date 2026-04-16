@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:3000
+@token = 
+
+### List all ingredients
+GET {{baseUrl}}/api/ingridients
+Authorization: Bearer {{token}}
+
+### List ingredients by meal id
+GET {{baseUrl}}/api/ingridients/meal/1
+Authorization: Bearer {{token}}
+
+### Create ingredient (admin/manager only)
+POST {{baseUrl}}/api/ingridients
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "mealId": 101,
+  "fridgeItemId": 1,
+  "amountOfIngredient": 2
+}
+
+### Update ingredient (admin/manager only)
+PATCH {{baseUrl}}/api/ingridients/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "amountOfIngredient": 3
+}
+
+### Delete ingredient (admin/manager only)
+DELETE {{baseUrl}}/api/ingridients/1
+Authorization: Bearer {{token}}

@@ -73,6 +73,18 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
+// Logged in user can invalidate existing token
+router.post('/logout', protect, async (req, res) => {
+    try {
+        req.user.tokenInvalidBefore = Date.now();
+        await req.user.save();
+
+        res.status(200).json({ msg: 'Logged out' });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+});
+
 // Admin és Manager
 router.get('/', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {

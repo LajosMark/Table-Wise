@@ -4,6 +4,7 @@
 
 ## Users - /api/users
 - POST /login
+- POST /logout
 - POST /register
 - GET /me
 - POST /id
@@ -29,6 +30,7 @@
 - GET /
 - GET /:id
 - POST /
+- POST /:id/image
 - PUT /:id
 - DELETE /:id
 

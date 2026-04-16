@@ -1,9 +1,32 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const { Meal } = require('../models/mealModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
-// 1. GET ALL MEALS - Az összes étel lekérése (Bárki láthatja)
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../public/images'));
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const filename = `${Date.now()}-${file.fieldname}${ext}`;
+        cb(null, filename);
+    }
+});
+
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith('image/')) {
+            return cb(new Error('Only image files are allowed'), false);
+        }
+        cb(null, true);
+    }
+});
+
+// (Bárki láthatja)
 router.get('/', async (req, res) => {
     try {
         const meals = await Meal.find();
@@ -17,7 +40,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 2. GET SINGLE MEAL - Egy konkrét étel lekérése ID alapján
+// (Bárki láthatja)
 router.get('/:id', async (req, res) => {
     try {
         const meal = await Meal.findById(req.params.id);
@@ -32,7 +55,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// 3. CREATE MEAL - Új étel hozzáadása (Csak Admin és Manager)
+// (Csak Admin és Manager)
 router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.create(req.body);
@@ -46,7 +69,28 @@ router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// 4. UPDATE MEAL - Étel módosítása (Csak Admin és Manager)
+// Kép feltöltése egy ételhez (Csak Admin és Manager)
+router.post('/:id/image', protect, authorize('admin', 'manager'), upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ msg: 'Kép fájl szükséges' });
+        }
+
+        const meal = await Meal.findById(req.params.id);
+        if (!meal) {
+            return res.status(404).json({ msg: 'Étel nem található' });
+        }
+
+        meal.image = `/images/${req.file.filename}`;
+        await meal.save();
+
+        res.status(200).json({ data: meal });
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+});
+
+// (Csak Admin és Manager)
 router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.findByIdAndUpdate(req.params.id, req.body, {
@@ -64,7 +108,7 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
     }
 });
 
-// 5. DELETE MEAL - Étel törlése (Csak Admin)
+// (Csak Admin)
 router.delete('/:id', protect, authorize('admin'), async (req, res) => {
     try {
         const meal = await Meal.findById(req.params.id);

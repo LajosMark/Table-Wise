@@ -1,0 +1,61 @@
+@baseUrl = http://localhost:3000
+
+### Login as admin
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "adminadmin"
+}
+
+###
+# Copy the returned token into the `{{token}}` variable before running the protected requests.
+
+@token =
+
+### Get current user profile
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{token}}
+
+### Logout current user
+POST {{baseUrl}}/api/users/logout
+Authorization: Bearer {{token}}
+
+### List users (admin only)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+
+### Create a new user (admin only)
+POST {{baseUrl}}/api/users/register
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "rest-user",
+  "email": "rest-user@example.com",
+  "password": "restpassword",
+  "role": "manager"
+}
+
+### Update user (admin or owner)
+PATCH {{baseUrl}}/api/users/3
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "admin-updated"
+}
+
+### Delete user (admin only)
+DELETE {{baseUrl}}/api/users/5
+Authorization: Bearer {{token}}
+
+### Test rate limiting (should fail after 5 attempts within 1 minute)
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "wrongpassword"
+}

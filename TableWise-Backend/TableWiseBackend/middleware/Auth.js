@@ -19,6 +19,10 @@ const protect = async (req, res, next) => {
             return res.status(401).json({ success: false, msg: 'User not found' });
         }
 
+        if (req.user.tokenInvalidBefore && decoded.iat * 1000 < req.user.tokenInvalidBefore.getTime()) {
+            return res.status(401).json({ success: false, msg: 'Token expired' });
+        }
+
         next();
     } catch (error) {
         res.status(401).json({ success: false, msg: 'Invalid token' });

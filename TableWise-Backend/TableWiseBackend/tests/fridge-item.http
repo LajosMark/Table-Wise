@@ -1,0 +1,36 @@
+@baseUrl = http://localhost:3000
+@token = 
+
+### List fridge items (admin/manager only)
+GET {{baseUrl}}/api/fridge-items
+Authorization: Bearer {{token}}
+
+### Get fridge item by id (admin/manager only)
+GET {{baseUrl}}/api/fridge-items/1
+Authorization: Bearer {{token}}
+
+### Create fridge item (admin/manager only)
+POST {{baseUrl}}/api/fridge-items
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Test Item",
+  "amount": 10,
+  "typeOfAmount": "pcs",
+  "pricePerUnit": 100,
+  "warningAmountPercentage": 10
+}
+
+### Update fridge item (admin/manager only)
+PATCH {{baseUrl}}/api/fridge-items/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "amount": 20
+}
+
+### Delete fridge item (admin/manager only)
+DELETE {{baseUrl}}/api/fridge-items/1
+Authorization: Bearer {{token}}

@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3000
+@token = 
+
+### Create work hour
+POST {{baseUrl}}/api/hours
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "startDate": "2026-04-20T08:00:00Z",
+  "endDate": "2026-04-20T16:00:00Z"
+}
+
+### List work hours (admin/manager only)
+GET {{baseUrl}}/api/hours
+Authorization: Bearer {{token}}
+
+### Update work hour (admin/manager only)
+PATCH {{baseUrl}}/api/hours/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "startDate": "2026-04-20T09:00:00Z"
+}
+
+### Delete work hour (admin/manager only)
+DELETE {{baseUrl}}/api/hours/1
+Authorization: Bearer {{token}}

@@ -4,9 +4,8 @@ DOCKER
 Docker NÉLKÜL
 
     Indítás SEEDER-rel
-        npm start
-        npm run start
+        npm run setup
     Indátás seeder NÉLKÜL
-        npm run dev
+        npm start
     Csak SEEDER
         npm run seed
