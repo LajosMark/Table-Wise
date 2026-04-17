@@ -66,7 +66,7 @@ router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) =
         }
 
         await ingredient.deleteOne();
-        res.status(200).json({});
+        res.status(204).json({});
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

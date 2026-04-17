@@ -60,7 +60,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
             return res.status(404).json({ msg: 'Rendelés nem található' });
         }
         await order.deleteOne();
-        res.status(200).json({});
+        res.status(204).json({});
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

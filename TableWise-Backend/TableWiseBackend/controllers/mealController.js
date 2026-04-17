@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { Meal } = require('../models/mealModel');
+const { Ingredient } = require('../models/ingridientModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
@@ -81,7 +82,7 @@ router.post('/:id/image', protect, authorize('admin', 'manager'), upload.single(
             return res.status(404).json({ msg: 'Étel nem található' });
         }
 
-        meal.image = `/images/${req.file.filename}`;
+        meal.image = `${req.file.filename}`;
         await meal.save();
 
         res.status(200).json({ data: meal });
@@ -117,8 +118,10 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
             return res.status(404).json({ msg: 'Étel nem található' });
         }
 
+        await Ingredient.deleteMany({ mealId: meal._id });
         await meal.deleteOne();
-        res.status(200).json({ data: {} });
+
+        res.status(204).json({ data: {} });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

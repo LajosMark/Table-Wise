@@ -27,6 +27,14 @@ const seedDB = async () => {
     try {
         mongoose.connect(process.env.DATABASE_URL)
 
+        const userCount = await User.countDocuments()
+        
+        if (userCount > 0) {
+            console.log('Adatbázis már inicializálva van. Kihagyás...')
+            await mongoose.connection.close()
+            process.exit(0)
+        }
+
         await collectionSeeder(Counter, Data.Counters)
         await collectionSeeder(User, Data.Users)
         await collectionSeeder(Meal, Data.Meals)

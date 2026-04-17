@@ -58,7 +58,7 @@ router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) =
         }
 
         await workHour.deleteOne();
-        res.status(200).json({ data: {} });
+        res.status(204).json({ data: {} });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

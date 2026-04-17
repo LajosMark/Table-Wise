@@ -1,11 +1,2 @@
 DOCKER
     docker compose up
-
-Docker NÉLKÜL
-
-    Indítás SEEDER-rel
-        npm run setup
-    Indátás seeder NÉLKÜL
-        npm start
-    Csak SEEDER
-        npm run seed

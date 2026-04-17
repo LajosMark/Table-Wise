@@ -85,7 +85,7 @@ router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) =
             return res.status(404).json({ msg: 'Beosztás nem található' });
         }
         await schedule.deleteOne();
-        res.status(200).json({ data: {} });
+        res.status(204).json({ data: {} });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

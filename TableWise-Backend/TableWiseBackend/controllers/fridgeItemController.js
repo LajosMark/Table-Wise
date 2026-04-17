@@ -60,7 +60,7 @@ router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) =
             return res.status(404).json({ msg: 'Tétel nem található' });
         }
         await item.deleteOne();
-        res.status(200).json({});
+        res.status(204).json({});
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

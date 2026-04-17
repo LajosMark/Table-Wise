@@ -40,7 +40,7 @@ router.get('/:id/meals', async (req, res) => {
 
     try {
 
-        const categories = await Meal.find({ categoryId: req.params.id });
+        const categories = await Meal.find({ categoryId: req.params.id }).sort({ name: 1 });
 
         res.status(200).json({
 
@@ -94,7 +94,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
 
         await DeleteMealCategory.deleteOne();
 
-        res.status(200).json({ data: {} });
+        res.status(204).json({ data: {} });
     } catch (error) {
         res.status(400).json({ msg: error.message });
     }

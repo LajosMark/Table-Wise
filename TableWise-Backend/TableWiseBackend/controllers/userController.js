@@ -1,5 +1,6 @@
 const express = require('express');
 const { User } = require('../models/userModel');
+const { WorkSchedule } = require('../models/workScheduleModel');
 const jwt = require('jsonwebtoken');
 const router = express.Router()
 const { protect, authorize } = require('../middleware/Auth');
@@ -88,7 +89,7 @@ router.post('/logout', protect, async (req, res) => {
 // Admin és Manager
 router.get('/', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {
-        const users = await User.find()
+        const users = await User.find().sort({ name: 1 })
         res.status(200).json(users);
 
     } catch (error) {
@@ -132,7 +133,9 @@ router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) =
             return res.status(404).json({ msg: 'Felhasználó nem található' });
         }
 
+        await WorkSchedule.deleteMany({ usersId: user._id });
         await user.deleteOne();
+
         res.status(200).json({ data: {} });
     } catch (error) {
         res.status(400).json({ msg: error.message });
