@@ -23,6 +23,7 @@ services:
     command: npm run setup
     volumes:
       - ./TableWiseBackend:/app
+      - /app/node_modules
     stdin_open: true
     tty: true
 volumes:
