@@ -11,7 +11,7 @@ const Logo = () => {
                     width="64"
                     height="64"
                     viewBox="0 0 24 24"
-                    fill="#ff00bf"
+                    fill="none"
                     stroke="#000000"
                     strokeWidth="1"
                     strokeLinecap="round"
