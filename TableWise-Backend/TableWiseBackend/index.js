@@ -4,9 +4,14 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+
+// NoSQL injection protection
+app.use(mongoSanitize());
 
 // Rate limiting (100 / 15 min)
 const limiter = rateLimit({
@@ -62,6 +67,7 @@ app.use(express.json());
 app.use('/api/', limiter);
 app.use('/api/users/login', loginLimiter);
 
+//Routes
 app.use('/api/users', userRoutes);
 app.use('/api/hours', workHourRoutes);
 app.use('/api/schedules', workScheduleRoutes);
@@ -71,6 +77,7 @@ app.use('/api/ingridients', ingredientController);
 app.use('/api/orders', orderController);
 app.use('/api/fridge-items', fridgeItemController);
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 app.listen(PORT, () => {
     console.log(`Server Started at port ${PORT}`);
 });
