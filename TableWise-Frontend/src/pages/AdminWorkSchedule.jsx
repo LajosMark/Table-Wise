@@ -81,7 +81,7 @@ const AdminWorkSchedule = ({ t, user }) => {
   const handleAccept = async (scheduleId, isAccepted) => {
     try {
       const response = await fetch(`${API_BASE}/api/schedules/${scheduleId}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${user.token}`,
           'Content-Type': 'application/json',

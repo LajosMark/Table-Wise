@@ -86,7 +86,7 @@ const Users = ({ t, user }) => {
     e.preventDefault();
     const isEditing = !!editingUser;
     const url = isEditing ? `${API_BASE}/api/users/${editingUser._id}` : `${API_BASE}/api/users/register`;
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'PATCH' : 'POST';
 
     try {
       const response = await fetch(url, {

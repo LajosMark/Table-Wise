@@ -13,9 +13,9 @@ const MealManagement = ({ user }) => {
 
   console.log(
     meals.map(meal => (
-    ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).map(ing => (
-      fridgeItems.filter(f => f)
-    ))))
+      ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).map(ing => (
+        fridgeItems.filter(f => f)
+      ))))
   )
 
 
@@ -23,6 +23,8 @@ const MealManagement = ({ user }) => {
   const [editingMealId, setEditingMealId] = useState(null);
   const [mealEditData, setMealEditData] = useState({});
   const [editingCatId, setEditingCatId] = useState(null);
+  const [editingFridgeItemId, setEditingFridgeItemId] = useState(null);
+  const [fridgeItemEditData, setFridgeItemEditData] = useState({});
   const [catEditName, setCatEditName] = useState('');
 
   const [newIngredientRow, setNewIngredientRow] = useState({ fridgeItemId: '', amountOfIngredient: '' });
@@ -66,11 +68,27 @@ const MealManagement = ({ user }) => {
 
   useEffect(() => { if (isAdminOrManager) loadData(); }, [isAdminOrManager]);
 
+  // --- HŰTŐSZERKESZTÉS ---
+  const handleUpdateFridgeItem = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/fridge-items/${id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify(fridgeItemEditData),
+      });
+      if (res.ok) {
+        setEditingFridgeItemId(null);
+        loadData();
+      }
+    } catch (err) { setError("Hűtő elem frissítése sikertelen."); }
+  };
+
+
   // --- KATEGÓRIA SZERKESZTÉS ---
   const handleUpdateCategory = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/meal-categories/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ name: catEditName }),
       });
@@ -87,7 +105,7 @@ const MealManagement = ({ user }) => {
     const url = isEditing ? `${API_BASE}/api/meals/${editingMealId}` : `${API_BASE}/api/meals`;
     try {
       const res = await fetch(url, {
-        method: isEditing ? 'PUT' : 'POST',
+        method: isEditing ? 'PATCH' : 'POST',
         headers: authHeaders(),
         body: JSON.stringify(mealEditData),
       });
@@ -145,7 +163,7 @@ const MealManagement = ({ user }) => {
   return (
     <section className="page-container menu-page admin-layout">
       <header className="admin-header">
-        <h1 className="category-title">Adminisztrációs Felület</h1>
+        <h1 className="category-title">Ételek és Kategóriák kezelése</h1>
         <div className="horizontal-category-menu">
           <button className={`category-tab ${activeSection === 'meals' ? 'active' : ''}`} onClick={() => setActiveSection('meals')}>Ételek & Receptek</button>
           <button className={`category-tab ${activeSection === 'fridge' ? 'active' : ''}`} onClick={() => setActiveSection('fridge')}>Hűtő & Készlet</button>
@@ -251,7 +269,7 @@ const MealManagement = ({ user }) => {
                     <span className="cat-name">{c.name}</span>
                     <div className="cat-actions">
                       <button className="edit-icon-btn" onClick={() => { setEditingCatId(c._id); setCatEditName(c.name); }}>✏️</button>
-                      <button className="edit-icon-btn danger" onClick={() => genericDelete('/api/meal-categories', c._id)}>🗑️</button>
+                      <button className="edit-icon-btn" onClick={() => genericDelete('/api/meal-categories', c._id)}>🗑️</button>
                     </div>
                   </>
                 )}
@@ -263,21 +281,123 @@ const MealManagement = ({ user }) => {
 
       {/* --- HŰTŐ KEZELÉSE --- */}
       {activeSection === 'fridge' && (
-        <div className="admin-content card-surface table-wrapper">
-          <table className="admin-table">
-            <thead>
-              <tr><th>Név</th><th>Készlet</th><th>Műveletek</th></tr>
-            </thead>
-            <tbody>
-              {fridgeItems.map(item => (
-                <tr key={item._id}>
-                  <td>{item.name}</td>
-                  <td>{item.amount} {item.typeOfAmount}</td>
-                  <td><button className="danger-btn-small" onClick={() => genericDelete('/api/fridge-items', item._id)}>Törlés</button></td>
+        <div className="admin-content">
+          <div className="card-surface editor-box">
+            <h3>Új Hűtőelem</h3>
+            <form className="admin-grid-form" onSubmit={(e) => { e.preventDefault(); /* handleCreateFridgeItem */ }}>
+              <input className="search-input" placeholder="Név" value={newFridgeItem.name} onChange={e => setNewFridgeItem({ ...newFridgeItem, name: e.target.value })} required />
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <input className="search-input" type="number" placeholder="Mennyiség" value={newFridgeItem.amount} onChange={e => setNewFridgeItem({ ...newFridgeItem, amount: e.target.value })} required />
+                <input className="search-input" placeholder="Egység (pl. kg, db)" value={newFridgeItem.typeOfAmount} onChange={e => setNewFridgeItem({ ...newFridgeItem, typeOfAmount
+                  : e.target.value })} required />
+              </div>
+              <input className="search-input" type="number" placeholder="Egységár" value={newFridgeItem.pricePerUnit} onChange={e => setNewFridgeItem({ ...newFridgeItem, pricePerUnit: e.target.value })} required />
+              <input className="search-input" type="number" placeholder="Figyelmeztetési szint (%)" value={newFridgeItem.warningAmountPercentage} onChange={e => setNewFridgeItem({ ...newFridgeItem, warningAmountPercentage: e.target.value })} required />
+              <div className="form-buttons">
+                <button type="submit" className="category-tab active">Hozzáadás</button>
+              </div>
+            </form>
+          </div>
+
+          <div className='card-surface table-wrapper'>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Név</th>
+                  <th>Készlet</th>
+                  <th>Egységár</th>
+                  <th>Figyelmeztetés %</th>
+                  <th>Műveletek</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {fridgeItems.map(item => (
+                  <tr key={item._id}>
+                    {editingFridgeItemId === item._id ? (
+                      /* --- SZERKESZTÉSI MÓD --- */
+                      <>
+                        <td>
+                          <input
+                            className="search-input"
+                            value={fridgeItemEditData.name}
+                            onChange={e => setFridgeItemEditData({ ...fridgeItemEditData, name: e.target.value })}
+                          />
+                        </td>
+                        <td>
+                          <div className="flex-row" style={{ gap: '4px' }}>
+                            <input
+                              className="search-input"
+                              type="number"
+                              style={{ width: '60px' }}
+                              value={fridgeItemEditData.amount}
+                              onChange={e => setFridgeItemEditData({ ...fridgeItemEditData, amount: e.target.value })}
+                            />
+                            <input
+                              className="search-input"
+                              style={{ width: '50px' }}
+                              value={fridgeItemEditData.typeOfAmount}
+                              onChange={e => setFridgeItemEditData({ ...fridgeItemEditData, typeOfAmount: e.target.value })}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <input
+                            className="search-input"
+                            type="number"
+                            style={{ width: '80px' }}
+                            value={fridgeItemEditData.pricePerUnit}
+                            onChange={e => setFridgeItemEditData({ ...fridgeItemEditData, pricePerUnit: e.target.value })}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="search-input"
+                            type="number"
+                            style={{ width: '60px' }}
+                            value={fridgeItemEditData.warningAmountPercentage}
+                            onChange={e => setFridgeItemEditData({ ...fridgeItemEditData, warningAmountPercentage: e.target.value })}
+                          />
+                        </td>
+                        <td>
+                          <div className="flex-row">
+                            <button className="save-icon-btn" onClick={() => handleUpdateFridgeItem(item._id)}>✅</button>
+                            <button className="save-icon-btn" onClick={() => setEditingFridgeItemId(null)}>❌</button>
+                          </div>
+                        </td>
+                      </>
+                    ) : (
+                      /* --- NÉZETI MÓD --- */
+                      <>
+                        <td>{item.name}</td>
+                        <td>{item.amount} {item.typeOfAmount}</td>
+                        <td>{item.pricePerUnit} HUF</td>
+                        <td>{item.warningAmountPercentage}%</td>
+                        <td>
+                          <div className="flex-row">
+                            <button
+                              className="edit-icon-btn"
+                              onClick={() => {
+                                setEditingFridgeItemId(item._id);
+                                setFridgeItemEditData(item);
+                              }}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="edit-icon-btn"
+                              onClick={() => genericDelete('/api/fridge-items', item._id)}
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </section>
