@@ -35,7 +35,7 @@ module.exports.Data = {
     Meals:
         [
 
-            { "name": "Bruschetta", "price": 1200, "isAvailable": true, "categoryId": 1 },
+            { "name": "Bruschetta", "price": 1200, "isAvailable": true, "categoryId": 1, "image": "bruschetta.png" },
             { "name": "Tomato Soup", "price": 1100, "isAvailable": true, "categoryId": 1 },
             { "name": "Grilled Chicken", "price": 3500, "isAvailable": true, "categoryId": 3 },
             { "name": "Pizza Margherita", "price": 2800, "isAvailable": true, "categoryId": 4 },
