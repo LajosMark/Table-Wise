@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
 
 const Users = ({user }) => {
   const [users, setUsers] = useState([]);
@@ -162,7 +162,7 @@ const Users = ({user }) => {
             />
           </label>
           <label>
-            'Email':
+            Email:
             <input
               type="email"
               value={formData.email}
@@ -186,7 +186,7 @@ const Users = ({user }) => {
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             >
               <option value="employee">Employee</option>
-              <option value="boss">Boss</option>
+              <option value="manager">Manager</option>
             </select>
           </label>
           <div className="form-buttons">

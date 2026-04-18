@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-const API_BASE = 'http://localhost:3000';
-
 const Header = ({ user, setUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -23,7 +21,7 @@ const Header = ({ user, setUser }) => {
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
         >
-          <i class="fa-solid fa-bars"></i>
+          <i className="fa-solid fa-bars"></i>
         </span>
       </div>
 
@@ -49,7 +47,7 @@ const Header = ({ user, setUser }) => {
         )}
         {user && (user.data.role === 'admin' || user.data.role === 'manager') && (
           <Link to="/admin/meals" onClick={() => setMenuOpen(false)}>
-            Manage meals'
+            Manage meals
           </Link>
         )}
         {user && (user.data.role === 'admin' || user.data.role === 'manager') && (

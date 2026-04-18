@@ -14,7 +14,6 @@ import Login from './pages/Login';
 import Users from './pages/Users';
 import WorkSchedule from './pages/WorkSchedule';
 import AdminWorkSchedule from './pages/AdminWorkSchedule';
-import { translations } from './i18n';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
