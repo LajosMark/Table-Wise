@@ -66,27 +66,28 @@ const Menu = () => {
   };
 
   return (
-    <section className="page-container menu-page">
-      <h1>Menu</h1>
+    <section className="page-container menu-page" data-cy="menu-page">
+      <h1 data-cy="menu-title">Menu</h1>
 
-      {error && <p className="error">{error}</p>}
-      {loading && <p style={{ color: 'var(--text-main)', textAlign: 'center', padding: '2rem' }}>Loading...</p>}
+      {error && <p className="error" data-cy="menu-error">{error}</p>}
+      {loading && <p style={{ color: 'var(--text-main)', textAlign: 'center', padding: '2rem' }} data-cy="menu-loading">Loading...</p>}
 
       {!loading && categories.length > 0 && (
         <>
-          <div className="horizontal-category-menu">
+          <div className="horizontal-category-menu" data-cy="menu-category-menu">
             {categories.map((category) => (
               <button
                 key={category._id}
                 className="category-tab"
                 onClick={() => scrollToCategory(category._id)}
+                data-cy="menu-category-btn"
               >
                 {category.name || category.title || `#${category._id}`}
               </button>
             ))}
           </div>
 
-          <div className="search-container">
+          <div className="search-container" data-cy="menu-search-container">
             <div className="search-input-wrapper">
               <input
                 type="text"
@@ -94,6 +95,7 @@ const Menu = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
+                data-cy="menu-search-input"
               />
               {searchTerm && (
                 <button
@@ -141,13 +143,13 @@ const Menu = () => {
                   {meals.length === 0 ? (
                     <p>No meals in this category.</p>
                   ) : (
-                    <div className="meals-grid">
+                    <div className="meals-grid" data-cy="menu-meals-grid">
                       {meals.map((meal) => {
                         const image = meal.image;
                         return (
-                          <article key={meal._id || meal.id} className="meal-card">
+                          <article key={meal._id || meal.id} className="meal-card" data-cy="menu-meal-card">
                             {image && (
-                              <div className="meal-card-image">
+                              <div className="meal-card-image" data-cy="meal-card-image">
                                 <img
                                   src={`${API_BASE}/images/${image}`}
                                   alt={meal.name || meal.title || 'meal'}
@@ -159,10 +161,10 @@ const Menu = () => {
                                 />
                               </div>
                             )}
-                            <div className="meal-card-content">
-                              <h3>{meal.name || meal.title}</h3>
-                              {meal.description && <p className="meal-card-description">{meal.description}</p>}
-                              {meal.price != null && <p className="price">{meal.price} HUF</p>}
+                            <div className="meal-card-content" data-cy="meal-card-content">
+                              <h3 data-cy="menu-meal-title">{meal.name || meal.title}</h3>
+                              {meal.description && <p className="meal-card-description" data-cy="menu-meal-description">{meal.description}</p>}
+                              {meal.price != null && <p className="price" data-cy="menu-meal-price">{meal.price} HUF</p>}
                             </div>
                           </article>
                         );

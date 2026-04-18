@@ -141,85 +141,44 @@ const AdminWorkSchedule = ({ user }) => {
 
   if (error) {
     return (
-      <section className="page-container">
-        <h1>Manage Schedules</h1>
-        <div className="error">{error}</div>
+      <section className="page-container" data-cy="admin-work-schedule-page">
+        <h1 data-cy="admin-schedules-title">Manage Schedules</h1>
+        <div className="error" data-cy="error-message">{error}</div>
       </section>
     );
   }
 
   return (
-    <section className="page-container">
-      <h1>Manage Schedules</h1>
+    <section className="page-container" data-cy="admin-work-schedule-page">
+      <h1 data-cy="admin-schedules-title">Manage Schedules</h1>
 
-      <button onClick={() => setShowAddForm(true)} disabled={showAddForm}>
-        Add New Schedule
-      </button>
-
-      {showAddForm && (
-        <form onSubmit={handleSubmit} className="schedule-form">
-          <h2>New Schedule</h2>
-          <label>
-            User:
-            <input
-              type="text"
-              placeholder="User ID"
-              value={formData.usersId}
-              onChange={(e) => setFormData({ ...formData, usersId: e.target.value })}
-              required
-            />
-          </label>
-          <label>
-            Shift:
-            <select
-              value={formData.workHoursId}
-              onChange={(e) => setFormData({ ...formData, workHoursId: e.target.value })}
-              required
-            >
-              <option value="">Choose...</option>
-              {workHours.map((wh) => (
-                <option key={wh._id} value={wh._id}>
-                  {formatDateTime(wh.startDate)} - {formatDateTime(wh.endDate)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Creating...' : 'Create'}
-          </button>
-          <button type="button" onClick={() => setShowAddForm(false)}>
-            Cancel
-          </button>
-        </form>
-      )}
-
-      <div className="schedules-list">
-        <h2>All Schedules</h2>
+      <div className="schedules-list" data-cy="schedules-list">
+        <h2 data-cy="all-schedules-title">All Schedules</h2>
         {schedules.length === 0 ? (
-          <p>No schedules available.</p>
+          <p data-cy="no-schedules-message">No schedules available.</p>
         ) : (
-          <div className="schedules-grid">
+          <div className="schedules-grid" data-cy="schedules-grid">
             {schedules.map((schedule) => (
-              <div key={schedule._id} className="schedule-card">
-                <div className="schedule-info">
-                  <p><strong>User:</strong> {schedule.usersId?.name || schedule.usersId?.email}</p>
-                  <p><strong>Shift:</strong> {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}</p>
-                  <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`}>
+              <div key={schedule._id} className="schedule-card" data-cy="schedule-card" data-testid={`schedule-${schedule._id}`}>
+                <div className="schedule-info" data-cy="schedule-info">
+                  <p data-cy="schedule-user"><strong>User:</strong> {schedule.usersId?.name || schedule.usersId?.email}</p>
+                  <p data-cy="schedule-shift"><strong>Shift:</strong> {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}</p>
+                  <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`} data-cy="schedule-status">
                     {schedule.isAccepted ? 'Accepted' : 'Pending'}
                   </span>
                 </div>
-                <div className="schedule-actions">
+                <div className="schedule-actions" data-cy="schedule-actions">
                   {!schedule.isAccepted && (
-                    <button onClick={() => handleAccept(schedule._id, true)}>
+                    <button onClick={() => handleAccept(schedule._id, true)} data-cy="schedule-accept-btn">
                       Accept
                     </button>
                   )}
                   {schedule.isAccepted && (
-                    <button onClick={() => handleAccept(schedule._id, false)}>
+                    <button onClick={() => handleAccept(schedule._id, false)} data-cy="schedule-reject-btn">
                       Reject
                     </button>
                   )}
-                  <button onClick={() => handleDelete(schedule._id)}>
+                  <button onClick={() => handleDelete(schedule._id)} data-cy="schedule-delete-btn">
                     Delete
                   </button>
                 </div>

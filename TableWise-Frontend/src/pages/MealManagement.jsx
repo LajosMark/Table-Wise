@@ -149,36 +149,36 @@ const MealManagement = ({ user }) => {
     loadData();
   };
 
-  if (!isAdminOrManager) return <div className="page-container">Admin access required.</div>;
+  if (!isAdminOrManager) return <div className="page-container" data-cy="meal-management-page">Admin access required.</div>;
 
   return (
-    <section className="page-container menu-page admin-layout">
-      <header className="admin-header">
-        <h1 className="category-title">Meals and Categories Management</h1>
-        <div className="horizontal-category-menu">
-          <button className={`category-tab ${activeSection === 'meals' ? 'active' : ''}`} onClick={() => setActiveSection('meals')}>Meals & Recipes</button>
-          <button className={`category-tab ${activeSection === 'fridge' ? 'active' : ''}`} onClick={() => setActiveSection('fridge')}>Fridge & Inventory</button>
-          <button className={`category-tab ${activeSection === 'cats' ? 'active' : ''}`} onClick={() => setActiveSection('cats')}>Categories</button>
+    <section className="page-container menu-page admin-layout" data-cy="meal-management-page">
+      <header className="admin-header" data-cy="meal-management-header">
+        <h1 className="category-title" data-cy="meal-management-title">Meals and Categories Management</h1>
+        <div className="horizontal-category-menu" data-cy="meal-management-tabs">
+          <button className={`category-tab ${activeSection === 'meals' ? 'active' : ''}`} onClick={() => setActiveSection('meals')} data-cy="meal-management-tab-meals">Meals & Recipes</button>
+          <button className={`category-tab ${activeSection === 'fridge' ? 'active' : ''}`} onClick={() => setActiveSection('fridge')} data-cy="meal-management-tab-fridge">Fridge & Inventory</button>
+          <button className={`category-tab ${activeSection === 'cats' ? 'active' : ''}`} onClick={() => setActiveSection('cats')} data-cy="meal-management-tab-cats">Categories</button>
         </div>
       </header>
 
-      {error && <div className="error-banner" style={{ background: '#ff4b4b', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>{error}</div>}
+      {error && <div className="error-banner" style={{ background: '#ff4b4b', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }} data-cy="meal-management-error">{error}</div>}
 
       {/* --- MEAL MANAGEMENT --- */}
       {activeSection === 'meals' && (
         <div className="admin-content">
           <div className="card-surface editor-box">
-            <h3>{editingMealId ? 'Edit Meal' : 'Add New Meal'}</h3>
-            <form onSubmit={handleMealSubmit} className="admin-grid-form">
-              <input className="search-input" placeholder="Name" value={mealEditData.name || ''} onChange={e => setMealEditData({ ...mealEditData, name: e.target.value })} required />
-              <input className="search-input" type="number" placeholder="Price" value={mealEditData.price || ''} onChange={e => setMealEditData({ ...mealEditData, price: e.target.value })} required />
-              <select className="search-input" value={mealEditData.categoryId || ''} onChange={e => setMealEditData({ ...mealEditData, categoryId: e.target.value })} required>
+            <h3 data-cy="meal-form-title">{editingMealId ? 'Edit Meal' : 'Add New Meal'}</h3>
+            <form onSubmit={handleMealSubmit} className="admin-grid-form" data-cy="meal-form">
+              <input className="search-input" placeholder="Name" value={mealEditData.name || ''} onChange={e => setMealEditData({ ...mealEditData, name: e.target.value })} required data-cy="meal-name-input" />
+              <input className="search-input" type="number" placeholder="Price" value={mealEditData.price || ''} onChange={e => setMealEditData({ ...mealEditData, price: e.target.value })} required data-cy="meal-price-input" />
+              <select className="search-input" value={mealEditData.categoryId || ''} onChange={e => setMealEditData({ ...mealEditData, categoryId: e.target.value })} required data-cy="meal-category-select">
                 <option value="">Category...</option>
-                {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                {categories.map(c => <option key={c._id} value={c._id} data-cy="meal-category-option">{c.name}</option>)}
               </select>
-              <div className="form-buttons">
-                <button type="submit" className="category-tab active">Save</button>
-                {editingMealId && <button type="button" className="category-tab" onClick={() => { setEditingMealId(null); setMealEditData({}); }}>Cancel</button>}
+              <div className="form-buttons" data-cy="meal-form-buttons">
+                <button type="submit" className="category-tab active" data-cy="meal-save-btn">Save</button>
+                {editingMealId && <button type="button" className="category-tab" onClick={() => { setEditingMealId(null); setMealEditData({}); }} data-cy="meal-cancel-btn">Cancel</button>}
               </div>
             </form>
           </div>

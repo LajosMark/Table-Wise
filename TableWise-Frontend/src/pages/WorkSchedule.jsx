@@ -78,7 +78,7 @@ const WorkSchedule = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedDay || startTime >= endTime || (endTime)) return;
+    if (!selectedDay || startTime >= endTime) return;
 
     setLoading(true);
     try {
@@ -130,21 +130,21 @@ const WorkSchedule = ({ user }) => {
 
   if (error) {
     return (
-      <section className="page-container">
-        <h1>Work Schedule</h1>
-        <div className="error">{error}</div>
+      <section className="page-container" data-cy="work-schedule-page">
+        <h1 data-cy="work-schedule-title">Work Schedule</h1>
+        <div className="error" data-cy="work-schedule-error">{error}</div>
       </section>
     );
   }
 
   return (
-    <section className="page-container">
-      <h1>Work Schedule</h1>
+    <section className="page-container" data-cy="work-schedule-page">
+      <h1 data-cy="work-schedule-title">Work Schedule</h1>
 
-      <div className="schedule-form">
-        <h2>Request Shift</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
+      <div className="schedule-form" data-cy="work-schedule-form">
+        <h2 data-cy="work-schedule-form-title">Request Shift</h2>
+        <form onSubmit={handleSubmit} data-cy="work-schedule-form-inner">
+          <label data-cy="work-schedule-week-label">
             Select week:
             <select
               value={selectedWeek}
@@ -152,27 +152,29 @@ const WorkSchedule = ({ user }) => {
                 setSelectedWeek(e.target.value);
                 setSelectedDay(null);
               }}
+              data-cy="work-schedule-week-select"
             >
               <option value="this">This week</option>
               <option value="next">Next week</option>
               <option value="twoWeeks">Two weeks later</option>
             </select>
           </label>
-          <div className="week-days">
+          <div className="week-days" data-cy="week-days">
             {getWeekDays().map((day, index) => (
               <button
                 key={index}
                 type="button"
                 className={selectedDay && selectedDay.getTime() === day.getTime() ? 'selected' : ''}
                 onClick={() => setSelectedDay(day)}
+                data-cy="week-day-btn"
               >
                 {day.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
               </button>
             ))}
           </div>
           {selectedDay && (
-            <div className="time-selection">
-              <label>
+            <div className="time-selection" data-cy="time-selection">
+              <label data-cy="start-time-label">
                 Start time: {startTime}:00
                 <input
                   type="range"
@@ -181,9 +183,10 @@ const WorkSchedule = ({ user }) => {
                   step="1"
                   value={startTime}
                   onChange={(e) => setStartTime(parseFloat(e.target.value))}
+                  data-cy="start-time-range"
                 />
               </label>
-              <label>
+              <label data-cy="end-time-label">
                 End time: {endTime}:00
                 <input
                   type="range"
@@ -192,26 +195,27 @@ const WorkSchedule = ({ user }) => {
                   step="1"
                   value={endTime}
                   onChange={(e) => setEndTime(parseFloat(e.target.value))}
+                  data-cy="end-time-range"
                 />
               </label>
             </div>
           )}
-          <button type="submit" disabled={loading || !selectedDay || startTime >= endTime}>
+          <button type="submit" disabled={loading || !selectedDay || startTime >= endTime} data-cy="work-schedule-submit-btn">
             {loading ? 'Requesting...' : 'Request'}
           </button>
         </form>
       </div>
 
-      <div className="my-schedules">
-        <h2>My Schedules</h2>
+      <div className="my-schedules" data-cy="my-schedules">
+        <h2 data-cy="my-schedules-title">My Schedules</h2>
         {mySchedules.length === 0 ? (
-          <p>No schedules available.</p>
+          <p data-cy="no-my-schedules">No schedules available.</p>
         ) : (
-          <ul>
+          <ul data-cy="my-schedules-list">
             {mySchedules.map((schedule) => (
-              <li key={schedule._id}>
+              <li key={schedule._id} data-cy="my-schedule-item">
                 {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}
-                <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`}>
+                <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`} data-cy="schedule-status">
                   {schedule.isAccepted ? 'Elfogadva' : 'Függőben'}
                 </span>
               </li>

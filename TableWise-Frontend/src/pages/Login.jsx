@@ -64,12 +64,12 @@ const Login = ({ setUser }) => {
   };
 
   return (
-    <section className="page-container auth-page">
-      <h1>Login</h1>
-      <p className="auth-intro">Please enter your credentials to access your account.</p>
+    <section className="page-container auth-page" data-cy="login-page">
+      <h1 data-cy="login-title">Login</h1>
+      <p className="auth-intro" data-cy="login-intro">Please enter your credentials to access your account.</p>
 
-      <form className="auth-form" onSubmit={handleSubmit}>
-        {error && <div className="auth-error">{error}</div>}
+      <form className="auth-form" onSubmit={handleSubmit} data-cy="login-form">
+        {error && <div className="auth-error" data-cy="login-error">{error}</div>}
 
         <label htmlFor="login-email">Email</label>
         <input
@@ -79,6 +79,7 @@ const Login = ({ setUser }) => {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
           required
+          data-cy="login-email-input"
         />
 
         <label htmlFor="login-password">Password</label>
@@ -89,9 +90,10 @@ const Login = ({ setUser }) => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
           required
+          data-cy="login-password-input"
         />
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} data-cy="login-submit-btn">
           {loading ? 'Loading...' : 'Login'}
         </button>
       </form>

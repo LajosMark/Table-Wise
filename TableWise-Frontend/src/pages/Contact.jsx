@@ -1,18 +1,18 @@
 const Contact = () => {
   return (
-    <section className="page-container contact-page">
-      <div className="contact-top">
-        <div className="contact-hero">
-          <span className="section-label">Contact Us</span>
-          <h1>Let’s talk about the experience</h1>
-          <p className="page-intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Suspendisse potenti. Curabitur vitae risus eget nulla porttitor interdum.</p>
+    <section className="page-container contact-page" data-cy="contact-page">
+      <div className="contact-top" data-cy="contact-top">
+        <div className="contact-hero" data-cy="contact-hero">
+          <span className="section-label" data-cy="contact-label">Contact Us</span>
+          <h1 data-cy="contact-title">Let’s talk about the experience</h1>
+          <p className="page-intro" data-cy="contact-intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Suspendisse potenti. Curabitur vitae risus eget nulla porttitor interdum.</p>
         </div>
 
-        <aside className="contact-summary">
-          <h2>Quick contacts</h2>
-          <p>Send us a message and we will reply within 24 hours.</p>
-          <div className="contact-pill">Email: hello@example.com</div>
-          <div className="contact-pill">Phone: +36 20 123 4567</div>
+        <aside className="contact-summary" data-cy="contact-summary">
+          <h2 data-cy="contact-quick-contacts-title">Quick contacts</h2>
+          <p data-cy="contact-quick-contacts-copy">Send us a message and we will reply within 24 hours.</p>
+          <div className="contact-pill" data-cy="contact-pill">Email: hello@example.com</div>
+          <div className="contact-pill" data-cy="contact-pill">Phone: +36 20 123 4567</div>
         </aside>
       </div>
 
