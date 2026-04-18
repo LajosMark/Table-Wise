@@ -5,7 +5,6 @@ const SettingsMenu = ({ user, setUser, isDarkMode, setIsDarkMode }) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  console.log(user)
 
   useEffect(() => {
     const closeMenu = (e) => {

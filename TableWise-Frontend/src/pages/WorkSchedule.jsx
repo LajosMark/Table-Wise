@@ -4,10 +4,12 @@ const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
 
 const WorkSchedule = ({ user }) => {
   const [mySchedules, setMySchedules] = useState([]);
-  const [workHours, setWorkHours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [selectedWorkHour, setSelectedWorkHour] = useState('');
+  const [selectedWeek, setSelectedWeek] = useState('this');
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [startTime, setStartTime] = useState(9);
+  const [endTime, setEndTime] = useState(17);
 
   const formatDateTime = (dateString) => {
     if (!dateString) return '';
@@ -21,14 +23,35 @@ const WorkSchedule = ({ user }) => {
     });
   };
 
-  console.log(mySchedules)
+  const getWeekStart = (weekType) => {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - dayOfWeek + 1); // Monday of current week
+    if (weekType === 'next') {
+      monday.setDate(monday.getDate() + 7);
+    } else if (weekType === 'twoWeeks') {
+      monday.setDate(monday.getDate() + 14);
+    }
+    return monday;
+  };
+
+  const getWeekDays = () => {
+    const weekStart = getWeekStart(selectedWeek);
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + i);
+      days.push(day);
+    }
+    return days;
+  };
   useEffect(() => {
     if (!user || !user.token) {
       setError('You do not have permission.');
       return;
     }
     fetchMySchedules();
-    fetchWorkHours();
   }, [user]);
 
   const fetchMySchedules = async () => {
@@ -53,49 +76,51 @@ const WorkSchedule = ({ user }) => {
     }
   };
 
-  const fetchWorkHours = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/api/hours`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        if (response.status === 403 || response.status === 404) {
-          throw new Error('errorNoPermissionWorkHours');
-        }
-        throw new Error(data.msg || 'Error loading work hours');
-      }
-      setWorkHours(data.data || []);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedWorkHour) return;
+    if (!selectedDay || startTime >= endTime || (endTime)) return;
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/api/schedules`, {
+      const startDate = new Date(selectedDay);
+      startDate.setHours(startTime, 0, 0, 0);
+      const endDate = new Date(selectedDay);
+      endDate.setHours(endTime, 0, 0, 0);
+
+      const response = await fetch(`${API_BASE}/api/hours`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${user.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          usersId: user._id,
-          workHoursId: selectedWorkHour,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
         }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.msg || 'Hiba a beosztás létrehozásánál');
-      setSelectedWorkHour('');
-      fetchMySchedules(); // Frissítjük a listát
+      if (!response.ok) throw new Error(data.msg || 'Error creating work hour');
+      try {
+        const response = await fetch(`${API_BASE}/api/schedules`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            usersId: user.data._id,
+            workHoursId: data.data._id,
+          }),
+        });
+        const scheduleData = await response.json();
+        if (!response.ok) throw new Error(scheduleData.msg || 'Error creating schedule');
+      } catch (error) {
+        setError(error.message || 'Error creating schedule');
+      }
+      setSelectedDay(null);
+      setStartTime(9);
+      setEndTime(17);
+      fetchMySchedules(); // Refresh the list
     } catch (err) {
       setError(err.message);
     } finally {
@@ -120,21 +145,58 @@ const WorkSchedule = ({ user }) => {
         <h2>Request Shift</h2>
         <form onSubmit={handleSubmit}>
           <label>
-            Select shift:
+            Select week:
             <select
-              value={selectedWorkHour}
-              onChange={(e) => setSelectedWorkHour(e.target.value)}
-              required
+              value={selectedWeek}
+              onChange={(e) => {
+                setSelectedWeek(e.target.value);
+                setSelectedDay(null);
+              }}
             >
-              <option value="">Choose...</option>
-              {workHours.map((wh) => (
-                <option key={wh._id} value={wh._id}>
-                  {formatDateTime(wh.startDate)} - {formatDateTime(wh.endDate)}
-                </option>
-              ))}
+              <option value="this">This week</option>
+              <option value="next">Next week</option>
+              <option value="twoWeeks">Two weeks later</option>
             </select>
           </label>
-          <button type="submit" disabled={loading}>
+          <div className="week-days">
+            {getWeekDays().map((day, index) => (
+              <button
+                key={index}
+                type="button"
+                className={selectedDay && selectedDay.getTime() === day.getTime() ? 'selected' : ''}
+                onClick={() => setSelectedDay(day)}
+              >
+                {day.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              </button>
+            ))}
+          </div>
+          {selectedDay && (
+            <div className="time-selection">
+              <label>
+                Start time: {startTime}:00
+                <input
+                  type="range"
+                  min="0"
+                  max="24"
+                  step="1"
+                  value={startTime}
+                  onChange={(e) => setStartTime(parseFloat(e.target.value))}
+                />
+              </label>
+              <label>
+                End time: {endTime}:00
+                <input
+                  type="range"
+                  min="0"
+                  max="24"
+                  step="1"
+                  value={endTime}
+                  onChange={(e) => setEndTime(parseFloat(e.target.value))}
+                />
+              </label>
+            </div>
+          )}
+          <button type="submit" disabled={loading || !selectedDay || startTime >= endTime}>
             {loading ? 'Requesting...' : 'Request'}
           </button>
         </form>

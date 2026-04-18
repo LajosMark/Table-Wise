@@ -17,6 +17,7 @@ const AdminWorkSchedule = ({ user }) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
+      timeZone: 'UTC',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -24,7 +25,7 @@ const AdminWorkSchedule = ({ user }) => {
       minute: '2-digit',
     });
   };
-
+  console.log(new Date("2026-04-19T12:00:00.000Z"));
   useEffect(() => {
     if (!user || !user.token || !['admin', 'manager'].includes(user.data.role)) {
       setError('You do not have permission.');
@@ -44,6 +45,7 @@ const AdminWorkSchedule = ({ user }) => {
         },
       });
       const data = await response.json();
+      console.log(data)
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
           throw new Error('errorNoPermissionSchedules');

@@ -11,6 +11,19 @@
   --accent-dark: #B8860B;
   --accent-glow: rgba(255, 215, 0, 0.3);
   
+  /* Status Colors */
+  --status-accepted-bg: rgba(46, 204, 113, 0.2);
+  --status-accepted-color: #2ecc71;
+  --status-accepted-border: #2ecc71;
+  --status-pending-bg: rgba(241, 196, 15, 0.2);
+  --status-pending-color: #f1c40f;
+  --status-pending-border: #f1c40f;
+  
+  /* Error Colors */
+  --error-bg: rgba(231, 76, 60, 0.1);
+  --error-color: #e74c3c;
+  --error-border: #e74c3c;
+  
   /* Transitions */
   --transition-fast: all 0.25s ease;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -30,6 +43,19 @@
   --accent-neon: #69A481;
   --accent-dark: #4A7C5F;
   --accent-glow: rgba(105, 164, 129, 0.2);
+  
+  /* Status Colors */
+  --status-accepted-bg: rgba(46, 204, 113, 0.3);
+  --status-accepted-color: #27ae60;
+  --status-accepted-border: #27ae60;
+  --status-pending-bg: rgba(241, 196, 15, 0.3);
+  --status-pending-color: #f39c12;
+  --status-pending-border: #f39c12;
+  
+  /* Error Colors */
+  --error-bg: rgba(231, 76, 60, 0.2);
+  --error-color: #c0392b;
+  --error-border: #c0392b;
 }
 
 /* === BASE STYLES === */
@@ -42,7 +68,7 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  font-family: sans-regular, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
   line-height: 1.6;
   transition: var(--transition-smooth);
   overflow-x: hidden;
@@ -69,6 +95,7 @@ h1 {
   letter-spacing: -1px;
   margin-bottom: 1rem;
   text-transform: uppercase;
+  text-align: center;
 }
 
 p {
@@ -86,7 +113,7 @@ p {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 3%;
-  background: rgba(27, 15, 15, 0.95);
+  background: var(--bg-main);
   backdrop-filter: blur(15px);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
@@ -1166,17 +1193,19 @@ p {
 .schedule-form {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-card);
+  border-radius: 24px;
   padding: 2rem;
-  margin: 2rem 0;
+  margin: 2rem auto;
   box-shadow: var(--shadow-sm);
-  max-width: 500px;
+  max-width: 800px;
+  animation: fadeIn 0.6s ease-out;
 }
 
 .schedule-form h2 {
   margin-bottom: 1.5rem;
   color: var(--accent-neon);
   font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .schedule-form label {
@@ -1186,23 +1215,146 @@ p {
   font-weight: 500;
 }
 
-.schedule-form input,
 .schedule-form select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: var(--bg-main);
   color: var(--text-main);
   font-size: 1rem;
-  margin-top: 0.25rem;
+  transition: var(--transition-fast);
 }
 
-.schedule-form input:focus,
 .schedule-form select:focus {
   outline: none;
   border-color: var(--accent-neon);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.week-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  justify-content: center;
+}
+
+.week-days button {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+.week-days button:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-neon);
+}
+
+.week-days button.selected {
+  background: var(--accent-neon);
+  color: var(--bg-main);
+  border-color: var(--accent-neon);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.time-selection {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--bg-hover);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.time-selection label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.time-selection input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 5px;
+  background: var(--border-color);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.time-selection input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-neon);
+  cursor: pointer;
+  box-shadow: 0 0 5px var(--accent-glow);
+}
+
+.time-selection input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-neon);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 5px var(--accent-glow);
+}
+
+.schedule-form button[type="submit"] {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-neon) 100%);
+  color: black;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.schedule-form button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.schedule-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.my-schedules {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2rem;
+  margin: 2rem auto;
+  box-shadow: var(--shadow-sm);
+  max-width: 800px;
+  animation: fadeIn 0.6s ease-out 0.2s both;
+}
+
+.my-schedules h2 {
+  margin-bottom: 1.5rem;
+  color: var(--accent-neon);
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .my-schedules ul {
@@ -1211,43 +1363,51 @@ p {
 }
 
 .my-schedules li {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--bg-hover);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: var(--transition-fast);
+}
+
+.my-schedules li:hover {
+  background: var(--bg-main);
+  border-color: var(--accent-neon);
 }
 
 .status {
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
 }
 
 .status.accepted {
-  background: rgba(105, 164, 129, 0.2);
-  color: var(--accent-neon);
+  background: var(--status-accepted-bg);
+  color: var(--status-accepted-color);
+  border: 1px solid var(--status-accepted-border);
 }
 
 .status.pending {
-  background: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
+  background: var(--status-pending-bg);
+  color: var(--status-pending-color);
+  border: 1px solid var(--status-pending-border);
 }
 
-.schedules-list h2 {
-  margin-top: 2rem;
-}
-
-.schedules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+.error {
+  background: var(--error-bg);
+  color: var(--error-color);
+  border: 1px solid var(--error-border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem auto;
+  max-width: 600px;
+  font-weight: 500;
 }
 
 .schedule-card {
@@ -2187,6 +2347,7 @@ button.danger:hover {
 
   .hamburger {
     display: flex;
+    color: var(--text-main);
   }
 
   .nav-links {
@@ -2315,12 +2476,37 @@ button.danger:hover {
 
   .schedule-form {
     padding: 1.5rem;
-    max-width: 100%;
     margin: 1rem 0;
+    max-width: none;
   }
 
   .schedule-form h2 {
     font-size: 1.3rem;
+  }
+
+  .week-days {
+    gap: 0.25rem;
+  }
+
+  .week-days button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    min-width: 100px;
+  }
+
+  .time-selection {
+    padding: 0.75rem;
+  }
+
+  .my-schedules {
+    padding: 1.5rem;
+    margin: 1rem 0;
+    max-width: none;
+  }
+
+  .status {
+    font-size: 0.85rem;    
+    padding: 0.3rem 0.6rem;
   }
 }
 

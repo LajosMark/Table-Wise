@@ -152,6 +152,10 @@ const Menu = () => {
                                   src={`${API_BASE}/images/${image}`}
                                   alt={meal.name || meal.title || 'meal'}
                                   loading="lazy"
+                                  onError={(e)=>{
+                                    e.target.src = `${API_BASE}/images/no-image.png`;
+                                    e.target.onerror = null;
+                                  }}
                                 />
                               </div>
                             )}

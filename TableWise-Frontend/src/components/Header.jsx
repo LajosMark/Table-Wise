@@ -9,7 +9,6 @@ const Header = ({ user, setUser }) => {
     setUser(null);
     setMenuOpen(false);
   };
-  console.log(user)
   return (
     <nav className="navbar">
       <Link to="/" className="logo" style={{ textDecoration: 'none' }}>

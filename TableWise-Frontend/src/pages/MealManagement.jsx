@@ -11,14 +11,6 @@ const MealManagement = ({ user }) => {
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState('meals');
 
-  console.log(
-    meals.map(meal => (
-      ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).map(ing => (
-        fridgeItems.filter(f => f)
-      ))))
-  )
-
-
   // Editing states
   const [editingMealId, setEditingMealId] = useState(null);
   const [mealEditData, setMealEditData] = useState({});
@@ -53,7 +45,6 @@ const MealManagement = ({ user }) => {
       const mealData = await mealRes.json();
       const ingData = await ingRes.json();
       const fridgeData = await fridgeRes.json();
-      console.log(fridgeData)
 
       setCategories(catData.data || []);
       setMeals(mealData.data || []);
