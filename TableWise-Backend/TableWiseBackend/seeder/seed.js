@@ -1,5 +1,5 @@
+//require('dotenv').config()
 const mongoose = require('mongoose')
-
 //Models import
 const { User } = require('../models/userModel')
 const { WorkHour } = require('../models/workHourModel')
@@ -24,7 +24,9 @@ const collectionSeeder = async (Model, Data) => {
 
 const seedDB = async () => {
     try {
-        mongoose.connect(process.env.DATABASE_URL)
+        mongoose.connect(process.env.DATABASE_URL,{
+            dbName: 'tablewise'
+        })
 
         const userCount = await User.countDocuments()
         

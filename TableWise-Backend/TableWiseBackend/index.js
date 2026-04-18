@@ -1,3 +1,4 @@
+//require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -39,7 +40,7 @@ const ingredientController = require('./controllers/ingridientController');
 const orderController = require('./controllers/orderController');
 const fridgeItemController = require('./controllers/fridgeItemController');
 
-const PORT = process.env.NODE_DOCKER_PORT || 3000;
+const PORT = process.env.NODE_DOCKER_PORT;
 
 mongoose.set('strictQuery', true);
 const mongoString = process.env.DATABASE_URL;
@@ -47,6 +48,7 @@ const mongoString = process.env.DATABASE_URL;
 mongoose.connect(mongoString, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    dbName: 'tablewise'
 });
 
 const database = mongoose.connection;
@@ -57,7 +59,7 @@ database.on('error', (error) => {
 });
 
 database.once('connected', () => {
-    console.log(process.env.MONGODB_LAUNCH_MESSAGE);
+    console.log("Database Connected");
 });
 
 app.use(express.json());
