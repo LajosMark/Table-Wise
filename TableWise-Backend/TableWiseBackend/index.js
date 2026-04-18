@@ -40,7 +40,7 @@ const ingredientController = require('./controllers/ingridientController');
 const orderController = require('./controllers/orderController');
 const fridgeItemController = require('./controllers/fridgeItemController');
 
-const PORT = process.env.NODE_DOCKER_PORT;
+const hostingPort = process.env.PORT;
 
 mongoose.set('strictQuery', true);
 const mongoString = process.env.DATABASE_URL;
@@ -79,6 +79,6 @@ app.use('/api/orders', orderController);
 app.use('/api/fridge-items', fridgeItemController);
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-app.listen(PORT, () => {
-    console.log(`Server Started at port ${PORT}`);
-});
+app.listen(hostingPort, () => {
+    console.log(`Server Started at port ${hostingPort}`);
+}); 
