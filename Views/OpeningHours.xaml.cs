@@ -17,7 +17,7 @@ public partial class OpeningHours : ContentPage
     {
         double lat = 47.4979;
         double lon = 19.0503;
-        string restaurantName = "TableWise Étterem";
+        string restaurantName = "TableWise Restaurant";
 
         var location = new Location(lat, lon);
         var options = new MapLaunchOptions { Name = restaurantName };
@@ -33,8 +33,7 @@ public partial class OpeningHours : ContentPage
         catch (Exception ex)
         {
             // Most már az ex-et is használjuk, hogy lássuk a hibát a kimeneten!
-            System.Diagnostics.Debug.WriteLine($"❌ Térkép hiba: {ex.Message}");
-            await DisplayAlert("Hiba", "Nem sikerült megnyitni a térképet.", "OK");
+            await DisplayAlert("Error", "Could not load map.", "OK");
         }
     }
 
@@ -46,7 +45,7 @@ public partial class OpeningHours : ContentPage
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
-                await DisplayAlert("Hiba", "Engedélyezned kell a helyhozzáférést a távolságméréshez!", "OK");
+                await DisplayAlert("Error", "Please enable location access in your settings to measure distance.", "OK");
                 return;
             }
 
@@ -71,18 +70,18 @@ public partial class OpeningHours : ContentPage
                     Location restaurantLoc = new Location(restaurantLat, restaurantLon);
                     double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
 
-                    DistanceLabel.Text = $"{Math.Round(distance, 2)} km-re vagyunk tőled";
+                    DistanceLabel.Text = $"{Math.Round(distance, 2)} km away from you";
                 });
             }
             else
             {
-                await DisplayAlert("GPS hiba", "Nem sikerült meghatározni a pozíciódat. Próbáld újra kint!", "OK");
+                await DisplayAlert("GPS error", "Could not get your position. Try again!", "OK");
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"❌ GPS hiba: {ex.Message}");
-            await DisplayAlert("Hiba", "Ellenőrizd a GPS beállításokat és az internetkapcsolatot!", "OK");
+            // System.Diagnostics.Debug.WriteLine($"❌ GPS hiba: {ex.Message}");
+            await DisplayAlert("Error", "Check your GPW settings and your network!", "OK");
         }
     }
 }

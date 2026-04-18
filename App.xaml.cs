@@ -12,10 +12,7 @@ namespace TableWise
 
             MainPage = new TableWise.Views.LoadingPage();
 
-            // 1. Magyar nyelv beállítása
-            var hungarianCulture = new CultureInfo("hu-HU");
-            CultureInfo.DefaultThreadCurrentCulture = hungarianCulture;
-            CultureInfo.DefaultThreadCurrentUICulture = hungarianCulture;
+
 
             // 2. Téma visszatöltése a memóriából (Preferences)
             // Ha még sose mentettünk semmit, az alapértelmezett (Unspecified) marad
@@ -45,7 +42,7 @@ namespace TableWise
             else
             {
                 // 4. HA NINCS NET
-                bool retry = await MainPage.DisplayAlert("Hiba ❌", "Nincs internet!", "Újra", "Kilépés");
+                bool retry = await MainPage.DisplayAlert("Error ❌", "No internet connection!", "Retry", "Exit");
                 if (retry) OnStart();
                 else Quit();
             }

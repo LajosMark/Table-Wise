@@ -42,7 +42,7 @@ namespace TableWise.ViewModels
             IsBusy = true;
 
             IsBusy = true;
-            Debug.WriteLine("🔄 Frissítés elindult...");
+
 
             try
             {
@@ -63,18 +63,16 @@ namespace TableWise.ViewModels
                     {
                         MySchedules.Add(hour);
                     }
-                    Debug.WriteLine($"✅ Szűrt lista: {MySchedules.Count} elem (Múltbéliek elrejtve).");
+
                 });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ Hiba a betöltésnél: {ex.Message}");
+                Debug.WriteLine($"❌ Error in loading: {ex.Message}");
             }
             finally
             {
                 IsBusy = false;
-                // Csak az üzenetet küldjük a Page-nek
-                MessagingCenter.Send(this, "RefreshFinished");
             }
         }
     }

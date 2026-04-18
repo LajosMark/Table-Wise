@@ -54,7 +54,7 @@ public partial class MenuPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Hiba", $"Kivétel történt: {ex.Message}", "OK");
+            await DisplayAlert("Error", $"exeption: {ex.Message}", "OK");
         }
     }
 

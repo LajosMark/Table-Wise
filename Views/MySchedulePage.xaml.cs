@@ -19,7 +19,7 @@ public partial class MySchedulePage : ContentPage
                 if (MyRefreshView != null)
                 {
                     MyRefreshView.IsRefreshing = false; // 👈 Itt kényszerítjük le
-                    Debug.WriteLine("🎯 KARIKA KÉZZEL KIKAPCSOLVA!");
+
                 }
             });
         });

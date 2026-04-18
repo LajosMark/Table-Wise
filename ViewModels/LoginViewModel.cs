@@ -45,7 +45,7 @@ namespace TableWise.ViewModels
 
             if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
             {
-                ErrorMessage = "Kérlek tölts ki minden mezőt!";
+                ErrorMessage = "Please fill in every field!";
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace TableWise.ViewModels
             }
             else
             {
-                ErrorMessage = "Érvénytelen email vagy jelszó!";
+                ErrorMessage = "Invalid email or password!";
             }
         }
     }

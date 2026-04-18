@@ -84,9 +84,6 @@ namespace TableWise.Services
                     // 1. Itt olvassuk ki a választ ELŐSZÖR és UTOLJÁRA
                     var responseString = await response.Content.ReadAsStringAsync();
 
-                    // Debug ablak (opcionális, de hasznos)
-                    await Application.Current.MainPage.DisplayAlert("LOGIN JSON", responseString, "OK");
-
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true,
@@ -106,7 +103,7 @@ namespace TableWise.Services
                         {
                             // Itt az 'id' mezőt mentjük el szövegként
                             Preferences.Set("user_id", user.id.ToString());
-                            Debug.WriteLine($"✅ ID mentve: {user.id}");
+                            // Debug.WriteLine($"✅ ID mentve: {user.id}");
                         }
 
                         return true;
@@ -149,7 +146,7 @@ namespace TableWise.Services
                     return wrapper?.Data;
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"Me hiba: {ex.Message}"); }
+            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
             return null;
         }
 
@@ -170,7 +167,7 @@ namespace TableWise.Services
                     return wrapper?.Categories ?? new List<Category>();
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"HIBA: {ex.Message}"); }
+            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
             return new List<Category>();
         }
 
@@ -188,7 +185,8 @@ namespace TableWise.Services
                     return wrapper?.Meals ?? new List<FoodItem>();
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"Hiba az ételek lekérésekor: {ex.Message}"); }
+            catch (Exception ex) { //Debug.WriteLine($"Hiba az ételek lekérésekor: {ex.Message}");
+            }
             return new List<FoodItem>();
         }
 
@@ -199,13 +197,13 @@ namespace TableWise.Services
                 string token = Preferences.Get("user_token", string.Empty);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                // Próbáld meg a végén perjel nélkül!
+
                 var response = await client.GetAsync($"{url}/api/fridgeItems");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"📄 Beérkező JSON: {json}");
+                    // Debug.WriteLine($"📄 Beérkező JSON: {json}");
 
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
@@ -216,12 +214,12 @@ namespace TableWise.Services
                 }
                 else
                 {
-                    Debug.WriteLine($"📡 API hiba: {response.StatusCode}");
+                    // Debug.WriteLine($"📡 API hiba: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"HIBA A FELDOLGOZÁSNÁL: {ex.Message}");
+                // Debug.WriteLine($"HIBA A FELDOLGOZÁSNÁL: {ex.Message}");
             }
             return new List<InventoryItem>();
         }
@@ -250,7 +248,7 @@ namespace TableWise.Services
                 };
 
                 var json = JsonSerializer.Serialize(scheduleData, options);
-                Debug.WriteLine($"📤 KÜLDÖTT PAYLOAD: {json}");
+                // Debug.WriteLine($"📤 KÜLDÖTT PAYLOAD: {json}");
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync($"{url}/api/hours/", content);
@@ -262,19 +260,19 @@ namespace TableWise.Services
                     // Módosítás: GetInt32-t használunk, mert a backend számot küld!
                     int newId = doc.RootElement.GetProperty("data").GetProperty("_id").GetInt32();
 
-                    return (true, "Idősáv létrehozva!", newId.ToString());
+                    return (true, "Schedule created!", newId.ToString());
                 }
                 else
                 {
                     var errorDoc = JsonDocument.Parse(responseString);
                     var errorMessage = errorDoc.RootElement.TryGetProperty("msg", out var msgElement)
-                                       ? msgElement.GetString() : "Hiba az idősávnál.";
+                                       ? msgElement.GetString() : "Error at Schedule.";
                     return (false, errorMessage, null);
                 }
             }
             catch (Exception ex)
             {
-                return (false, $"Hálózati hiba: {ex.Message}", null);
+                return (false, $"Network error: {ex.Message}", null);
             }
         }
 
@@ -285,7 +283,7 @@ namespace TableWise.Services
                 string token = Preferences.Get("user_token", string.Empty);
                 string userId = Preferences.Get("user_id", string.Empty);
 
-                if (string.IsNullOrEmpty(userId)) return (false, "Jelentkezz be újra!");
+                if (string.IsNullOrEmpty(userId)) return (false, "Try to log in again!");
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -305,22 +303,22 @@ namespace TableWise.Services
 
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await Application.Current.MainPage.DisplayAlert("DEBUG VÁLASZ", responseString, "OK");
+
                 });
                 if (response.IsSuccessStatusCode)
                 {
-                    return (true, "Sikeres hozzárendelés!");
+                    return (true, "Succesful link to schedule!");
                 }
                 else
                 {
                     using var doc = JsonDocument.Parse(responseString);
-                    string msg = doc.RootElement.TryGetProperty("msg", out var m) ? m.GetString() : "Hiba a mentésnél.";
+                    string msg = doc.RootElement.TryGetProperty("msg", out var m) ? m.GetString() : "Saving error.";
                     return (false, msg);
                 }
             }
             catch (Exception ex)
             {
-                return (false, $"Hálózati hiba: {ex.Message}");
+                return (false, $"Network error: {ex.Message}");
             }
         }
 
@@ -331,15 +329,14 @@ namespace TableWise.Services
                 string token = Preferences.Get("user_token", string.Empty);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                // Debug log: nézzük meg, mit kérünk le
-                Debug.WriteLine($"📡 Lekérés indítása: {url}/api/schedules/my");
+
 
                 var response = await client.GetAsync($"{url}/api/schedules/my");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"🔍 DEBUG JSON FOGADVA: {json}");
+
 
                     var options = new JsonSerializerOptions
                     {
@@ -366,12 +363,12 @@ namespace TableWise.Services
                 }
                 else
                 {
-                    Debug.WriteLine($"⚠️ API Hiba: {response.StatusCode}");
+                   // Debug.WriteLine($"⚠️ API Hiba: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ Lekérési hiba: {ex.Message}");
+                // Debug.WriteLine($"❌ Lekérési hiba: {ex.Message}");
             }
             return new List<WorkHour>();
         }

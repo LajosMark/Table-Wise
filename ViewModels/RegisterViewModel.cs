@@ -43,13 +43,12 @@ namespace TableWise.ViewModels
             // 1. Megálló: Adatok ellenőrzése
             if (RegisterData == null || string.IsNullOrWhiteSpace(RegisterData.email))
             {
-                await App.Current.MainPage.DisplayAlert("Hiba", "Üres adatok!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "Empty data!", "OK");
                 return;
             }
 
             try
             {
-                System.Diagnostics.Debug.WriteLine(">>>> Küldés a szerverre... <<<<");
 
                 // 2. Megálló: A hálózati hívás előtt
                 var result = await DataService.RegisterAsync(
@@ -58,17 +57,16 @@ namespace TableWise.ViewModels
                     RegisterData.password,
                     RegisterData.role);
 
-                // 3. Megálló: Megjött a válasz?
-                System.Diagnostics.Debug.WriteLine($">>>> Válasz érkezett: {result.Success} - {result.Message} <<<<");
+
 
                 if (result.Success)
                 {
-                    await App.Current.MainPage.DisplayAlert("Siker", "Sikeres regisztráció!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Succes", "Successful Registration!", "OK");
                     await Shell.Current.GoToAsync("//MainPage");
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Szerver hiba", result.Message, "OK");
+                    await App.Current.MainPage.DisplayAlert("Server error", result.Message, "OK");
                 }
             }
             catch (Exception ex)

@@ -82,7 +82,7 @@ namespace TableWise
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hiba", $"Kivétel történt: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Exepction: {ex.Message}", "OK");
             }
         }
 
@@ -108,7 +108,7 @@ namespace TableWise
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Carousel hiba: {ex.Message}");
+                            System.Diagnostics.Debug.WriteLine($"Carousel error: {ex.Message}");
                         }
                     }
                 });

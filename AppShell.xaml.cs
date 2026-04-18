@@ -121,10 +121,9 @@ namespace TableWise
 
         private void OnShakeDetected(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(">>> SZENZOR: Rázást érzékeltem! <<<");
+
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Shell.Current.DisplayAlert("Szenzor Teszt", "A rázás sikeres!", "OK");
                 await Shell.Current.GoToAsync("//MainPage");
             });
         }
