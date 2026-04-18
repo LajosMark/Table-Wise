@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const API_BASE = 'http://localhost:3000';
 
-const WorkSchedule = ({ t, user }) => {
+const WorkSchedule = ({ user }) => {
   const [mySchedules, setMySchedules] = useState([]);
   const [workHours, setWorkHours] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ const WorkSchedule = ({ t, user }) => {
   const formatDateTime = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleString('hu-HU', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -24,7 +24,7 @@ const WorkSchedule = ({ t, user }) => {
   console.log(mySchedules)
   useEffect(() => {
     if (!user || !user.token) {
-      setError('Nincs jogosultságod.');
+      setError('You do not have permission.');
       return;
     }
     fetchMySchedules();
@@ -43,9 +43,9 @@ const WorkSchedule = ({ t, user }) => {
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
-          throw new Error(t('errorNoPermissionSchedules'));
+          throw new Error('errorNoPermissionSchedules');
         }
-        throw new Error(data.msg || 'Hiba a beosztások lekérésénél');
+        throw new Error(data.msg || 'Error loading schedules');
       }
       setMySchedules(data.data || []);
     } catch (err) {
@@ -65,9 +65,9 @@ const WorkSchedule = ({ t, user }) => {
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
-          throw new Error(t('errorNoPermissionWorkHours'));
+          throw new Error('errorNoPermissionWorkHours');
         }
-        throw new Error(data.msg || 'Hiba a munkaórák lekérésénél');
+        throw new Error(data.msg || 'Error loading work hours');
       }
       setWorkHours(data.data || []);
     } catch (err) {
@@ -106,7 +106,7 @@ const WorkSchedule = ({ t, user }) => {
   if (error) {
     return (
       <section className="page-container">
-        <h1>{t.workSchedule?.title || 'Munka Beosztás'}</h1>
+        <h1>Work Schedule</h1>
         <div className="error">{error}</div>
       </section>
     );
@@ -114,19 +114,19 @@ const WorkSchedule = ({ t, user }) => {
 
   return (
     <section className="page-container">
-      <h1>{t.workSchedule?.title || 'Munka Beosztás'}</h1>
+      <h1>Work Schedule</h1>
 
       <div className="schedule-form">
-        <h2>{t.workSchedule?.requestShift || 'Műszak Igénylés'}</h2>
+        <h2>Request Shift</h2>
         <form onSubmit={handleSubmit}>
           <label>
-            {t.workSchedule?.selectShift || 'Válassz műszakot'}:
+            Select shift:
             <select
               value={selectedWorkHour}
               onChange={(e) => setSelectedWorkHour(e.target.value)}
               required
             >
-              <option value="">{t.workSchedule?.chooseShift || 'Válassz...'}</option>
+              <option value="">Choose...</option>
               {workHours.map((wh) => (
                 <option key={wh._id} value={wh._id}>
                   {formatDateTime(wh.startDate)} - {formatDateTime(wh.endDate)}
@@ -135,22 +135,22 @@ const WorkSchedule = ({ t, user }) => {
             </select>
           </label>
           <button type="submit" disabled={loading}>
-            {loading ? (t.workSchedule?.requesting || 'Igénylés...') : (t.workSchedule?.request || 'Igénylés')}
+            {loading ? 'Requesting...' : 'Request'}
           </button>
         </form>
       </div>
 
       <div className="my-schedules">
-        <h2>{t.workSchedule?.mySchedules || 'Saját Beosztásaim'}</h2>
+        <h2>My Schedules</h2>
         {mySchedules.length === 0 ? (
-          <p>{t.workSchedule?.noSchedules || 'Nincsenek beosztásaid.'}</p>
+          <p>No schedules available.</p>
         ) : (
           <ul>
             {mySchedules.map((schedule) => (
               <li key={schedule._id}>
                 {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}
                 <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`}>
-                  {schedule.isAccepted ? (t.workSchedule?.accepted || 'Elfogadva') : (t.workSchedule?.pending || 'Függőben')}
+                  {schedule.isAccepted ? 'Elfogadva' : 'Függőben'}
                 </span>
               </li>
             ))}

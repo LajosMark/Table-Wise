@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 const API_BASE = 'http://localhost:3000';
 
-const Header = ({ t, user, setUser }) => {
+const Header = ({ user, setUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -19,45 +19,42 @@ const Header = ({ t, user, setUser }) => {
       </Link>
 
       <div className="nav-actions">
-        <button
+        <span
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label={t.header.openNav}
         >
-          <span />
-          <span />
-          <span />
-        </button>
+          <i class="fa-solid fa-bars"></i>
+        </span>
       </div>
 
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
         <Link to="/" onClick={() => setMenuOpen(false)}>
-          {t.nav.menu}
+          Menu
         </Link>
         <Link to="/about" onClick={() => setMenuOpen(false)}>
-          {t.nav.about}
+          About
         </Link>
         <Link to="/contact" onClick={() => setMenuOpen(false)}>
-          {t.nav.contact}
+          Contact
         </Link>
         {user && (user.data.role === 'admin' || user.data.role === 'manager') && (
           <Link to="/users" onClick={() => setMenuOpen(false)}>
-            {t.nav.users || 'Felhasználók'}
+            Users
           </Link>
         )}
         {user && (
           <Link to="/work-schedule" onClick={() => setMenuOpen(false)}>
-            {t.nav.workSchedule || 'Munka Beosztás'}
+            Work Schedule
           </Link>
         )}
         {user && (user.data.role === 'admin' || user.data.role === 'manager') && (
           <Link to="/admin/meals" onClick={() => setMenuOpen(false)}>
-            {t.nav.mealsManagement || 'Ételek kezelése'}
+            Manage meals'
           </Link>
         )}
         {user && (user.data.role === 'admin' || user.data.role === 'manager') && (
           <Link to="/admin/work-schedule" onClick={() => setMenuOpen(false)}>
-            {t.nav.adminWorkSchedule || 'Beosztások Kezelése'}
+            Manage Schedules
           </Link>
         )}
       </div>

@@ -18,12 +18,10 @@ import { translations } from './i18n';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [language, setLanguage] = useState('hu');
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const t = translations[language];
 
   useEffect(() => {
     if (user) {
@@ -38,18 +36,18 @@ function App() {
   return (
     <Router>
       <div className="app-layout">
-        <Header t={t} user={user} setUser={setUser} />
+        <Header user={user} setUser={setUser} />
 
         <main className="content">
           <Routes>
-            <Route path="/" element={<Menu t={t} user={user} />} />
-            <Route path="/about" element={<About t={t} />} />
-            <Route path="/contact" element={<Contact t={t} />} />
-            <Route path="/login" element={<Login t={t} setUser={setUser} />} />
-            <Route path="/users" element={<Users t={t} user={user} />} />
-            <Route path="/work-schedule" element={<WorkSchedule t={t} user={user} />} />
-            <Route path="/admin/work-schedule" element={<AdminWorkSchedule t={t} user={user} />} />
-            <Route path="/admin/meals" element={<MealManagement t={t} user={user} />} />
+            <Route path="/" element={<Menu/>} />
+            <Route path="/about" element={<About/>} />
+            <Route path="/contact" element={<Contact/>} />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/users" element={<Users user={user} />} />
+            <Route path="/work-schedule" element={<WorkSchedule user={user} />} />
+            <Route path="/admin/work-schedule" element={<AdminWorkSchedule user={user} />} />
+            <Route path="/admin/meals" element={<MealManagement user={user} />} />
           </Routes>
         </main>
 
@@ -58,9 +56,6 @@ function App() {
           setUser={setUser}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
-          language={language}
-          setLanguage={setLanguage}
-          t={t}
         />
         <Footer />
       </div>

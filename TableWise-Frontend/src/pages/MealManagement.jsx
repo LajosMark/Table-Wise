@@ -19,7 +19,7 @@ const MealManagement = ({ user }) => {
   )
 
 
-  // Szerkesztési állapotok
+  // Editing states
   const [editingMealId, setEditingMealId] = useState(null);
   const [mealEditData, setMealEditData] = useState({});
   const [editingCatId, setEditingCatId] = useState(null);
@@ -60,7 +60,7 @@ const MealManagement = ({ user }) => {
       setIngredients(Array.isArray(ingData) ? ingData : ingData.data || []);
       setFridgeItems(fridgeData || []);
     } catch (err) {
-      setError('Hiba az adatok szinkronizálásakor.');
+      setError('Error synchronizing data.');
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const MealManagement = ({ user }) => {
 
   useEffect(() => { if (isAdminOrManager) loadData(); }, [isAdminOrManager]);
 
-  // --- HŰTŐSZERKESZTÉS ---
+  // --- FRIDGE ITEM EDIT ---
   const handleUpdateFridgeItem = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/fridge-items/${id}`, {
@@ -80,11 +80,11 @@ const MealManagement = ({ user }) => {
         setEditingFridgeItemId(null);
         loadData();
       }
-    } catch (err) { setError("Hűtő elem frissítése sikertelen."); }
+    } catch (err) { setError('Failed to update fridge item.'); }
   };
 
 
-  // --- KATEGÓRIA SZERKESZTÉS ---
+  // --- CATEGORY EDIT ---
   const handleUpdateCategory = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/meal-categories/${id}`, {
@@ -96,7 +96,7 @@ const MealManagement = ({ user }) => {
         setEditingCatId(null);
         loadData();
       }
-    } catch (err) { setError("Kategória frissítése sikertelen."); }
+    } catch (err) { setError('Failed to update category.'); }
   };
 
   const handleMealSubmit = async (e) => {
@@ -114,7 +114,7 @@ const MealManagement = ({ user }) => {
         setMealEditData({});
         loadData();
       }
-    } catch (err) { setError("Mentési hiba."); }
+    } catch (err) { setError('Save error.'); }
   };
 
   const handleImageUpload = async (mealId, file) => {
@@ -128,7 +128,7 @@ const MealManagement = ({ user }) => {
         body: formData,
       });
       loadData();
-    } catch (err) { setError("Képfeltöltési hiba."); }
+    } catch (err) { setError('Image upload failed.'); }
   };
 
   const handleAddIngredientToMeal = async (mealId) => {
@@ -148,46 +148,46 @@ const MealManagement = ({ user }) => {
         loadData();
       }
     } catch (err) {
-      setError('Hiba az összetevő hozzáadásakor.');
+      setError('Error adding ingredient.');
     }
   };
 
   const genericDelete = async (endpoint, id) => {
-    if (!window.confirm('Biztosan törölni szeretnéd?')) return;
+    if (!window.confirm('Are you sure you want to delete this item?')) return;
     await fetch(`${API_BASE}${endpoint}/${id}`, { method: 'DELETE', headers: authHeaders() });
     loadData();
   };
 
-  if (!isAdminOrManager) return <div className="page-container">Admin hozzáférés szükséges.</div>;
+  if (!isAdminOrManager) return <div className="page-container">Admin access required.</div>;
 
   return (
     <section className="page-container menu-page admin-layout">
       <header className="admin-header">
-        <h1 className="category-title">Ételek és Kategóriák kezelése</h1>
+        <h1 className="category-title">Meals and Categories Management</h1>
         <div className="horizontal-category-menu">
-          <button className={`category-tab ${activeSection === 'meals' ? 'active' : ''}`} onClick={() => setActiveSection('meals')}>Ételek & Receptek</button>
-          <button className={`category-tab ${activeSection === 'fridge' ? 'active' : ''}`} onClick={() => setActiveSection('fridge')}>Hűtő & Készlet</button>
-          <button className={`category-tab ${activeSection === 'cats' ? 'active' : ''}`} onClick={() => setActiveSection('cats')}>Kategóriák</button>
+          <button className={`category-tab ${activeSection === 'meals' ? 'active' : ''}`} onClick={() => setActiveSection('meals')}>Meals & Recipes</button>
+          <button className={`category-tab ${activeSection === 'fridge' ? 'active' : ''}`} onClick={() => setActiveSection('fridge')}>Fridge & Inventory</button>
+          <button className={`category-tab ${activeSection === 'cats' ? 'active' : ''}`} onClick={() => setActiveSection('cats')}>Categories</button>
         </div>
       </header>
 
       {error && <div className="error-banner" style={{ background: '#ff4b4b', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>{error}</div>}
 
-      {/* --- ÉTELEK KEZELÉSE --- */}
+      {/* --- MEAL MANAGEMENT --- */}
       {activeSection === 'meals' && (
         <div className="admin-content">
           <div className="card-surface editor-box">
-            <h3>{editingMealId ? 'Étel Módosítása' : 'Új Étel Hozzáadása'}</h3>
+            <h3>{editingMealId ? 'Edit Meal' : 'Add New Meal'}</h3>
             <form onSubmit={handleMealSubmit} className="admin-grid-form">
-              <input className="search-input" placeholder="Név" value={mealEditData.name || ''} onChange={e => setMealEditData({ ...mealEditData, name: e.target.value })} required />
-              <input className="search-input" type="number" placeholder="Ár" value={mealEditData.price || ''} onChange={e => setMealEditData({ ...mealEditData, price: e.target.value })} required />
+              <input className="search-input" placeholder="Name" value={mealEditData.name || ''} onChange={e => setMealEditData({ ...mealEditData, name: e.target.value })} required />
+              <input className="search-input" type="number" placeholder="Price" value={mealEditData.price || ''} onChange={e => setMealEditData({ ...mealEditData, price: e.target.value })} required />
               <select className="search-input" value={mealEditData.categoryId || ''} onChange={e => setMealEditData({ ...mealEditData, categoryId: e.target.value })} required>
-                <option value="">Kategória...</option>
+                <option value="">Category...</option>
                 {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
               <div className="form-buttons">
-                <button type="submit" className="category-tab active">Mentés</button>
-                {editingMealId && <button type="button" className="category-tab" onClick={() => { setEditingMealId(null); setMealEditData({}); }}>Mégse</button>}
+                <button type="submit" className="category-tab active">Save</button>
+                {editingMealId && <button type="button" className="category-tab" onClick={() => { setEditingMealId(null); setMealEditData({}); }}>Cancel</button>}
               </div>
             </form>
           </div>
@@ -205,38 +205,38 @@ const MealManagement = ({ user }) => {
                   </div>
                   <div>
                     <h4>{meal.name}</h4>
-                    <p className="price-tag">{meal.price} Ft</p>
+                    <p className="price-tag">{meal.price} HUF</p>
                   </div>
                 </div>
 
                 <div className="recipe-management">
-                  <h5>Összetevők</h5>
+                  <h5>Ingredients</h5>
                   <div className="recipe-list">
                     {ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).map(ing => (
                       <div key={ing._id} className="recipe-item">
-                        <span>{ing.fridgeItemId?.name} - {ing.amountOfIngredient} {fridgeItems.find(f => String(f._id) === String(ing.fridgeItemId?._id))?.typeOfAmount || 'egység'}</span>
+                        <span>{ing.fridgeItemId?.name} - {ing.amountOfIngredient} {fridgeItems.find(f => String(f._id) === String(ing.fridgeItemId?._id))?.typeOfAmount || 'unit'}</span>
                         <button onClick={() => genericDelete('/api/ingridients', ing._id)}>×</button>
                       </div>
                     ))}
                     {ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).length === 0 && (
-                      <div className="recipe-item empty">Nincs hozzárendelt összetevő.</div>
+                      <div className="recipe-item empty">No ingredients assigned.</div>
                     )}
                   </div>
                   <div className="recipe-add-row">
                     <select value={newIngredientRow.fridgeItemId} onChange={e => setNewIngredientRow({ ...newIngredientRow, fridgeItemId: e.target.value })}>
-                      <option value="">Alapanyag kiválasztása</option>
+                      <option value="">Select ingredient</option>
                       {fridgeItems.map(f => (
                         <option key={f._id} value={f._id}>{f.name} ({f.typeOfAmount})</option>
                       ))}
                     </select>
-                    <input type="number" step="0.1" placeholder="Mennyiség" value={newIngredientRow.amountOfIngredient} onChange={e => setNewIngredientRow({ ...newIngredientRow, amountOfIngredient: e.target.value })} />
-                    <button type="button" className="add-ingredient-btn" onClick={() => handleAddIngredientToMeal(meal._id)}>Hozzáadás</button>
+                    <input type="number" step="0.1" placeholder="Quantity" value={newIngredientRow.amountOfIngredient} onChange={e => setNewIngredientRow({ ...newIngredientRow, amountOfIngredient: e.target.value })} />
+                    <button type="button" className="add-ingredient-btn" onClick={() => handleAddIngredientToMeal(meal._id)}>Add</button>
                   </div>
                 </div>
 
                 <div className="meal-card-footer">
-                  <button className="edit-btn" onClick={() => { setEditingMealId(meal._id); setMealEditData(meal); window.scrollTo(0, 0); }}>Szerkeszt</button>
-                  <button className="danger-btn" onClick={() => genericDelete('/api/meals', meal._id)}>Töröl</button>
+                  <button className="edit-btn" onClick={() => { setEditingMealId(meal._id); setMealEditData(meal); window.scrollTo(0, 0); }}>Edit</button>
+                  <button className="danger-btn" onClick={() => genericDelete('/api/meals', meal._id)}>Delete</button>
                 </div>
               </div>
             ))}
@@ -244,14 +244,14 @@ const MealManagement = ({ user }) => {
         </div>
       )}
 
-      {/* --- KATEGÓRIÁK KEZELÉSE --- */}
+      {/* --- CATEGORY MANAGEMENT --- */}
       {activeSection === 'cats' && (
         <div className="admin-content">
           <div className="card-surface editor-box">
-            <h3>Új Kategória</h3>
+            <h3>New Category</h3>
             <form className="flex-row" onSubmit={(e) => { e.preventDefault(); /* handleCreateCategory */ }}>
-              <input className="search-input" placeholder="Kategória neve" value={newCatName} onChange={e => setNewCatName(e.target.value)} />
-              <button className="category-tab active">Hozzáadás</button>
+              <input className="search-input" placeholder="Category name" value={newCatName} onChange={e => setNewCatName(e.target.value)} />
+              <button className="category-tab active">Add</button>
             </form>
           </div>
 
@@ -279,22 +279,22 @@ const MealManagement = ({ user }) => {
         </div>
       )}
 
-      {/* --- HŰTŐ KEZELÉSE --- */}
+      {/* --- FRIDGE MANAGEMENT --- */}
       {activeSection === 'fridge' && (
         <div className="admin-content">
           <div className="card-surface editor-box">
-            <h3>Új Hűtőelem</h3>
+            <h3>New Fridge Item</h3>
             <form className="admin-grid-form" onSubmit={(e) => { e.preventDefault(); /* handleCreateFridgeItem */ }}>
-              <input className="search-input" placeholder="Név" value={newFridgeItem.name} onChange={e => setNewFridgeItem({ ...newFridgeItem, name: e.target.value })} required />
+              <input className="search-input" placeholder="Name" value={newFridgeItem.name} onChange={e => setNewFridgeItem({ ...newFridgeItem, name: e.target.value })} required />
               <div style={{ display: 'flex', gap: '4px' }}>
-                <input className="search-input" type="number" placeholder="Mennyiség" value={newFridgeItem.amount} onChange={e => setNewFridgeItem({ ...newFridgeItem, amount: e.target.value })} required />
-                <input className="search-input" placeholder="Egység (pl. kg, db)" value={newFridgeItem.typeOfAmount} onChange={e => setNewFridgeItem({ ...newFridgeItem, typeOfAmount
+                <input className="search-input" type="number" placeholder="Quantity" value={newFridgeItem.amount} onChange={e => setNewFridgeItem({ ...newFridgeItem, amount: e.target.value })} required />
+                <input className="search-input" placeholder="Unit (e.g. kg, pcs)" value={newFridgeItem.typeOfAmount} onChange={e => setNewFridgeItem({ ...newFridgeItem, typeOfAmount
                   : e.target.value })} required />
               </div>
-              <input className="search-input" type="number" placeholder="Egységár" value={newFridgeItem.pricePerUnit} onChange={e => setNewFridgeItem({ ...newFridgeItem, pricePerUnit: e.target.value })} required />
-              <input className="search-input" type="number" placeholder="Figyelmeztetési szint (%)" value={newFridgeItem.warningAmountPercentage} onChange={e => setNewFridgeItem({ ...newFridgeItem, warningAmountPercentage: e.target.value })} required />
+              <input className="search-input" type="number" placeholder="Unit price" value={newFridgeItem.pricePerUnit} onChange={e => setNewFridgeItem({ ...newFridgeItem, pricePerUnit: e.target.value })} required />
+              <input className="search-input" type="number" placeholder="Warning threshold (%)" value={newFridgeItem.warningAmountPercentage} onChange={e => setNewFridgeItem({ ...newFridgeItem, warningAmountPercentage: e.target.value })} required />
               <div className="form-buttons">
-                <button type="submit" className="category-tab active">Hozzáadás</button>
+                <button type="submit" className="category-tab active">Add</button>
               </div>
             </form>
           </div>
@@ -303,18 +303,18 @@ const MealManagement = ({ user }) => {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Név</th>
-                  <th>Készlet</th>
-                  <th>Egységár</th>
-                  <th>Figyelmeztetés %</th>
-                  <th>Műveletek</th>
+                  <th>Name</th>
+                  <th>Stock</th>
+                  <th>Unit Price</th>
+                  <th>Warning %</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {fridgeItems.map(item => (
                   <tr key={item._id}>
                     {editingFridgeItemId === item._id ? (
-                      /* --- SZERKESZTÉSI MÓD --- */
+                      /* --- EDIT MODE --- */
                       <>
                         <td>
                           <input
@@ -366,7 +366,7 @@ const MealManagement = ({ user }) => {
                         </td>
                       </>
                     ) : (
-                      /* --- NÉZETI MÓD --- */
+                      /* --- VIEW MODE --- */
                       <>
                         <td>{item.name}</td>
                         <td>{item.amount} {item.typeOfAmount}</td>

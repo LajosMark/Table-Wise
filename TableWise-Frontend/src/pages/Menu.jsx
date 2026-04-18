@@ -2,7 +2,7 @@
 
 const API_BASE = 'http://localhost:3000';
 
-const Menu = ({ t }) => {
+const Menu = () => {
   const [categories, setCategories] = useState([]);
   const [allMeals, setAllMeals] = useState({});
   const [loading, setLoading] = useState(false);
@@ -20,8 +20,8 @@ const Menu = ({ t }) => {
         fetch(`${API_BASE}/api/meals`),
       ]);
 
-      if (!categoriesRes.ok) throw new Error('Hiba a kategóriák betöltésénél');
-      if (!mealsRes.ok) throw new Error('Hiba az ételek betöltésénél');
+      if (!categoriesRes.ok) throw new Error('Error loading categories');
+      if (!mealsRes.ok) throw new Error('Error loading meals');
 
       const categoriesData = await categoriesRes.json();
       const mealsData = await mealsRes.json();
@@ -39,7 +39,7 @@ const Menu = ({ t }) => {
       setCategories(categoriesList);
       setAllMeals(mealsMap);
     } catch (err) {
-      setError(err.message || 'Ismeretlen hiba');
+      setError(err.message || 'Unknown error');
     } finally {
       setLoading(false);
     }
@@ -67,10 +67,10 @@ const Menu = ({ t }) => {
 
   return (
     <section className="page-container menu-page">
-      <h1>{t.menu.title}</h1>
+      <h1>Menu</h1>
 
       {error && <p className="error">{error}</p>}
-      {loading && <p style={{ color: 'var(--text-main)', textAlign: 'center', padding: '2rem' }}>{t.menu.loading}</p>}
+      {loading && <p style={{ color: 'var(--text-main)', textAlign: 'center', padding: '2rem' }}>Loading...</p>}
 
       {!loading && categories.length > 0 && (
         <>
@@ -90,7 +90,7 @@ const Menu = ({ t }) => {
             <div className="search-input-wrapper">
               <input
                 type="text"
-                placeholder={t.menu.searchPlaceholder}
+                placeholder="Search meals..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
@@ -99,7 +99,7 @@ const Menu = ({ t }) => {
                 <button
                   className="search-clear"
                   onClick={() => setSearchTerm('')}
-                  aria-label={t.menu.clearSearch}
+                  aria-label="Clear search"
                 >
                   <svg
                     width="16"
@@ -139,7 +139,7 @@ const Menu = ({ t }) => {
                   {category.description && <p className="category-description">{category.description}</p>}
 
                   {meals.length === 0 ? (
-                    <p>{t.menu.noMeals}</p>
+                    <p>No meals in this category.</p>
                   ) : (
                     <div className="meals-grid">
                       {meals.map((meal) => {
@@ -158,7 +158,7 @@ const Menu = ({ t }) => {
                             <div className="meal-card-content">
                               <h3>{meal.name || meal.title}</h3>
                               {meal.description && <p className="meal-card-description">{meal.description}</p>}
-                              {meal.price != null && <p className="price">{meal.price} {t.menu.priceSuffix}</p>}
+                              {meal.price != null && <p className="price">{meal.price} HUF</p>}
                             </div>
                           </article>
                         );
@@ -172,7 +172,7 @@ const Menu = ({ t }) => {
         </>
       )}
 
-      {!loading && categories.length === 0 && <p>{t.menu.noCategories}</p>}
+      {!loading && categories.length === 0 && <p>No categories available.</p>}
     </section>
   );
 };

@@ -3,7 +3,7 @@ import styles from './Logo.module.css'
 const Logo = () => {
     return (
         <div className={styles['menu-title']}>
-            <h1>Étlap</h1>
+            <h1>Menu</h1>
             <div className={styles['title-decoration']}>
                 <span></span>
                 <svg aria-hidden="true"

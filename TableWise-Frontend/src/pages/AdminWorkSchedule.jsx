@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const API_BASE = 'http://localhost:3000';
 
-const AdminWorkSchedule = ({ t, user }) => {
+const AdminWorkSchedule = ({ user }) => {
   const [schedules, setSchedules] = useState([]);
   const [workHours, setWorkHours] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ const AdminWorkSchedule = ({ t, user }) => {
   const formatDateTime = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleString('hu-HU', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -27,7 +27,7 @@ const AdminWorkSchedule = ({ t, user }) => {
 
   useEffect(() => {
     if (!user || !user.token || !['admin', 'manager'].includes(user.data.role)) {
-      setError('Nincs jogosultságod.');
+      setError('You do not have permission.');
       return;
     }
     fetchSchedules();
@@ -46,9 +46,9 @@ const AdminWorkSchedule = ({ t, user }) => {
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
-          throw new Error(t('errorNoPermissionSchedules'));
+          throw new Error('errorNoPermissionSchedules');
         }
-        throw new Error(data.msg || 'Hiba a beosztások lekérésénél');
+        throw new Error(data.msg || 'Error loading schedules');
       }
       setSchedules(data.data || []);
     } catch (err) {
@@ -68,9 +68,9 @@ const AdminWorkSchedule = ({ t, user }) => {
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
-          throw new Error(t('errorNoPermissionWorkHours'));
+          throw new Error('errorNoPermissionWorkHours');
         }
-        throw new Error(data.msg || 'Hiba a munkaórák lekérésénél');
+        throw new Error(data.msg || 'Error loading work hours');
       }
       setWorkHours(data.data || []);
     } catch (err) {
@@ -89,15 +89,15 @@ const AdminWorkSchedule = ({ t, user }) => {
         body: JSON.stringify({ isAccepted }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.msg || 'Hiba az állapot módosításánál');
-      fetchSchedules(); // Frissítjük a listát
+      if (!response.ok) throw new Error(data.msg || 'Error updating schedule status');
+      fetchSchedules(); // Refresh the list
     } catch (err) {
       setError(err.message);
     }
   };
 
   const handleDelete = async (scheduleId) => {
-    if (!confirm(t.adminWorkSchedule?.confirmDelete || 'Biztosan törlöd?')) return;
+    if (!confirm('Are you sure you want to delete this schedule?')) return;
     try {
       const response = await fetch(`${API_BASE}/api/schedules/${scheduleId}`, {
         method: 'DELETE',
@@ -106,8 +106,8 @@ const AdminWorkSchedule = ({ t, user }) => {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) throw new Error('Hiba a törlésnél');
-      fetchSchedules(); // Frissítjük a listát
+      if (!response.ok) throw new Error('Error deleting schedule');
+      fetchSchedules(); // Refresh the list
     } catch (err) {
       setError(err.message);
     }
@@ -126,7 +126,7 @@ const AdminWorkSchedule = ({ t, user }) => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.msg || 'Hiba a létrehozásnál');
+      if (!response.ok) throw new Error(data.msg || 'Error creating schedule');
       setShowAddForm(false);
       setFormData({ usersId: '', workHoursId: '' });
       fetchSchedules();
@@ -140,7 +140,7 @@ const AdminWorkSchedule = ({ t, user }) => {
   if (error) {
     return (
       <section className="page-container">
-        <h1>{t.adminWorkSchedule?.title || 'Beosztások Kezelése'}</h1>
+        <h1>Manage Schedules</h1>
         <div className="error">{error}</div>
       </section>
     );
@@ -148,17 +148,17 @@ const AdminWorkSchedule = ({ t, user }) => {
 
   return (
     <section className="page-container">
-      <h1>{t.adminWorkSchedule?.title || 'Beosztások Kezelése'}</h1>
+      <h1>Manage Schedules</h1>
 
       <button onClick={() => setShowAddForm(true)} disabled={showAddForm}>
-        {t.adminWorkSchedule?.addSchedule || 'Új Beosztás Hozzáadása'}
+        Add New Schedule
       </button>
 
       {showAddForm && (
         <form onSubmit={handleSubmit} className="schedule-form">
-          <h2>{t.adminWorkSchedule?.addNewSchedule || 'Új Beosztás'}</h2>
+          <h2>New Schedule</h2>
           <label>
-            {t.adminWorkSchedule?.selectUser || 'Felhasználó'}:
+            User:
             <input
               type="text"
               placeholder="User ID"
@@ -168,13 +168,13 @@ const AdminWorkSchedule = ({ t, user }) => {
             />
           </label>
           <label>
-            {t.adminWorkSchedule?.selectShift || 'Műszak'}:
+            Shift:
             <select
               value={formData.workHoursId}
               onChange={(e) => setFormData({ ...formData, workHoursId: e.target.value })}
               required
             >
-              <option value="">{t.adminWorkSchedule?.chooseShift || 'Válassz...'}</option>
+              <option value="">Choose...</option>
               {workHours.map((wh) => (
                 <option key={wh._id} value={wh._id}>
                   {formatDateTime(wh.startDate)} - {formatDateTime(wh.endDate)}
@@ -183,42 +183,42 @@ const AdminWorkSchedule = ({ t, user }) => {
             </select>
           </label>
           <button type="submit" disabled={loading}>
-            {loading ? (t.adminWorkSchedule?.creating || 'Létrehozás...') : (t.adminWorkSchedule?.create || 'Létrehozás')}
+            {loading ? 'Creating...' : 'Create'}
           </button>
           <button type="button" onClick={() => setShowAddForm(false)}>
-            {t.adminWorkSchedule?.cancel || 'Mégse'}
+            Cancel
           </button>
         </form>
       )}
 
       <div className="schedules-list">
-        <h2>{t.adminWorkSchedule?.allSchedules || 'Összes Beosztás'}</h2>
+        <h2>All Schedules</h2>
         {schedules.length === 0 ? (
-          <p>{t.adminWorkSchedule?.noSchedules || 'Nincsenek beosztások.'}</p>
+          <p>No schedules available.</p>
         ) : (
           <div className="schedules-grid">
             {schedules.map((schedule) => (
               <div key={schedule._id} className="schedule-card">
                 <div className="schedule-info">
-                  <p><strong>{t.adminWorkSchedule?.user || 'Felhasználó'}:</strong> {schedule.usersId?.name || schedule.usersId?.email}</p>
-                  <p><strong>{t.adminWorkSchedule?.shift || 'Műszak'}:</strong> {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}</p>
+                  <p><strong>User:</strong> {schedule.usersId?.name || schedule.usersId?.email}</p>
+                  <p><strong>Shift:</strong> {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}</p>
                   <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`}>
-                    {schedule.isAccepted ? (t.adminWorkSchedule?.accepted || 'Elfogadva') : (t.adminWorkSchedule?.pending || 'Függőben')}
+                    {schedule.isAccepted ? 'Accepted' : 'Pending'}
                   </span>
                 </div>
                 <div className="schedule-actions">
                   {!schedule.isAccepted && (
                     <button onClick={() => handleAccept(schedule._id, true)}>
-                      {t.adminWorkSchedule?.accept || 'Elfogadás'}
+                      Accept
                     </button>
                   )}
                   {schedule.isAccepted && (
                     <button onClick={() => handleAccept(schedule._id, false)}>
-                      {t.adminWorkSchedule?.reject || 'Elutasítás'}
+                      Reject
                     </button>
                   )}
                   <button onClick={() => handleDelete(schedule._id)}>
-                    {t.adminWorkSchedule?.delete || 'Törlés'}
+                    Delete
                   </button>
                 </div>
               </div>

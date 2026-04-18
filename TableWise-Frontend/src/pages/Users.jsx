@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const API_BASE = 'http://localhost:3000';
 
-const Users = ({ t, user }) => {
+const Users = ({user }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +17,7 @@ const Users = ({ t, user }) => {
 
   useEffect(() => {
     if (!user || !user.token) {
-      setError('Nincs jogosultságod a felhasználók megtekintéséhez.');
+      setError('You do not have permission to view users.');
       return;
     }
 
@@ -38,7 +38,7 @@ const Users = ({ t, user }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Hiba a felhasználók lekérésénél');
+        throw new Error(data.message || 'Error loading users');
       }
 
       setUsers(Array.isArray(data) ? data : data.data || []);
@@ -50,7 +50,7 @@ const Users = ({ t, user }) => {
   };
 
   const handleDelete = async (userId) => {
-    if (!confirm(t.users?.confirmDelete || 'Biztosan törölni szeretnéd ezt a felhasználót?')) return;
+    if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
       const response = await fetch(`${API_BASE}/api/users/${userId}`, {
@@ -62,7 +62,7 @@ const Users = ({ t, user }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Hiba a felhasználó törlésekor');
+        throw new Error('Error deleting user');
       }
 
       setUsers(users.filter(u => u._id !== userId));
@@ -101,7 +101,7 @@ const Users = ({ t, user }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Hiba a mentéskor');
+        throw new Error(data.message || 'Error saving user');
       }
 
       if (isEditing) {
@@ -127,8 +127,8 @@ const Users = ({ t, user }) => {
   if (loading) {
     return (
       <section className="page-container">
-        <h1>{t.users?.title || 'Felhasználók'}</h1>
-        <p>{t.menu?.loading || 'Betöltés...'}</p>
+        <h1>Users</h1>
+        <p>Loading...</p>
       </section>
     );
   }
@@ -136,7 +136,7 @@ const Users = ({ t, user }) => {
   if (error) {
     return (
       <section className="page-container">
-        <h1>{t.users?.title || 'Felhasználók'}</h1>
+        <h1>Users</h1>
         <div className="error">{error}</div>
       </section>
     );
@@ -144,16 +144,16 @@ const Users = ({ t, user }) => {
 
   return (
     <section className="page-container">
-      <h1>{t.users?.title || 'Felhasználók'}</h1>
+      <h1>Users</h1>
       <button onClick={() => setShowAddForm(true)} disabled={showAddForm}>
-        {t.users?.addUser || 'Új felhasználó hozzáadása'}
+        Add new user
       </button>
 
       {showAddForm && (
         <form onSubmit={handleSubmit} className="user-form">
-          <h2>{editingUser ? (t.users?.editUser || 'Felhasználó szerkesztése') : (t.users?.addUser || 'Új felhasználó')}</h2>
+          <h2>{editingUser ? ('Edit user') : ('Add new user')}</h2>
           <label>
-            {t.users?.name || 'Név'}:
+            Name:
             <input
               type="text"
               value={formData.name}
@@ -162,7 +162,7 @@ const Users = ({ t, user }) => {
             />
           </label>
           <label>
-            {t.users?.email || 'Email'}:
+            'Email':
             <input
               type="email"
               value={formData.email}
@@ -171,7 +171,7 @@ const Users = ({ t, user }) => {
             />
           </label>
           <label>
-            {t.users?.password || 'Jelszó'}:
+            Password:
             <input
               type="password"
               value={formData.password}
@@ -180,18 +180,18 @@ const Users = ({ t, user }) => {
             />
           </label>
           <label>
-            {t.users?.role || 'Szerepkör'}:
+            Role:
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             >
-              <option value="employee">{t.users?.employee || 'Alkalmazott'}</option>
-              <option value="boss">{t.users?.boss || 'Főnök'}</option>
+              <option value="employee">Employee</option>
+              <option value="boss">Boss</option>
             </select>
           </label>
           <div className="form-buttons">
-            <button type="submit">{editingUser ? (t.users?.save || 'Mentés') : (t.users?.add || 'Hozzáadás')}</button>
-            <button type="button" onClick={handleCancel}>{t.users?.cancel || 'Mégse'}</button>
+            <button type="submit">{editingUser ? 'Save' : 'Add'}</button>
+            <button type="button" onClick={handleCancel}>Cancel</button>
           </div>
         </form>
       )}
@@ -205,8 +205,8 @@ const Users = ({ t, user }) => {
               <span className="user-role">{u.role}</span>
             </div>
             <div className="user-actions">
-              <button onClick={() => handleEdit(u)}>{t.users?.editUser || 'Szerkesztés'}</button>
-              <button onClick={() => handleDelete(u._id)}>{t.users?.deleteUser || 'Törlés'}</button>
+              <button onClick={() => handleEdit(u)}>Edit</button>
+              <button onClick={() => handleDelete(u._id)}>Delete</button>
             </div>
           </div>
         ))}

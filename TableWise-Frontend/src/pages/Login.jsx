@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 const API_BASE = 'http://localhost:3000';
 
-const Login = ({ t, setUser }) => {
+const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,15 +26,15 @@ const Login = ({ t, setUser }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || t.login.error);
+        throw new Error(data.message || 'Login failed');
       }
 
       const token = data.token || data.user?.token || '';
       if (!token) {
-        throw new Error('Nincs token a válaszban');
+        throw new Error('No token returned in response');
       }
 
-      // Lekérjük a felhasználói adatokat a /me endpoint-tel
+      // Fetch user details from the /me endpoint
       const meResponse = await fetch(`${API_BASE}/api/users/me`, {
         method: 'GET',
         headers: {
@@ -45,7 +45,7 @@ const Login = ({ t, setUser }) => {
       const meData = await meResponse.json();
 
       if (!meResponse.ok) {
-        throw new Error(meData.message || 'Hiba a felhasználói adatok lekérésénél');
+        throw new Error(meData.message || 'Error fetching user data');
       }
 
       const userObject = {
@@ -57,7 +57,7 @@ const Login = ({ t, setUser }) => {
       setUser(userObject);
       navigate('/');
     } catch (err) {
-      setError(err.message || t.login.error);
+      setError(err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -65,34 +65,34 @@ const Login = ({ t, setUser }) => {
 
   return (
     <section className="page-container auth-page">
-      <h1>{t.login.title}</h1>
-      <p className="auth-intro">{t.login.intro}</p>
+      <h1>Login</h1>
+      <p className="auth-intro">Please enter your credentials to access your account.</p>
 
       <form className="auth-form" onSubmit={handleSubmit}>
         {error && <div className="auth-error">{error}</div>}
 
-        <label htmlFor="login-email">{t.login.email}</label>
+        <label htmlFor="login-email">Email</label>
         <input
           id="login-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder={t.login.emailPlaceholder}
+          placeholder="Enter your email"
           required
         />
 
-        <label htmlFor="login-password">{t.login.password}</label>
+        <label htmlFor="login-password">Password</label>
         <input
           id="login-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder={t.login.passwordPlaceholder}
+          placeholder="Enter your password"
           required
         />
 
         <button type="submit" disabled={loading}>
-          {loading ? t.login.loading : t.login.submit}
+          {loading ? 'Loading...' : 'Login'}
         </button>
       </form>
     </section>

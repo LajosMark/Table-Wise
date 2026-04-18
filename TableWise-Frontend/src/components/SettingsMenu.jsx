@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-const SettingsMenu = ({ user, setUser, isDarkMode, setIsDarkMode, language, setLanguage, t }) => {
+const SettingsMenu = ({ user, setUser, isDarkMode, setIsDarkMode }) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -20,32 +20,12 @@ const SettingsMenu = ({ user, setUser, isDarkMode, setIsDarkMode, language, setL
       {showMenu && (
         <div className="settings-popup">
           <button onClick={() => setIsDarkMode(!isDarkMode)}>
-            {isDarkMode ? t.settings.lightMode : t.settings.darkMode}
+            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
-
-          <div className="settings-language">
-            <span>{t.settings.language}</span>
-            <div className="language-switcher">
-              <button
-                type="button"
-                className={`lang-btn ${language === 'hu' ? 'active' : ''}`}
-                onClick={() => setLanguage('hu')}
-              >
-                HU
-              </button>
-              <button
-                type="button"
-                className={`lang-btn ${language === 'en' ? 'active' : ''}`}
-                onClick={() => setLanguage('en')}
-              >
-                EN
-              </button>
-            </div>
-          </div>
 
           {user && (
             <p className="logged-user">
-              {t.settings.loggedInAs}: {user.data.name || user.data.email}
+              Logged in as: {user.data.name || user.data.email}
             </p>
           )}
 
@@ -63,7 +43,7 @@ const SettingsMenu = ({ user, setUser, isDarkMode, setIsDarkMode, language, setL
               }
             }}
           >
-            {user ? t.settings.logout : t.settings.login}
+            {user ? 'Logout' : 'Login'}
           </button>
         </div>
       )}
