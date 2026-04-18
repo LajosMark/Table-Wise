@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:TableWise"
              x:Class="TableWise.MainPage"
              x:DataType="local:MainPage"
-             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}"
+             Title="">
 
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior 
@@ -53,7 +54,7 @@
                                    SelectedIndicatorColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
                                    HorizontalOptions="Center" />
 
-                    <Label Text="Kategóriák" FontSize="20" FontAttributes="Bold" Margin="20,0"
+                    <Label Text="Categories" FontSize="20" FontAttributes="Bold" Margin="20,0"
                            TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
 
                     <CollectionView ItemsSource="{Binding Categories}" 

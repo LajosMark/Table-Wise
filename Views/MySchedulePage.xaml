@@ -5,34 +5,45 @@
              xmlns:models="clr-namespace:TableWise.Models"
              x:Class="TableWise.Views.MySchedulePage"
              x:DataType="vm:MyScheduleViewModel"
-             Title="Beosztásom 🗓️">
-
-    <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadSchedulesCommand}">
-        <Grid>
-            <VerticalStackLayout VerticalOptions="Center" 
-                                 HorizontalOptions="Center"
-                                 IsVisible="{Binding MySchedules.Count, Converter={StaticResource IntToBoolInverter}}">
-                <Label Text="📭" FontSize="50" HorizontalTextAlignment="Center"/>
-                <Label Text="Nincs tervezett műszakod." TextColor="Gray"/>
-            </VerticalStackLayout>
+             Title="My Shifts 🗓️">
+    <Grid>
+        <RefreshView x:Name="MyRefreshView"
+                 Command="{Binding LoadSchedulesCommand}">
 
             <CollectionView ItemsSource="{Binding MySchedules}">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" 
+                                     HorizontalOptions="Center"
+                                     Padding="0,50,0,0">
+                        <Label Text="📭" FontSize="50" HorizontalTextAlignment="Center"/>
+                        <Label Text="No planned shift yet." TextColor="Gray" HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:WorkHour">
                         <Border Margin="10,5" Padding="15" StrokeShape="RoundRectangle 12">
-                            <HorizontalStackLayout Spacing="20">
-                                <Label Text="📅" FontSize="24" VerticalOptions="Center"/>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding DisplayDate}" FontAttributes="Bold" FontSize="16"/>
-                                    <Label Text="{Binding DisplayTime}" TextColor="Gray"/>
-                                    <Label Text="{Binding TotalHours, StringFormat='{0:F1} óra'}" 
+                            <Grid ColumnDefinitions="*, Auto">
+                                <HorizontalStackLayout Spacing="20" Grid.Column="0">
+                                    <Label Text="📅" FontSize="24" VerticalOptions="Center"/>
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding DisplayDate}" FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding DisplayTime}" TextColor="Gray"/>
+                                        <Label Text="{Binding TotalHours, StringFormat='{0:F1} hours'}" 
                                            TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
+                                    </VerticalStackLayout>
+                                </HorizontalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End">
+                                    <Label Text="{Binding StatusIcon}" FontSize="20" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding StatusText}" FontSize="10" TextColor="{Binding StatusColor}"/>
                                 </VerticalStackLayout>
-                            </HorizontalStackLayout>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </Grid>
-    </RefreshView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

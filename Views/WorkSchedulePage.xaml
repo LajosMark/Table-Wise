@@ -4,15 +4,19 @@
              xmlns:sys="clr-namespace:System;assembly=netstandard"
              x:Class="TableWise.Views.WorkSchedulePage"
              xmlns:vm="clr-namespace:TableWise.ViewModels"
+             xmlns:converters="clr-namespace:TableWise.Converters"
              x:DataType="vm:WorkScheduleViewModel"
              Title=""
              BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+    <ContentPage.Resources>
+        <converters:EnglishDateConverter x:Key="EngDate" />
+    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
             <VerticalStackLayout IsVisible="{Binding IsWeekView}" Spacing="15">
-                <Label Text="Melyik héten dolgoznál? 📅" 
+                <Label Text="Wich week do you want to work? 📅" 
                        FontSize="22" 
                        FontAttributes="Bold" 
                        TextColor="{AppThemeBinding Light=#333333, Dark=White}" 
@@ -39,14 +43,14 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding IsDayView}" Spacing="10">
-                <Button Text="⬅ Vissza a hetekhez" 
+                <Button Text="⬅ Back to weeks" 
             Command="{Binding BackToWeeksCommand}" 
             HorizontalOptions="Start" 
             BackgroundColor="{AppThemeBinding Light=Gray, Dark=#333333}" 
             TextColor="White"
             Margin="0,0,0,10" />
 
-                <Label Text="Melyik napon jönnél? 👇" 
+                <Label Text="Wich day do you want to work? 👇" 
            FontSize="20" 
            FontAttributes="Bold" 
            TextColor="{AppThemeBinding Light=#333333, Dark=White}"
@@ -67,7 +71,7 @@
                                         <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.1" />
                                     </Border.Shadow>
 
-                                    <Button Text="{Binding StringFormat='{0:yyyy. MM. dd. (dddd)}'}" 
+                                    <Button Text="{Binding Converter={StaticResource EngDate}}" 
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkScheduleViewModel}}, Path=SelectDayCommand}"
                                 CommandParameter="{Binding .}"
                                 BackgroundColor="Transparent"
@@ -83,7 +87,7 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding IsTimeView}" Spacing="20">
-                <Button Text="⬅ Vissza a napokhoz" 
+                <Button Text="⬅ Back to days" 
                         Command="{Binding BackToDaysCommand}" 
                         HorizontalOptions="Start" 
                         BackgroundColor="{AppThemeBinding Light=Gray, Dark=#333333}"
@@ -116,7 +120,7 @@
                         ThumbColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
                         MinimumTrackColor="{AppThemeBinding Light=#69A481, Dark=Yellow}" />
 
-                <Button Text="BEKÜLDÉS" 
+                <Button Text="SEND"
                         Command="{Binding SubmitCommand}" 
                         HeightRequest="65" 
                         CornerRadius="32"

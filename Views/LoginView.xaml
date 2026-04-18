@@ -34,24 +34,24 @@
 
         <Label Text="🔑" FontSize="50" HorizontalOptions="Center" Margin="0,0,0,10"/>
 
-        <Label Text="Jelentkezz be!"
+        <Label Text="Log in!"
                FontSize="28"
                FontAttributes="Bold"
                HorizontalOptions="Center"
                TextColor="{AppThemeBinding Light=#333333, Dark=White}"
                Margin="0,0,0,30" />
 
-        <Label Text="Email cím" 
+        <Label Text="E-mail" 
                Margin="5,0"
                FontAttributes="Bold"
                TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
         <Border>
-            <Entry Placeholder="email@pelda.hu" 
+            <Entry Placeholder="email@example.com" 
                 Text="{Binding UserEmail, Mode=TwoWay}" 
                 Keyboard="Email" />
         </Border>
 
-        <Label Text="Jelszó" 
+        <Label Text="Password" 
                Margin="5,0"
                FontAttributes="Bold"
                TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"/>
@@ -61,7 +61,7 @@
                 Text="{Binding UserPassword, Mode=TwoWay}" />
         </Border>
 
-        <Button Text="BEJELENTKEZÉS" 
+        <Button Text="Log in" 
                 Margin="0,20,0,10"
                 HeightRequest="55"
                 CornerRadius="25"

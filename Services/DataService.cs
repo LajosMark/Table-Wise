@@ -237,13 +237,20 @@ namespace TableWise.Services
                 DateTime startDateTime = date.Date.AddHours(startHour);
                 DateTime endDateTime = date.Date.AddHours(endHour);
 
-                var scheduleData = new
+                var scheduleData = new Dictionary<string, object>
+{
+    { "startDate", startDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+    { "endDate", endDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+    { "isAccepted", false } // Maradjon false, de nézzük meg a beállításokat
+};
+
+                var options = new JsonSerializerOptions
                 {
-                    startDate = startDateTime.ToString("yyyy-MM-ddTHH:mm:ss"),
-                    endDate = endDateTime.ToString("yyyy-MM-ddTHH:mm:ss")
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase // Biztosítja a kisbetűs neveket
                 };
 
-                var json = JsonSerializer.Serialize(scheduleData);
+                var json = JsonSerializer.Serialize(scheduleData, options);
+                Debug.WriteLine($"📤 KÜLDÖTT PAYLOAD: {json}");
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync($"{url}/api/hours/", content);
@@ -287,7 +294,7 @@ namespace TableWise.Services
                 {
                     usersId = userId, // String marad
                     workHoursId = workHoursId, // String marad
-                    isAccepted = true
+                    isAccepted = false
                 };
 
                 var json = JsonSerializer.Serialize(assignmentData);
@@ -324,38 +331,47 @@ namespace TableWise.Services
                 string token = Preferences.Get("user_token", string.Empty);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var response = await client.GetAsync($"{url}/api/hours/me");
+                // Debug log: nézzük meg, mit kérünk le
+                Debug.WriteLine($"📡 Lekérés indítása: {url}/api/schedules/my");
+
+                var response = await client.GetAsync($"{url}/api/schedules/my");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-
-                    // Hibakeresés: Írassuk ki, mit kapunk!
-                    System.Diagnostics.Debug.WriteLine($"DEBUG JSON: {json}");
+                    Debug.WriteLine($"🔍 DEBUG JSON FOGADVA: {json}");
 
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true,
-                        // Ez a beállítás megoldja a "szám vs string" problémák nagy részét:
+                        // Ez segít, ha a backend néha idézőjelbe teszi a számokat:
                         NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
                     };
 
-                    // Ha a JSON-ben a 'data' kulcs alatt van a lista:
-                    using var doc = JsonDocument.Parse(json);
-                    if (doc.RootElement.TryGetProperty("data", out var dataArray))
-                    {
-                        var allHours = JsonSerializer.Deserialize<List<WorkHour>>(dataArray.GetRawText(), options);
+                    // 1. Próbálkozás: Deszerializáció a WorkHourResponse wrapperrel
+                    var wrapper = JsonSerializer.Deserialize<WorkHourResponse>(json, options);
 
-                        return allHours?
-                            .Where(h => h.EndDate >= DateTime.Now)
-                            .OrderBy(h => h.StartDate)
-                            .ToList() ?? new List<WorkHour>();
+                    // 2. Mentőöv: Ha a wrapper üres, de van 'data' kulcs a JSON-ben
+                    if (wrapper?.Data == null || wrapper.Data.Count == 0)
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty("data", out var dataArray))
+                        {
+                            var manualList = JsonSerializer.Deserialize<List<WorkHour>>(dataArray.GetRawText(), options);
+                            if (manualList != null) return manualList;
+                        }
                     }
+
+                    return wrapper?.Data ?? new List<WorkHour>();
+                }
+                else
+                {
+                    Debug.WriteLine($"⚠️ API Hiba: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"HIBA: {ex.Message}");
+                Debug.WriteLine($"❌ Lekérési hiba: {ex.Message}");
             }
             return new List<WorkHour>();
         }

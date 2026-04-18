@@ -23,57 +23,57 @@
     </Shell.FlyoutHeader>
 
     <ShellContent
-        Title="Kezdőlap"
+        Title="Mainpage"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
     <ShellContent
-        Title="Menü"
+        Title="Menu"
         ContentTemplate="{DataTemplate views:MenuPage}"/>
 
     <ShellContent 
-    Title="Regisztráció" 
+    Title="Registration" 
     ContentTemplate="{DataTemplate views:RegisterView}" 
     IsVisible="{Binding IsAdminOrManager}"/>
 
     <ShellContent 
-        Title="Bejelentkezés" 
+        Title="Login" 
         ContentTemplate="{DataTemplate views:LoginView}"
         IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
-        Title="Rólunk" 
+        Title="About us" 
         ContentTemplate="{DataTemplate views:AboutUsPage}"
         IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
-        Title="Karrier" 
+        Title="Career" 
         ContentTemplate="{DataTemplate views:CareerPage}"
         IsVisible="{Binding isNotLoggedIn}"/>
 
     <ShellContent 
-        Title="Nyitvatartás" 
+        Title="Open hours" 
         ContentTemplate="{DataTemplate views:OpeningHours}"/>
 
     <ShellContent 
-        Title="Beosztás Kérés"  
+        Title="Request a Shift"  
         ContentTemplate="{DataTemplate views:WorkSchedulePage}"
         IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
-        Title="Beosztás"  
+        Title="Shift Schedule"  
         ContentTemplate="{DataTemplate views:MySchedulePage}"
         IsVisible="{Binding isLoggedIn}"/>
     <ShellContent 
-        Title="Raktár"  
+        Title="Inventory"  
         ContentTemplate="{DataTemplate views:WarehousePage}"
         IsVisible="{Binding IsAdminOrManager}"/>
     <ShellContent 
-        Title="Beállítások"  
+        Title="Settings"  
         ContentTemplate="{DataTemplate views:SettingsPage}" />
 
     <Shell.FlyoutFooter>
         <VerticalStackLayout Padding="10">
-            <Button Text="KIJELENTKEZÉS" 
+            <Button Text="Logout" 
                     Margin="10" 
                     ImageSource="logout_white.png" 
                     HeightRequest="50"

@@ -12,7 +12,7 @@
 
             <Label Text="🕒" FontSize="60" HorizontalOptions="Center" Margin="0,10" />
 
-            <Label Text="Mikor várunk téged?" 
+            <Label Text="Will you be joining us?" 
                    FontSize="24" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center"
@@ -28,31 +28,31 @@
 
                 <VerticalStackLayout Spacing="12">
                     <Grid ColumnDefinitions="*, Auto">
-                        <Label Text="Hétfő - Csütörtök" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                        <Label Text="Monday - Thursday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                         <Label Grid.Column="1" Text="10:00 - 22:00" TextColor="{AppThemeBinding Light=#444444, Dark=#BBBBBB}" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" />
 
                     <Grid ColumnDefinitions="*, Auto">
-                        <Label Text="Péntek - Szombat" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
+                        <Label Text="Friday - Saturday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
                         <Label Grid.Column="1" Text="10:00 - 00:00" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
                     </Grid>
                     <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" />
 
                     <Grid ColumnDefinitions="*, Auto">
-                        <Label Text="Vasárnap" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                        <Label Text="Sunday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                         <Label Grid.Column="1" Text="12:00 - 20:00" TextColor="{AppThemeBinding Light=#444444, Dark=#BBBBBB}" />
                     </Grid>
                 </VerticalStackLayout>
             </Border>
 
-            <Label Text="⚠️ Ünnepnapokon a nyitvatartás változhat!" 
+            <Label Text="⚠️ Opening hours may vary on public holidays" 
                    FontSize="12" 
                    TextColor="{AppThemeBinding Light=#D2042D, Dark=#FF6B6B}" 
                    HorizontalOptions="Center" 
                    Margin="0,5" />
 
-            <Label Text="Itt találsz minket:" 
+            <Label Text="Find us:" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center" 
                    TextColor="{AppThemeBinding Light=#333333, Dark=White}"
@@ -68,7 +68,7 @@
                 <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center">
                     <Label Text="📍" FontSize="40" HorizontalOptions="Center" />
 
-                    <Label Text="TableWise Étterem" 
+                    <Label Text="TableWise Restaurant" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            HorizontalOptions="Center"
@@ -80,7 +80,7 @@
                            HorizontalOptions="Center" 
                            HorizontalTextAlignment="Center" />
 
-                    <Button Text="ÚTVONALTERVEZÉS INDÍTÁSA" 
+                    <Button Text="Plan Route" 
                             Clicked="OnOpenMapClicked"
                             BackgroundColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
                             TextColor="{AppThemeBinding Light=White, Dark=Black}"
@@ -99,25 +99,25 @@
                 </Border.StrokeShape>
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="Hol vagy most?" 
+                    <Label Text="You are here:" 
                            FontAttributes="Bold" 
                            TextColor="{AppThemeBinding Light=#333333, Dark=White}"
                            HorizontalOptions="Center" />
 
                     <Label x:Name="LocationLabel" 
-                           Text="Pozíció: Ismeretlen" 
+                           Text="Position: unknown" 
                            FontSize="14" 
                            TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}"
                            HorizontalOptions="Center" />
 
                     <Label x:Name="DistanceLabel" 
-                           Text="Távolság az étteremtől: -- km" 
+                           Text="Distance from restaurant: -- km" 
                            FontSize="16" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
                            HorizontalOptions="Center" />
 
-                    <Button Text="Távolság lekérése" 
+                    <Button Text="Get Distance" 
                             Clicked="OnGetLocationClicked"
                             BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=#333333}"
                             TextColor="White"

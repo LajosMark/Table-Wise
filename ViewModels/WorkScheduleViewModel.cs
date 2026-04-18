@@ -80,9 +80,9 @@ namespace TableWise.ViewModels
         public WorkScheduleViewModel()
         {
             Weeks.Clear();
-            Weeks.Add("Ezen a héten");
-            Weeks.Add("Jövő héten");
-            Weeks.Add("2 hét múlva");
+            Weeks.Add("This week");
+            Weeks.Add("Next week");
+            Weeks.Add("In two weeks");
         }
 
         // --- PARANCSOK ---
@@ -98,14 +98,14 @@ namespace TableWise.ViewModels
             DateTime startDay;
             int daysToShow = 7;
 
-            if (week == "Ezen a héten")
+            if (week == "This week")
             {
                 startDay = today.AddDays(1);
                 int currentDayNum = (int)today.DayOfWeek;
                 if (currentDayNum == 0) currentDayNum = 7;
                 daysToShow = 8 - currentDayNum;
             }
-            else if (week == "Jövő héten")
+            else if (week == "Next week")
             {
                 int daysUntilMonday = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
                 if (daysUntilMonday == 0) daysUntilMonday = 7;
@@ -147,7 +147,7 @@ namespace TableWise.ViewModels
             string checkId = Preferences.Get("user_id", string.Empty);
             if (string.IsNullOrEmpty(checkId))
             {
-                await Application.Current.MainPage.DisplayAlert("Hiba", "A rendszer nem találja a felhasználói azonosítót. Kérlek, jelentkezz be újra!", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "User id not found. Please login again", "OK");
                 return;
             }
             // 1. Validálás (ezt már megírtad)
@@ -163,17 +163,17 @@ namespace TableWise.ViewModels
 
                 if (linkResult.Success)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Siker", "Beosztás rögzítve!", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Success", "Shift created!", "OK");
                     BackToWeeks();
                 }
                 else
                 {
-                    await Application.Current.MainPage.DisplayAlert("Hiba", "Az időpont létrejött, de a hozzárendelés nem: " + linkResult.Message, "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", "Date created, but user link is not: " + linkResult.Message, "OK");
                 }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Hiba", hourResult.Message, "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", hourResult.Message, "OK");
             }
         }
     }

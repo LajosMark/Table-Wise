@@ -19,7 +19,7 @@
                 <CollectionView.Header>
                     <VerticalStackLayout Spacing="20" Padding="0,0,0,10">
 
-                        <Label Text="Kategóriák" FontSize="20" FontAttributes="Bold" Margin="20,0"
+                        <Label Text="Categories" FontSize="20" FontAttributes="Bold" Margin="20,0"
                        TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
 
                         <CollectionView ItemsSource="{Binding Categories}" 

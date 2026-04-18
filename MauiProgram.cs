@@ -5,6 +5,7 @@ using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Hosting;
 using TableWise.ViewModels;
 using TableWise.Views;
+using System.Globalization;
 
 namespace TableWise
 {
@@ -12,6 +13,10 @@ namespace TableWise
     {
         public static MauiApp CreateMauiApp()
         {
+            var englishCulture = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentCulture = englishCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = englishCulture;
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()

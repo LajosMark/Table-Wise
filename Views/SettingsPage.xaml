@@ -7,7 +7,7 @@
 
     <VerticalStackLayout Padding="30" Spacing="20">
 
-        <Label Text="Beállítások" 
+        <Label Text="Settings" 
                FontSize="28" 
                FontAttributes="Bold" 
                HorizontalOptions="Center" 
@@ -24,11 +24,11 @@
 
             <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                 <VerticalStackLayout Grid.Column="0" Spacing="2">
-                    <Label Text="Sötét mód" 
+                    <Label Text="Dark/Light mode" 
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                    <Label Text="Váltás világos és sötét téma között" 
+                    <Label Text="Switching from dark or light mode" 
                            FontSize="12" 
                            TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" />
                 </VerticalStackLayout>
@@ -48,7 +48,7 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="15" />
             </Border.StrokeShape>
-            <Label Text="💡 Tipp: A sötét mód kíméli a szemet és az akkumulátort is!" 
+            <Label Text="💡 Tip: Dark mode is good for your eyes and for your phone battery!" 
                    FontSize="12" 
                    HorizontalTextAlignment="Center"
                    TextColor="{AppThemeBinding Light=Gray, Dark=#888888}" />

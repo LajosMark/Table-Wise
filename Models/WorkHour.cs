@@ -6,27 +6,54 @@ using System.Threading.Tasks;
 
 namespace TableWise.Models
 {
-    public class WorkHour
+    // Ez a belső rész, ahol a tényleges dátumok vannak
+    public class WorkHourDetails
     {
-        // A backendről jövő "_id" mezőt egyből int-be olvassuk
         [System.Text.Json.Serialization.JsonPropertyName("_id")]
-        public int _id { get; set; }
+        public object Id { get; set; }
 
-        // Egy kényelmi tulajdonság, ami stringként adja vissza az ID-t, 
-        // ha a kódod többi része stringet várna:
-        public string Id => _id.ToString();
-
+        [System.Text.Json.Serialization.JsonPropertyName("startDate")]
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
 
-        public string DisplayDate => StartDate.ToString("yyyy. MM. dd. (dddd)");
-        public string DisplayTime => $"{StartDate:HH:mm} - {EndDate:HH:mm}";
-        public double TotalHours => (EndDate - StartDate).TotalHours;
+        [System.Text.Json.Serialization.JsonPropertyName("endDate")]
+        public DateTime EndDate { get; set; }
     }
 
-    // Ez az osztály segít a JSON feldolgozásában
+    // Ez a fő objektum, amit a lista kap
+    public class WorkHour
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("_id")]
+        public int Id { get; set; }
+
+        private bool _isAccepted = false; // Alapértelmezett érték
+
+        [System.Text.Json.Serialization.JsonPropertyName("isAccepted")]
+        public bool IsAccepted
+        {
+            get => _isAccepted;
+            set => _isAccepted = value;
+        }
+
+        // Itt a titok! A dátumok ebben a belső objektumban vannak:
+        [System.Text.Json.Serialization.JsonPropertyName("workHoursId")]
+        public WorkHourDetails Details { get; set; }
+
+        // Kényelmi tulajdonságok a XAML-nek, hogy ne kelljen átírnod a Bindingokat
+        // Ne felejtsd el: using System.Globalization; a fájl tetejére!
+        public string DisplayDate => Details?.StartDate.ToString("yyyy. MM. dd. (dddd)", new System.Globalization.CultureInfo("en-US")) ?? "No date";
+        public string DisplayTime => Details != null ? $"{Details.StartDate:HH:mm} - {Details.EndDate:HH:mm}" : "00:00 - 00:00";
+        public double TotalHours => Details != null ? (Details.EndDate - Details.StartDate).TotalHours : 0;
+
+        
+
+        public string StatusIcon => IsAccepted ? "✅" : "⏳";
+        public string StatusText => IsAccepted ? "Accepted" : "Pending...";
+        public Color StatusColor => IsAccepted ? Colors.Green : Colors.Orange;
+    }
+
     public class WorkHourResponse
     {
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
         public List<WorkHour> Data { get; set; }
     }
 }

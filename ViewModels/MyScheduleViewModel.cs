@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using TableWise.Models;
 using TableWise.Services;
 
@@ -7,38 +9,72 @@ namespace TableWise.ViewModels
 {
     public partial class MyScheduleViewModel : ObservableObject
     {
+        // Kézi IsBusy implementáció, mert a generált néha hibát dob
         private bool _isBusy;
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set
+            {
+                if (SetProperty(ref _isBusy, value))
+                {
+                    OnPropertyChanged(nameof(IsBusy));
+                    OnPropertyChanged(nameof(IsListEmpty));
+                }
+            }
         }
+
+        public bool IsListEmpty => MySchedules.Count == 0 && !IsBusy;
 
         public ObservableCollection<WorkHour> MySchedules { get; } = new ObservableCollection<WorkHour>();
 
         public MyScheduleViewModel()
         {
-            // Oldal betöltésekor indítjuk a lekérést
-            _ = LoadSchedulesAsync();
+            // Kezdő adatok betöltése
+           // _ = LoadSchedules();
         }
 
-        public async Task LoadSchedulesAsync()
+        [RelayCommand]
+        public async Task LoadSchedules()
         {
+            // Megakadályozzuk a dupla futást
             if (IsBusy) return;
             IsBusy = true;
+
+            IsBusy = true;
+            Debug.WriteLine("🔄 Frissítés elindult...");
 
             try
             {
                 var hours = await DataService.GetUpcomingSchedulesAsync();
-                MySchedules.Clear();
-                foreach (var hour in hours)
+
+                var today = DateTime.Today;
+
+                var filteredHours = hours
+                        .Where(h => h.Details != null && h.Details.StartDate.Date >= today)
+                        .OrderBy(h => h.Details.StartDate)
+                        .ToList();
+
+                // UI szálon frissítjük a listát
+                await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    MySchedules.Add(hour);
-                }
+                    MySchedules.Clear();
+                    foreach (var hour in filteredHours) // A szűrt listát adjuk hozzá
+                    {
+                        MySchedules.Add(hour);
+                    }
+                    Debug.WriteLine($"✅ Szűrt lista: {MySchedules.Count} elem (Múltbéliek elrejtve).");
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ Hiba a betöltésnél: {ex.Message}");
             }
             finally
             {
                 IsBusy = false;
+                // Csak az üzenetet küldjük a Page-nek
+                MessagingCenter.Send(this, "RefreshFinished");
             }
         }
     }

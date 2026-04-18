@@ -8,14 +8,14 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label Text="Csatlakozz hozzánk! 🤝" 
+            <Label Text="Join us! 🤝" 
                    FontSize="26" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center" 
                    Margin="0,10"
                    TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
 
-            <Label Text="Szeretnél egy dinamikus csapat tagja lenni? Nézd meg aktuális ajánlatainkat!" 
+            <Label Text="Want to be part of a dynamic team? Check out our current openings!" 
                    HorizontalTextAlignment="Center" 
                    TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" />
 
@@ -33,14 +33,14 @@
                 <HorizontalStackLayout Spacing="15">
                     <Label Text="🍕" FontSize="35" VerticalOptions="Center" />
                     <VerticalStackLayout Spacing="2">
-                        <Label Text="Pizzaszakács" 
+                        <Label Text="Pizza Chef" 
                                FontAttributes="Bold" 
                                FontSize="18"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                        <Label Text="Teljes munkaidő • Versenyképes bér" 
+                        <Label Text="Full-time • Competitive salary" 
                                TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" />
 
-                        <Button Text="Jelentkezem" 
+                        <Button Text="Apply" 
                                 Margin="0,10,0,0" 
                                 HeightRequest="40" 
                                 CornerRadius="20"
@@ -65,14 +65,14 @@
                 <HorizontalStackLayout Spacing="15">
                     <Label Text="🛵" FontSize="35" VerticalOptions="Center" />
                     <VerticalStackLayout Spacing="2">
-                        <Label Text="Futár" 
+                        <Label Text="Delivery Driver" 
                                FontAttributes="Bold" 
                                FontSize="18"
                                TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                        <Label Text="Rugalmas beosztás • Azonnali kezdés" 
+                        <Label Text="Flexible schedule • Immediate start" 
                                TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}" />
 
-                        <Button Text="Jelentkezem" 
+                        <Button Text="Apply" 
                                 Margin="0,10,0,0" 
                                 HeightRequest="40" 
                                 CornerRadius="20"

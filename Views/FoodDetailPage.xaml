@@ -33,7 +33,7 @@
                            Margin="10,0,0,0" />
                 </Grid>
 
-                <Label Text="Leírás" 
+                <Label Text="Description" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
@@ -44,7 +44,7 @@
                        TextColor="{AppThemeBinding Light=#444444, Dark=#E7EDEB}" 
                        LineHeight="1.4" />
 
-                <Label Text="Összetevők" 
+                <Label Text="Ingredients" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
@@ -54,7 +54,7 @@
                         Padding="15" 
                         BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#1E1E1E}"
                         StrokeThickness="0">
-                    <Label Text="🍕 Prémium alapanyagok, titkos recept alapján készül." 
+                    <Label Text="🍕 Premium ingredients, based on our secret recipe." 
                            TextColor="{AppThemeBinding Light=#555555, Dark=#BBBBBB}" 
                            FontAttributes="Italic" />
                 </Border>
