@@ -16,7 +16,7 @@ namespace TableWise.Models
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        // Feltételezve, hogy az API-ban 'icon' vagy 'image' néven jön az ikon
+
         [JsonPropertyName("icon")]
         public string Image { get; set; }
 

@@ -4,7 +4,7 @@ namespace TableWise.Views;
 
 public partial class OpeningHours : ContentPage
 {
-    // Az étterem koordinátái (Deák tér példa)
+    // Az étterem koordinátái (Deák tér 1.)
     double restaurantLat = 47.4979;
     double restaurantLon = 19.0503;
 
@@ -24,7 +24,7 @@ public partial class OpeningHours : ContentPage
 
         try
         {
-            // 1. Kényszerítjük a főszálat a megnyitáshoz
+
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(location, options);
@@ -32,7 +32,7 @@ public partial class OpeningHours : ContentPage
         }
         catch (Exception ex)
         {
-            // Most már az ex-et is használjuk, hogy lássuk a hibát a kimeneten!
+
             await DisplayAlert("Error", "Could not load map.", "OK");
         }
     }
@@ -41,7 +41,7 @@ public partial class OpeningHours : ContentPage
     {
         try
         {
-            // 1. Jogosultság ellenőrzése
+
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
@@ -49,14 +49,13 @@ public partial class OpeningHours : ContentPage
                 return;
             }
 
-            // 2. KÖZVETLENÜL a friss pozíciót kérjük le! 
-            // Kihagyjuk a GetLastKnownLocation-t, mert az nem frissül.
+
             var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             Location location = await Geolocation.Default.GetLocationAsync(request);
 
             if (location != null)
             {
-                // Számítás és kiírás
+
                 Location restaurantLoc = new Location(restaurantLat, restaurantLon);
                 double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
 

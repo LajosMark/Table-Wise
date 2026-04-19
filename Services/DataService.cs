@@ -11,29 +11,29 @@ namespace TableWise.Services
     public static class DataService
     {
         static string url = "https://table-wise-backend-for-render-hosting-1.onrender.com";
-        // Egy közös HttpClient, hogy ne kelljen minden metódusban újat létrehozni
+
         static HttpClient client = new HttpClient();
 
         public static async Task<(bool Success, string Message)> RegisterAsync(string name, string email, string password, string role)
         {
             try
             {
-                // 1. TOKEN KIOLVASÁSA ÉS BEÁLLÍTÁSA A FEJLÉCBE 🔑
+
                 string token = Preferences.Get("user_token", string.Empty);
 
-                client.DefaultRequestHeaders.Authorization = null; // Régi törlése a biztonság kedvéért
+                client.DefaultRequestHeaders.Authorization = null; // Régi törlése
                 if (!string.IsNullOrEmpty(token))
                 {
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 }
 
-                // 2. ADATOK ELŐKÉSZÍTÉSE
+                // ADATOK 
                 var userData = new { name = name, email = email, password = password, role = role };
                 var json = JsonSerializer.Serialize(userData);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                // 3. KÜLDÉS
+
                 var response = await client.PostAsync($"{url}/api/users/register", content);
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -43,7 +43,7 @@ namespace TableWise.Services
                 }
                 else
                 {
-                    // Speciális kezelés a jogosultság hibára
+                    // jogosultság
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
                         response.StatusCode == System.Net.HttpStatusCode.Forbidden)
                     {
@@ -81,7 +81,7 @@ namespace TableWise.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // 1. Itt olvassuk ki a választ ELŐSZÖR és UTOLJÁRA
+
                     var responseString = await response.Content.ReadAsStringAsync();
 
                     var options = new JsonSerializerOptions
@@ -90,20 +90,20 @@ namespace TableWise.Services
                         NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
                     };
 
-                    // 2. Deszerializáljuk a már kiolvasott responseString-et
+
                     var result = JsonSerializer.Deserialize<LoginResponse>(responseString, options);
 
                     if (result != null && !string.IsNullOrEmpty(result.Token))
                     {
                         Preferences.Set("user_token", result.Token);
 
-                        // 3. Mivel a Login JSON üres volt, lekérjük az adatokat a /me végpontról
+
                         var user = await GetCurrentUserAsync();
                         if (user != null)
                         {
-                            // Itt az 'id' mezőt mentjük el szövegként
+
                             Preferences.Set("user_id", user.id.ToString());
-                            // Debug.WriteLine($"✅ ID mentve: {user.id}");
+                            // Debug.WriteLine($" ID: {user.id}");
                         }
 
                         return true;
@@ -133,14 +133,14 @@ namespace TableWise.Services
 
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var response = await client.GetAsync($"{url}/api/users/me"); // Figyelj az útvonalra!
+                var response = await client.GetAsync($"{url}/api/users/me"); 
 
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-                    // A backend "data: { ... }" formátumban küldi, ezért egy belső osztály kell
+
                     var wrapper = JsonSerializer.Deserialize<UserWrapper>(json, options);
                     return wrapper?.Data;
                 }
@@ -149,7 +149,7 @@ namespace TableWise.Services
             return null;
         }
 
-        // Segédosztály a deszerializációhoz
+        // Segédosztály
         public class UserWrapper { public RegisterModel Data { get; set; } }
 
         public static async Task<List<Category>> GetCategories()
@@ -183,8 +183,7 @@ namespace TableWise.Services
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     var wrapper = JsonSerializer.Deserialize<FoodResponse>(result, options);
 
-                    // --- ITT A SZŰRÉS ---
-                    // Csak azokat adjuk vissza, ahol az IsAvailable értéke true
+
                     var allMeals = wrapper?.Meals ?? new List<FoodItem>();
                     return allMeals.Where(m => m.IsAvailable).ToList();
                 }
@@ -209,18 +208,18 @@ namespace TableWise.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    // Debug.WriteLine($"📄 Beérkező JSON: {json}");
+                    // Debug.WriteLine($" JSON: {json}");
 
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-                    // Mivel a hiba szerint 'Array' érkezik, közvetlenül listává alakítjuk:
+
                     var list = JsonSerializer.Deserialize<List<InventoryItem>>(json, options);
 
                     return list ?? new List<InventoryItem>();
                 }
                 else
                 {
-                    // Debug.WriteLine($"📡 API hiba: {response.StatusCode}");
+                    // Debug.WriteLine($" API hiba: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -230,7 +229,7 @@ namespace TableWise.Services
             return new List<InventoryItem>();
         }
 
-        // Változott a visszatérési típus: hozzáadtuk a string NewId-t
+
         public static async Task<(bool Success, string Message, string NewId)> SubmitWorkScheduleAsync(DateTime date, int startHour, int endHour)
         {
             try
@@ -250,11 +249,11 @@ namespace TableWise.Services
 
                 var options = new JsonSerializerOptions
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase // Biztosítja a kisbetűs neveket
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
                 var json = JsonSerializer.Serialize(scheduleData, options);
-                // Debug.WriteLine($"📤 KÜLDÖTT PAYLOAD: {json}");
+                // Debug.WriteLine($"json: {json}");
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync($"{url}/api/hours/", content);
@@ -263,7 +262,7 @@ namespace TableWise.Services
                 if (response.IsSuccessStatusCode)
                 {
                     using var doc = JsonDocument.Parse(responseString);
-                    // Módosítás: GetInt32-t használunk, mert a backend számot küld!
+
                     int newId = doc.RootElement.GetProperty("data").GetProperty("_id").GetInt32();
 
                     return (true, "Schedule created!", newId.ToString());
@@ -293,7 +292,7 @@ namespace TableWise.Services
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                // Átalakítjuk számmá, ha a backend azt várja (mivel az adatbázisodban 1 szerepel, nem "1")
+
                 var assignmentData = new
                 {
                     usersId = userId, // String marad
@@ -347,14 +346,14 @@ namespace TableWise.Services
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true,
-                        // Ez segít, ha a backend néha idézőjelbe teszi a számokat:
+
                         NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
                     };
 
-                    // 1. Próbálkozás: Deszerializáció a WorkHourResponse wrapperrel
+
                     var wrapper = JsonSerializer.Deserialize<WorkHourResponse>(json, options);
 
-                    // 2. Mentőöv: Ha a wrapper üres, de van 'data' kulcs a JSON-ben
+
                     if (wrapper?.Data == null || wrapper.Data.Count == 0)
                     {
                         using var doc = JsonDocument.Parse(json);
@@ -369,12 +368,12 @@ namespace TableWise.Services
                 }
                 else
                 {
-                   // Debug.WriteLine($"⚠️ API Hiba: {response.StatusCode}");
+                   // Debug.WriteLine($" API Rrror: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                // Debug.WriteLine($"❌ Lekérési hiba: {ex.Message}");
+                // Debug.WriteLine($" error: {ex.Message}");
             }
             return new List<WorkHour>();
         }
@@ -387,35 +386,34 @@ namespace TableWise.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new List<string> { "🤫 Titkos recept (jelentkezz be!)" };
+                    return new List<string> { "🤫 Secret recipe (Log in!)" };
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
                 var result = new List<string>();
 
-                // BIZTONSÁGI ELLENŐRZÉS: Csak akkor ciklusozzunk, ha tömböt kaptunk!
+
                 if (doc.RootElement.ValueKind != JsonValueKind.Array)
                 {
-                    // Ha objektum jött, nézzük meg, nincs-e benne egy "data" nevű tömb
+
                     if (doc.RootElement.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == JsonValueKind.Array)
                     {
                         // Ha igen, használjuk azt!
                         return ProcessIngredients(dataProp, mealId);
                     }
-                    return new List<string> { "🤫 Titkos recept" };
+                    return new List<string> { "🤫 Secret recipe" };
                 }
 
                 return ProcessIngredients(doc.RootElement, mealId);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"---> API Hiba: {ex.Message}");
-                return new List<string> { "🤫 Titkos recept" };
+                return new List<string> { "🤫 Secret recipe" };
             }
         }
 
-        // Segédmetódus a feldolgozáshoz, hogy ne ismételjük a kódot
+
         private static List<string> ProcessIngredients(JsonElement arrayElement, int mealId)
         {
             var result = new List<string>();
@@ -449,7 +447,7 @@ namespace TableWise.Services
 
         public class UserData
         {
-            // Megpróbáljuk mindkét népszerű verziót lefedni
+
             [JsonPropertyName("_id")]
             public object _id { get; set; }
 

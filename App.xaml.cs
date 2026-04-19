@@ -14,8 +14,7 @@ namespace TableWise
 
 
 
-            // 2. Téma visszatöltése a memóriából (Preferences)
-            // Ha még sose mentettünk semmit, az alapértelmezett (Unspecified) marad
+
             string savedTheme = Preferences.Default.Get("AppTheme", "Unspecified");
 
             if (Enum.TryParse(savedTheme, out AppTheme theme))
@@ -27,21 +26,21 @@ namespace TableWise
 
         protected override async void OnStart()
         {
-            // 2. ELLENŐRZÉS
+
             await Task.Delay(2000);
 
             var access = Connectivity.Current.NetworkAccess;
 
             if (access == NetworkAccess.Internet)
             {
-                // 3. HA VAN NET -> ÁTVÁLTUNK AZ APPSHELL-RE
+
                 MainThread.BeginInvokeOnMainThread(() => {
                     MainPage = new AppShell();
                 });
             }
             else
             {
-                // 4. HA NINCS NET
+  
                 bool retry = await MainPage.DisplayAlert("Error ❌", "No internet connection!", "Retry", "Exit");
                 if (retry) OnStart();
                 else Quit();
@@ -50,14 +49,13 @@ namespace TableWise
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            // Itt adjuk vissza az AppShell-t
+
             return new Window(MainPage);
         }
 
         protected override void OnSleep()
         {
-            // 3. Mentés, mielőtt elaludna az app (Biztonsági mentés)
-            // Elmentjük az aktuális témát, hogy újraindításkor tudjuk, mi volt
+
             Preferences.Default.Set("AppTheme", Application.Current.UserAppTheme.ToString());
 
             WeakReferenceMessenger.Default.Send(new AppSleepMessage());

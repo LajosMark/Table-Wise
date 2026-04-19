@@ -9,8 +9,8 @@ namespace TableWise.Models
 {
     public class RegisterModel
     {
-        // tulajdonság nevek a backend-ből jönnek
-        [JsonPropertyName("_id")] // Vagy simán id, amit a backend küld a /me-nél
+
+        [JsonPropertyName("_id")]
         public int id { get; set; }
         public string name { get; set; }
         public string email { get; set; }

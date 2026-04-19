@@ -7,7 +7,7 @@ namespace TableWise.ViewModels
 {
     public partial class WorkScheduleViewModel : ObservableObject
     {
-        // --- PRIVÁT VÁLTOZÓK ---
+
         private bool _isWeekView = true;
         private bool _isDayView = false;
         private bool _isTimeView = false;
@@ -16,7 +16,7 @@ namespace TableWise.ViewModels
         private double _startHour = 8;
         private double _endHour = 16;
 
-        // --- PUBLIKUS TULAJDONSÁGOK (A XAML ezekhez kötődik) ---
+
         public bool IsWeekView
         {
             get => _isWeekView;
@@ -71,12 +71,12 @@ namespace TableWise.ViewModels
             }
         }
 
-        // Listák és számolt mezők
+
         public ObservableCollection<string> Weeks { get; } = new ObservableCollection<string>();
         public ObservableCollection<DateTime> Days { get; } = new ObservableCollection<DateTime>();
         public string TimeRangeText => $"{Math.Floor(StartHour)}:00 - {Math.Floor(EndHour)}:00";
 
-        // --- KONSTRUKTOR ---
+
         public WorkScheduleViewModel()
         {
             Weeks.Clear();
@@ -85,7 +85,7 @@ namespace TableWise.ViewModels
             Weeks.Add("In two weeks");
         }
 
-        // --- PARANCSOK ---
+
 
         [RelayCommand]
         private void SelectWeek(string week)
@@ -165,18 +165,18 @@ namespace TableWise.ViewModels
                 return;
             }
 
-            if (duration > 10)
+            if (duration >= 10)
             {
                 await Application.Current.MainPage.DisplayAlert("Validation Error", "A shift cannot exceed 10 hours!", "OK");
                 return;
             }
 
-            // 2. Első lépés: Idősáv létrehozása
+
             var hourResult = await DataService.SubmitWorkScheduleAsync(SelectedDate, (int)Math.Floor(StartHour), (int)Math.Floor(EndHour));
 
             if (hourResult.Success)
             {
-                // 3. Második lépés: Összekapcsolás a felhasználóval
+
                 var linkResult = await DataService.LinkScheduleToUserAsync(hourResult.NewId);
 
                 if (linkResult.Success)

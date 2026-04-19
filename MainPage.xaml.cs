@@ -6,7 +6,7 @@ using TableWise.Services;
 
 namespace TableWise
 {
-    // Üzenet osztályok a kommunikációhoz
+
     public class AppSleepMessage { }
     public class AppResumeMessage { }
 
@@ -14,7 +14,7 @@ namespace TableWise
 
     public partial class MainPage : ContentPage
     {
-        // 1. Osztály szintű változó a biztonságos eléréshez
+
         private IDispatcherTimer _carouselTimer;
 
         public ObservableCollection<Category> Categories { get; set; } = new ObservableCollection<Category>();
@@ -29,8 +29,7 @@ namespace TableWise
 
             BindingContext = this;
 
-            // 2. Feliratkozás a modern WeakReferenceMessenger-rel
-            // Ez megakadályozza a memóriaszivárgást és a háttérben történő fagyást
+
             WeakReferenceMessenger.Default.Register<AppSleepMessage>(this, (r, m) =>
             {
                 StopTimer();
@@ -48,34 +47,37 @@ namespace TableWise
         {
             base.OnAppearing();
 
-            // 1. Kategóriák frissítése (ahogy eddig is volt)
+            
             await RefreshCategoriesFromApi();
 
-            // 2. Ételek és csoportosítás újratöltése
+            
             await ReloadFoodGroups();
         }
 
         private async Task ReloadFoodGroups()
         {
-            // Lekérjük az összes kategóriát
+            
             var categories = await DataService.GetCategories();
             var newGroups = new ObservableCollection<CategoryGroup>();
 
             foreach (var cat in categories)
             {
-                // A DataService.GetMealsByCategory már tartalmazza a .Where(m => m.IsAvailable) szűrést!
+                
                 var meals = await DataService.GetMealsByCategory(cat.Id);
 
-                if (meals.Any())
+                if (meals != null && meals.Any())
                 {
-                    newGroups.Add(new CategoryGroup(cat.Name, meals));
+                    
+                    var limitedMeals = meals.Take(3).ToList();
+
+                    newGroups.Add(new CategoryGroup(cat.Name, limitedMeals));
                 }
             }
 
-            // Frissítjük a Binding-ot, hogy a UI észrevegye a változást
+            
             FoodGroups = newGroups;
 
-            // Kényszerítjük a CollectionView-t a frissítésre
+            
             OnPropertyChanged(nameof(FoodGroups));
         }
 
@@ -89,7 +91,7 @@ namespace TableWise
 
                 if (liveCategories != null)
                 {
-                    // 1. Először ürítünk mindent a főszálon
+                    
                     MainThread.BeginInvokeOnMainThread(() => {
                         Categories.Clear();
                         FoodGroups.Clear();
@@ -116,21 +118,21 @@ namespace TableWise
 
         private void StartCarouselTimer()
         {
-            // Tisztítás indítás előtt
+            
             StopTimer();
 
             _carouselTimer = Dispatcher.CreateTimer();
             _carouselTimer.Interval = TimeSpan.FromSeconds(6);
             _carouselTimer.Tick += (s, e) =>
             {
-                // UI frissítés csak a főszálon
+                
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     if (PromocioCarousel != null)
                     {
                         try
                         {
-                            // A Carousel léptetése (feltételezve, hogy 3 elem van benne)
+                            
                             int nextPosition = (PromocioCarousel.Position + 1) % 3;
                             PromocioCarousel.Position = nextPosition;
                         }
@@ -155,7 +157,7 @@ namespace TableWise
 
         private void OnScrollToTopClicked(object sender, EventArgs e)
         {
-            // Csak ha az előző nem válna be:
+            
             var firstItem = FoodGroups.FirstOrDefault()?.FirstOrDefault();
             if (firstItem != null)
             {
@@ -167,23 +169,23 @@ namespace TableWise
         {
             if (e.CurrentSelection.FirstOrDefault() is Category selectedCategory)
             {
-                // 1. Megkeressük a csoportot
+                
                 var targetGroup = FoodGroups.FirstOrDefault(g => g.Name == selectedCategory.Name);
 
                 if (targetGroup != null && targetGroup.Count > 0)
                 {
-                    // 🚀 A trükk: Nem a csoportra, hanem a csoport ELSŐ elemére görgetünk
+                    
                     var firstItemInGroup = targetGroup[0];
 
                     FoodCollectionView.ScrollTo(
                         item: firstItemInGroup,
-                        group: targetGroup, // Megadjuk a csoportot is, hogy tudja, hol keresse
+                        group: targetGroup, 
                         position: ScrollToPosition.Start,
                         animate: true);
                 }
                 else if (targetGroup != null)
                 {
-                    // Ha üres a csoport, marad a csoportra görgetés
+                    
                     FoodCollectionView.ScrollTo(targetGroup, position: ScrollToPosition.Start, animate: true);
                 }
 

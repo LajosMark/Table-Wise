@@ -1,6 +1,5 @@
 ﻿using Microsoft.Maui.Controls.Shapes;
 using System.Diagnostics;
-using System.Net.NetworkInformation;
 using TableWise.Models;
 
 namespace TableWise.Views;
@@ -19,44 +18,53 @@ public partial class FoodDetailPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        Debug.WriteLine($"---> [DEBUG] OnAppearing indítva: {_item.Name} (ID: {_item.Id})");
+
+
+        if (!Preferences.Default.ContainsKey("user_token"))
+        {
+            UpdateToSecretMode();
+            return;
+        }
+
+
 
         try
         {
             var list = await Services.DataService.GetMealIngredientsAsync(_item.Id);
 
-            if (list == null)
-            {
-                Debug.WriteLine("---> [DEBUG] A kapott lista NULL!");
-            }
-            else
-            {
-                Debug.WriteLine($"---> [DEBUG] API válasz megérkezett. Elemek száma: {list.Count}");
-                foreach (var ing in list) Debug.WriteLine($"---> [DEBUG] Összetevő: {ing}");
-            }
-
             MainThread.BeginInvokeOnMainThread(() => {
-                Debug.WriteLine($"Lista feltöltése indul... Elemek száma: {list.Count}");
                 _item.Ingredients.Clear();
 
-                if (list != null && list.Count > 0)
+
+                if (list != null && list.Count > 0 && !list[0].Contains("Secret recipe"))
                 {
                     foreach (var ing in list) _item.Ingredients.Add(ing);
+
                 }
                 else
                 {
-                    _item.Ingredients.Add("🤫 Titkos recept");
+                    _item.Ingredients.Add("🤫 Secret recipe");
                 }
 
-                // Kényszerített UI frissítés
+
                 BindingContext = null;
                 BindingContext = _item;
-                Debug.WriteLine("---> [DEBUG] UI frissítés kész (BindingContext resetelve)");
             });
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"---> [DEBUG] CRASH AKADÁLYOZVA: {ex.Message}");
+            //Debug.WriteLine($"---> [DEBUG] Error: {ex.Message}");
+            UpdateToSecretMode();
         }
+    }
+
+    private void UpdateToSecretMode()
+    {
+        MainThread.BeginInvokeOnMainThread(() => {
+            _item.Ingredients.Clear();
+            _item.Ingredients.Add("🤫 Secret recipe");
+            BindingContext = null;
+            BindingContext = _item;
+        });
     }
 }

@@ -15,7 +15,7 @@ namespace TableWise
             {
                 isPresented = value;
                 OnPropertyChanged();
-                getUser(); // Frissítjük a felhasználót, ha nyílik a menü
+                getUser(); 
             }
         }
 
@@ -32,11 +32,11 @@ namespace TableWise
             getUser();
 
             logoutCommand = new Command(() => {
-                DataService.Logout(); // A tiszta metódus hívása
+                DataService.Logout(); 
                 IsPresented = false;
-                // Itt dől el hova küldjük ki: LoginPage-re érdemes
+                
                 Shell.Current.GoToAsync("//MainPage");
-                getUser(); // UI frissítése
+                getUser(); 
             });
 
             BindingContext = this;
@@ -58,7 +58,7 @@ namespace TableWise
             else
             {
                 isLoggedIn = false;
-                IsAdminOrManager = false; // Kijelentkezve senki sem admin
+                IsAdminOrManager = false;
                 name = string.Empty;
                 HeaderContainer.Content = null;
             }
@@ -69,7 +69,7 @@ namespace TableWise
             OnPropertyChanged(nameof(name));
         }
 
-        // Segédfüggvény a szebb kódért
+        
         private HorizontalStackLayout CreateHeader(string userName)
         {
             var layout = new HorizontalStackLayout
@@ -78,8 +78,7 @@ namespace TableWise
                 Spacing = 5
             };
 
-            // 🎨 DINAMIKUS HÁTTÉRSZÍN BEÁLLÍTÁSA
-            // Light mód: #F0F5F3 | Dark mód: #252525
+            
             layout.SetAppThemeColor(VisualElement.BackgroundColorProperty,
                                     Color.FromArgb("#F0F5F3"),
                                     Color.FromArgb("#252525"));
@@ -93,8 +92,7 @@ namespace TableWise
                 VerticalOptions = LayoutOptions.Center
             };
 
-            // 🎨 DINAMIKUS SZÖVEGSZÍN BEÁLLÍTÁSA a névnek
-            // Light mód: #69A481 | Dark mód: Yellow (Sárga)
+
             nameLabel.SetAppThemeColor(Label.TextColorProperty,
                                        Color.FromArgb("#69A481"),
                                        Colors.Yellow);
@@ -105,7 +103,7 @@ namespace TableWise
             return layout;
         }
 
-        // --- SHAKE FUNKCIÓ ---
+        // --- SHAKE FUNKCIÓ ami elvileg működik szóval bent hagyom ---
 
         private void StartListeningToShake()
         {

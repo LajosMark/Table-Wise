@@ -14,7 +14,6 @@ namespace TableWise.Models
         [JsonPropertyName("ingridientId")]
         public int ingridientId { get; set; }
 
-        // Vegyük le a JsonIgnore-t, és maradjunk az ObservableCollection-nél
         public ObservableCollection<string> Ingredients { get; set; } = new ObservableCollection<string>();
 
         [JsonPropertyName("image")]

@@ -9,7 +9,7 @@ namespace TableWise.ViewModels
 {
     public partial class MyScheduleViewModel : ObservableObject
     {
-        // Kézi IsBusy implementáció, mert a generált néha hibát dob
+        // Kézi IsBusy implementáció, mert a generált midig hibát dob :/
         private bool _isBusy;
         public bool IsBusy
         {
@@ -30,26 +30,25 @@ namespace TableWise.ViewModels
 
         public MyScheduleViewModel()
         {
-            // Kezdő adatok betöltése
+            // Kezdő adatok betöltése (még kellhet)
            // _ = LoadSchedules();
         }
 
         [RelayCommand]
         public async Task LoadSchedules()
         {
-            Debug.WriteLine("🔄 [DEBUG] LoadSchedules elindult...");
+            
 
 
             try
             {
-                // 2. Csak akkor állítjuk kézzel true-ra, ha nem a RefreshView indította (pl. gombnyomás)
-                // De a biztonság kedvéért kényszerítjük
+
                 IsBusy = true;
-                Debug.WriteLine($"✅ [DEBUG] IsBusy beállítva: {IsBusy}");
+
 
                 var hours = await DataService.GetUpcomingSchedulesAsync();
 
-                // Biztonsági ellenőrzés, ha null jönne vissza
+                // Biztonsági ellenőrzés
                 if (hours == null) hours = new List<WorkHour>();
 
                 var today = DateTime.Today;
@@ -58,7 +57,7 @@ namespace TableWise.ViewModels
                         .OrderBy(h => h.Details.StartDate)
                         .ToList();
 
-                // 3. UI frissítése
+
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     MySchedules.Clear();
@@ -66,24 +65,22 @@ namespace TableWise.ViewModels
                     {
                         MySchedules.Add(hour);
                     }
-                    Debug.WriteLine("📋 [DEBUG] Lista frissítve a UI-on.");
+
                 });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ Error in loading: {ex.Message}");
+                Debug.WriteLine($" Error in loading: {ex.Message}");
             }
             finally
             {
-                Debug.WriteLine("🏁 [DEBUG] Finally ág elérése...");
-                // Adunk a UI-nak egy lélegzetvételnyi szünetet
+
                 await Task.Delay(500);
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     IsBusy = false;
-                    OnPropertyChanged(nameof(IsBusy)); // Kézi kényszerítés
-                    Debug.WriteLine($"🛑 [DEBUG] IsBusy leállítva: {IsBusy}");
+                    OnPropertyChanged(nameof(IsBusy));
                 });
             }
         }
