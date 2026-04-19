@@ -1,0 +1,4 @@
+{
+  "ignore": ["seeder/*", "database/*"],
+  "ext": "js,json"
+}
