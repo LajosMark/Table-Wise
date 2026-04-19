@@ -1,4 +1,4 @@
-@baseUrl = https://table-wise-backend-for-render-hosting-1.onrender.com
+@baseUrl = http://localhost:3000
 @token =
 
 ### Login as admin
