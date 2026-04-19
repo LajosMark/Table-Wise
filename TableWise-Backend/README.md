@@ -6,6 +6,10 @@
     JWT_SECRET=
     JWT_EXPIRE=
 
+## ER Diagram
+    https://dbdiagram.io
+    ERD.dbml file
+
 ## Start
 cd TableWise-Backend/TableWiseBackend
 ## Start with nodemon
