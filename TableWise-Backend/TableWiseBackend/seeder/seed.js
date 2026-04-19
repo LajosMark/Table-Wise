@@ -1,4 +1,5 @@
-require('dotenv').config()
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const mongoose = require('mongoose')
 //Models import
 const { User } = require('../models/userModel')
@@ -25,7 +26,13 @@ const collectionSeeder = async (Model, Data) => {
 
 const seedDB = async () => {
     try {
-        mongoose.connect(process.env.DATABASE_URL,{
+        if (!process.env.DATABASE_URL) {
+            throw new Error('DATABASE_URL is not defined. Check TableWiseBackend/.env.');
+        }
+
+        mongoose.set('strictQuery', true);
+
+        await mongoose.connect(process.env.DATABASE_URL,{
             dbName: 'tablewise'
         })
 
