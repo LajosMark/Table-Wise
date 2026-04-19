@@ -4,7 +4,7 @@
 ### List orders (admin/manager only)
 GET {{baseUrl}}/api/orders
 Authorization: Bearer {{token}}
-
+  "amount": 1
 ### Get order by id (admin/manager only)
 GET {{baseUrl}}/api/orders/1
 Authorization: Bearer {{token}}
@@ -26,7 +26,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "amount": 3
+  "amount": 2
 }
 
 ### Delete order (admin only)

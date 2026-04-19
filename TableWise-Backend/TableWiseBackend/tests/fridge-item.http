@@ -15,11 +15,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Test Item",
-  "amount": 10,
-  "typeOfAmount": "pcs",
-  "pricePerUnit": 100,
-  "warningAmountPercentage": 10
+  "name": "Fresh Thyme",
+  "amount": 4,
+  "typeOfAmount": "kg",
+  "pricePerUnit": 5200,
+  "warningAmountPercentage": 5
 }
 
 ### Update fridge item (admin/manager only)
@@ -28,7 +28,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "amount": 20
+  "amount": 45
 }
 
 ### Delete fridge item (admin/manager only)

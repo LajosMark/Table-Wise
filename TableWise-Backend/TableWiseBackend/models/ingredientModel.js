@@ -18,7 +18,7 @@ const IngredientSchema = new mongoose.Schema({
     amountOfIngredient: {
         type: Number,
         required: [true, 'Please add the amount of ingredient'],
-        min: [0.1, 'Amount must be at least 0.1']
+        min: [0.01, 'Amount must be at least 0.01']
     }
 });
 
