@@ -1,4 +1,5 @@
-@baseUrl = http://localhost:3000
+@baseUrl = https://table-wise-backend-for-render-hosting-1.onrender.com
+@token =
 
 ### Login as admin
 POST {{baseUrl}}/api/users/login
@@ -9,14 +10,9 @@ Content-Type: application/json
   "password": "Admin123!"
 }
 
-@token =
 
 ### Get current user profile
 GET {{baseUrl}}/api/users/me
-Authorization: Bearer {{token}}
-
-### Get next user id
-POST {{baseUrl}}/api/users/id
 Authorization: Bearer {{token}}
 
 ### Logout current user

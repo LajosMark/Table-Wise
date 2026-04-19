@@ -15,23 +15,7 @@ router.get('/me', protect, async (req, res, next) => {
         res.status(400).json({ msg: error.message });
     }
 });
-// Admin and manager only
-router.post('/id', protect, authorize('admin', 'manager'), async (req, res, next) => {
-    try {
 
-        const users = await User.find()
-        let maxId = users[0]._id
-        users.forEach(element => {
-            if (element._id > maxId) maxId = Number(element._id)
-        });
-        maxId++;
-
-        res.status(200).json({ msg: maxId })
-    } catch (error) {
-        res.status(400).json({ msg: error.message });
-    }
-
-})
 // Admin and manager only
 router.post('/register', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {
