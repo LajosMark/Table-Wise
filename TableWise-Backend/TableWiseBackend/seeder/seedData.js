@@ -61,7 +61,7 @@ module.exports.Data = {
             { "_id": 10, "name": "Kids Menu" }
         ],
 
-    Ingridients:
+    Ingredients:
         [
             {"_id": 1, "mealId": 1, "fridgeItemId": 1, "amountOfIngredient": 2 },
             {"_id": 2, "mealId": 2, "fridgeItemId": 8, "amountOfIngredient": 1 },

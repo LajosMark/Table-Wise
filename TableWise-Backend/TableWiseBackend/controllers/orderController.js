@@ -3,7 +3,7 @@ const { Order } = require('../models/orderModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
-// Csak Admin és Manager
+// Admin and manager only
 router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const orders = await Order.find().populate('mealId', 'name price');
@@ -13,12 +13,12 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// Csak Admin és Manager
+// Admin and manager only
 router.get('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const order = await Order.findById(req.params.id).populate('mealId', 'name price');
         if (!order) {
-            return res.status(404).json({ msg: 'Rendelés nem található' });
+            return res.status(404).json({ msg: 'Order not found' });
         }
         res.status(200).json(order);
     } catch (error) {
@@ -26,7 +26,7 @@ router.get('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// Minden bejelentkezett felhasználó (Token szükséges)
+// Any logged-in user (token required)
 router.post('/', protect, async (req, res) => {
     try {
         const order = await Order.create(req.body);
@@ -36,7 +36,7 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// Csak Admin és Manager
+// Admin and manager only
 router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
@@ -44,7 +44,7 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
             runValidators: true
         });
         if (!order) {
-            return res.status(404).json({ msg: 'Rendelés nem található' });
+            return res.status(404).json({ msg: 'Order not found' });
         }
         res.status(200).json(order);
     } catch (error) {
@@ -52,12 +52,12 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
     }
 });
 
-// Csak Admin
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+// Admin and manager only
+router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
         if (!order) {
-            return res.status(404).json({ msg: 'Rendelés nem található' });
+            return res.status(404).json({ msg: 'Order not found' });
         }
         await order.deleteOne();
         res.status(204).json({});

@@ -1,5 +1,24 @@
 # Table Wise Backend
 
+## Environment variables
+    DATABASE_URL=
+    PORT=
+    JWT_SECRET=
+    JWT_EXPIRE=
+
+## Start
+cd TableWise-Backend/TableWiseBackend
+## Start with nodemon
+### first start
+    npm run setup-nodemon
+### regular start
+    npm run start-nodemon
+## Start without nodemon
+### first start
+    npm run setup
+### regular start
+    npm start
+
 # API Routes
 
 ## Users - /api/users
@@ -42,7 +61,7 @@
 - PUT /:id
 - DELETE /:id
 
-## Ingredients - /api/ingridients
+## Ingredients - /api/ingredients
 - GET /
 - GET /meal/:mealId
 - POST /
@@ -65,3 +84,7 @@
 
 ## Static Files
 - GET /images/:filename
+
+## Swagger
+- UI: /api-docs
+- Raw spec: /api-docs.json

@@ -3,7 +3,7 @@ const { WorkSchedule } = require('../models/workScheduleModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
-// Csak Admin és Manager
+// Admin and manager only
 router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const schedules = await WorkSchedule.find()
@@ -15,7 +15,7 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// Csak Admin és Manager
+// Admin and manager only
 router.get('/users/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const id = req.params.id        
@@ -28,7 +28,7 @@ router.get('/users/:id', protect, authorize('admin', 'manager'), async (req, res
     }
 });
 
-// Csak saját beosztás
+// Own schedule only
 router.get('/my', protect, async (req, res) => {
     try {
         const mySchedules = await WorkSchedule.find({ usersId: req.user._id })
@@ -39,7 +39,7 @@ router.get('/my', protect, async (req, res) => {
     }
 });
 
-// Bejelentkezett
+// Any logged-in user
 router.post('/', protect, async (req, res) => {
     try {
         const exists = await WorkSchedule.findOne({
@@ -48,7 +48,7 @@ router.post('/', protect, async (req, res) => {
         });
 
         if (exists) {
-            return res.status(400).json({ msg: 'Ez a hozzárendelés már létezik' });
+            return res.status(400).json({ msg: 'This assignment already exists' });
         }
 
         const schedule = await WorkSchedule.create(req.body);
@@ -58,7 +58,7 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// Elfogadás (isAccepted) Admin és Manager
+// Accept assignment (isAccepted), admin and manager only
 router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const schedule = await WorkSchedule.findByIdAndUpdate(
@@ -68,7 +68,7 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
         );
 
         if (!schedule) {
-            return res.status(404).json({ msg: 'Beosztás nem található' });
+            return res.status(404).json({ msg: 'Schedule not found' });
         }
 
         res.status(200).json({ data: schedule });
@@ -77,12 +77,12 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
     }
 });
 
-// Admin és Manager
+// Admin and manager only
 router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const schedule = await WorkSchedule.findById(req.params.id);
         if (!schedule) {
-            return res.status(404).json({ msg: 'Beosztás nem található' });
+            return res.status(404).json({ msg: 'Schedule not found' });
         }
         await schedule.deleteOne();
         res.status(204).json({ data: {} });

@@ -9,13 +9,14 @@ Content-Type: application/json
   "password": "adminadmin"
 }
 
-###
-# Copy the returned token into the `{{token}}` variable before running the protected requests.
-
 @token =
 
 ### Get current user profile
 GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{token}}
+
+### Get next user id
+POST {{baseUrl}}/api/users/id
 Authorization: Bearer {{token}}
 
 ### Logout current user

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router()
 const { protect, authorize } = require('../middleware/Auth');
 
-// Bárki
+// Any logged-in user
 router.get('/me', protect, async (req, res, next) => {
     try {
         res.status(200).json({
@@ -15,7 +15,7 @@ router.get('/me', protect, async (req, res, next) => {
         res.status(400).json({ msg: error.message });
     }
 });
-// Admin és Manager
+// Admin and manager only
 router.post('/id', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {
 
@@ -32,7 +32,7 @@ router.post('/id', protect, authorize('admin', 'manager'), async (req, res, next
     }
 
 })
-// Admin és Manager
+// Admin and manager only
 router.post('/register', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {
 
@@ -46,7 +46,7 @@ router.post('/register', protect, authorize('admin', 'manager'), async (req, res
     }
 
 })
-// Bárki
+// Public
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -86,7 +86,7 @@ router.post('/logout', protect, async (req, res) => {
     }
 });
 
-// Admin és Manager
+// Admin and manager only
 router.get('/', protect, authorize('admin', 'manager'), async (req, res, next) => {
     try {
         const users = await User.find().sort({ name: 1 })
@@ -98,11 +98,11 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res, next) =
     }
 });
 
-// Admin és Manager vagy saját
+// Admin or owner only
 router.patch('/:id', protect, async (req, res) => {
     try {
         if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
-            return res.status(403).json({ msg: 'Csak a saját profilodat módosíthatod!' });
+            return res.status(403).json({ msg: 'You can only update your own profile!' });
         }
 
         const fieldsToUpdate = {
@@ -125,12 +125,12 @@ router.patch('/:id', protect, async (req, res) => {
         res.status(400).json({ msg: error.message });
     }
 });
-// Admin és Manager
+// Admin and manager only
 router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(404).json({ msg: 'Felhasználó nem található' });
+            return res.status(404).json({ msg: 'User not found' });
         }
 
         await WorkSchedule.deleteMany({ usersId: user._id });

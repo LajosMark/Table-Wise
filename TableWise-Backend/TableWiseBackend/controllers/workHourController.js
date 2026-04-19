@@ -3,7 +3,7 @@ const { WorkHour } = require('../models/workHourModel')
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth')
 
-// Mindenki
+// Any logged-in user
 router.post('/', protect, async (req, res) => {
     try {
         const workHour = await WorkHour.create(req.body);
@@ -16,7 +16,7 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// Admin és Manager
+// Admin and manager only
 router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const workHours = await WorkHour.find();
@@ -30,7 +30,7 @@ router.get('/', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// Admin és Manager
+// Admin and manager only
 router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const workHour = await WorkHour.findByIdAndUpdate(req.params.id, req.body, {
@@ -39,7 +39,7 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
         });
 
         if (!workHour) {
-            return res.status(404).json({ msg: 'Munkaóra nem található' });
+            return res.status(404).json({ msg: 'Work hour not found' });
         }
 
         res.status(200).json({ data: workHour });
@@ -48,13 +48,13 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
     }
 });
 
-// Csak Admin és Manager
+// Admin and manager only
 router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const workHour = await WorkHour.findById(req.params.id);
 
         if (!workHour) {
-            return res.status(404).json({ msg: 'Munkaóra nem található' });
+            return res.status(404).json({ msg: 'Work hour not found' });
         }
 
         await workHour.deleteOne();

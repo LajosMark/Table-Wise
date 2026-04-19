@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { Meal } = require('../models/mealModel');
-const { Ingredient } = require('../models/ingridientModel');
+const { Ingredient } = require('../models/ingredientModel');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 
@@ -27,7 +27,7 @@ const upload = multer({
     }
 });
 
-// (Bárki láthatja)
+// Public
 router.get('/', async (req, res) => {
     try {
         const meals = await Meal.find();
@@ -41,13 +41,13 @@ router.get('/', async (req, res) => {
     }
 });
 
-// (Bárki láthatja)
+// Public
 router.get('/:id', async (req, res) => {
     try {
         const meal = await Meal.findById(req.params.id);
 
         if (!meal) {
-            return res.status(404).json({ msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Meal not found' });
         }
 
         res.status(200).json({ data: meal });
@@ -56,7 +56,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// (Csak Admin és Manager)
+// Admin and manager only
 router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.create(req.body);
@@ -70,16 +70,16 @@ router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
     }
 });
 
-// Kép feltöltése egy ételhez (Csak Admin és Manager)
+// Upload an image for a meal (admin and manager only)
 router.post('/:id/image', protect, authorize('admin', 'manager'), upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ msg: 'Kép fájl szükséges' });
+            return res.status(400).json({ msg: 'Image file is required' });
         }
 
         const meal = await Meal.findById(req.params.id);
         if (!meal) {
-            return res.status(404).json({ msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Meal not found' });
         }
 
         meal.image = `${req.file.filename}`;
@@ -91,7 +91,7 @@ router.post('/:id/image', protect, authorize('admin', 'manager'), upload.single(
     }
 });
 
-// (Csak Admin és Manager)
+// Admin and manager only
 router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.findByIdAndUpdate(req.params.id, req.body, {
@@ -100,7 +100,7 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
         });
 
         if (!meal) {
-            return res.status(404).json({ msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Meal not found' });
         }
 
         res.status(200).json({ data: meal });
@@ -109,13 +109,13 @@ router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) =>
     }
 });
 
-// (Csak Admin)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+// Admin and manager only
+router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const meal = await Meal.findById(req.params.id);
 
         if (!meal) {
-            return res.status(404).json({ msg: 'Étel nem található' });
+            return res.status(404).json({ msg: 'Meal not found' });
         }
 
         await Ingredient.deleteMany({ mealId: meal._id });

@@ -4,7 +4,7 @@ const router = express.Router();
 const { protect, authorize } = require('../middleware/Auth');
 const { Meal } = require('../models/mealModel');
 
-//(Publikus)
+// Public
 router.get('/', async (req, res) => {
 
     try {
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-//(Publikus)
+// Public
 router.get('/:id', async (req, res) => {
 
     try {
@@ -51,8 +51,8 @@ router.get('/:id/meals', async (req, res) => {
     }
 });
 
-// (Csak Admin)
-router.post('/', protect, authorize('admin'), async (req, res) => {
+// Admin and manager only
+router.post('/', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const PostMealCategory = await MealCategory.create(req.body);
 
@@ -65,8 +65,8 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
     }
 });
 
-// (Csak Admin)
-router.patch('/:id', protect, authorize('admin'), async (req, res) => {
+// Admin and manager only
+router.patch('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const PatchMealCategory = await MealCategory.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -74,7 +74,7 @@ router.patch('/:id', protect, authorize('admin'), async (req, res) => {
         });
 
         if (!PatchMealCategory) {
-            return res.status(404).json({ msg: 'Kategória nem található' });
+            return res.status(404).json({ msg: 'Category not found' });
         }
 
         res.status(200).json({ data: PatchMealCategory });
@@ -83,13 +83,13 @@ router.patch('/:id', protect, authorize('admin'), async (req, res) => {
     }
 });
 
-// (Csak Admin)
-router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+// Admin and manager only
+router.delete('/:id', protect, authorize('admin', 'manager'), async (req, res) => {
     try {
         const DeleteMealCategory = await MealCategory.findById(req.params.id);
 
         if (!DeleteMealCategory) {
-            return res.status(404).json({ msg: 'Kategória nem található' });
+            return res.status(404).json({ msg: 'Category not found' });
         }
 
         await DeleteMealCategory.deleteOne();

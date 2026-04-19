@@ -2,15 +2,15 @@
 @token = 
 
 ### List all ingredients
-GET {{baseUrl}}/api/ingridients
+GET {{baseUrl}}/api/ingredients
 Authorization: Bearer {{token}}
 
 ### List ingredients by meal id
-GET {{baseUrl}}/api/ingridients/meal/1
+GET {{baseUrl}}/api/ingredients/meal/1
 Authorization: Bearer {{token}}
 
 ### Create ingredient (admin/manager only)
-POST {{baseUrl}}/api/ingridients
+POST {{baseUrl}}/api/ingredients
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -21,7 +21,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Update ingredient (admin/manager only)
-PATCH {{baseUrl}}/api/ingridients/1
+PATCH {{baseUrl}}/api/ingredients/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -30,5 +30,5 @@ Authorization: Bearer {{token}}
 }
 
 ### Delete ingredient (admin/manager only)
-DELETE {{baseUrl}}/api/ingridients/1
+DELETE {{baseUrl}}/api/ingredients/1
 Authorization: Bearer {{token}}
