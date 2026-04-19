@@ -195,7 +195,7 @@ const MealManagement = ({ user }) => {
               <div key={meal._id} className="meal-card card-surface">
                 <div className="meal-card-header">
                   <div className="meal-img-container">
-                    <img src={`${API_BASE}/images/${meal.image}`} alt={meal.name} />
+                    <img src={`${API_BASE}/images/${meal.image}`} alt={meal.name} onError={(e) => {e.target.src = `${API_BASE}/images/no-image.png`; e.target.onerror = null;}}/>
                     <label className="image-upload-overlay">
                       <input type="file" onChange={(e) => handleImageUpload(meal._id, e.target.files[0])} hidden />
                       <span>📸</span>

@@ -374,7 +374,7 @@ p {
   color: var(--accent-neon);
 }
 
-.contact-card p {
+.contact-card div {
   color: var(--text-muted);
   line-height: 1.75;
 }
