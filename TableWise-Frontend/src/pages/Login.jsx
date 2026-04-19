@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
+const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
@@ -34,7 +34,6 @@ const Login = ({ setUser }) => {
         throw new Error('No token returned in response');
       }
 
-      // Fetch user details from the /me endpoint
       const meResponse = await fetch(`${API_BASE}/api/users/me`, {
         method: 'GET',
         headers: {

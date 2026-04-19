@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
+const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
 const WorkSchedule = ({ user }) => {
   const [mySchedules, setMySchedules] = useState([]);
@@ -25,9 +25,9 @@ const WorkSchedule = ({ user }) => {
 
   const getWeekStart = (weekType) => {
     const now = new Date();
-    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const dayOfWeek = now.getDay();
     const monday = new Date(now);
-    monday.setDate(now.getDate() - dayOfWeek + 1); // Monday of current week
+    monday.setDate(now.getDate() - dayOfWeek + 1);
     if (weekType === 'next') {
       monday.setDate(monday.getDate() + 7);
     } else if (weekType === 'twoWeeks') {
@@ -78,8 +78,22 @@ const WorkSchedule = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedDay || startTime >= endTime) return;
+    const duration = endTime - startTime;
 
+    if (!selectedDay) {
+      setError('Please select a day for the shift.');
+      return;
+    }
+    if (startTime >= endTime) {
+      setError('Start time must be before end time.');
+      return;
+    }
+    if (duration <= 4 || duration >= 10) {
+      setError('Shift must be longer than 4 hours and shorter than 10 hours.');
+      return;
+    }
+
+    setError('');
     setLoading(true);
     try {
       const startDate = new Date(selectedDay);
@@ -120,7 +134,7 @@ const WorkSchedule = ({ user }) => {
       setSelectedDay(null);
       setStartTime(9);
       setEndTime(17);
-      fetchMySchedules(); // Refresh the list
+      fetchMySchedules();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -200,7 +214,17 @@ const WorkSchedule = ({ user }) => {
               </label>
             </div>
           )}
-          <button type="submit" disabled={loading || !selectedDay || startTime >= endTime} data-cy="work-schedule-submit-btn">
+          <button
+            type="submit"
+            disabled={
+              loading ||
+              !selectedDay ||
+              startTime >= endTime ||
+              endTime - startTime <= 4 ||
+              endTime - startTime >= 10
+            }
+            data-cy="work-schedule-submit-btn"
+          >
             {loading ? 'Requesting...' : 'Request'}
           </button>
         </form>
@@ -216,7 +240,7 @@ const WorkSchedule = ({ user }) => {
               <li key={schedule._id} data-cy="my-schedule-item">
                 {formatDateTime(schedule.workHoursId?.startDate)} - {formatDateTime(schedule.workHoursId?.endDate)}
                 <span className={`status ${schedule.isAccepted ? 'accepted' : 'pending'}`} data-cy="schedule-status">
-                  {schedule.isAccepted ? 'Elfogadva' : 'Függőben'}
+                  {schedule.isAccepted ? 'Accepted' : 'Pending'}
                 </span>
               </li>
             ))}

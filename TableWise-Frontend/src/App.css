@@ -37,7 +37,7 @@
   --bg-main: #E7EDEB;
   --bg-surface: #FFFFFF;
   --bg-hover: #F5F7F6;
-  --text-main: #2C3E35;
+  --text-main: #000000;
   --text-muted: #5A6C62;
   --border-color: #CBD2CC;
   --accent-neon: #69A481;
@@ -202,6 +202,18 @@ p {
     transform: rotate(360deg);
   }
 }
+
+/* === FOOTER === */
+.main-footer {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--bg-main);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+
 
 /* === PAGE CONTAINERS === */
 .page-container {
@@ -910,6 +922,7 @@ p {
 
 .edit-btn,
 .danger-btn {
+  border: none;
   border-radius: 14px;
   padding: 0.9rem 1rem;
   min-width: 140px;
@@ -1265,6 +1278,13 @@ p {
   box-shadow: 0 0 10px var(--accent-glow);
 }
 
+.week-days button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--bg-main);
+  color: var(--text-muted);
+}
+
 .time-selection {
   margin: 1.5rem 0;
   padding: 1rem;
@@ -1363,6 +1383,7 @@ p {
 }
 
 .my-schedules li {
+  color: var(--text-main);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1495,18 +1516,6 @@ p {
 }
 
 /* Search */
-.search-container {
-  margin: 1.5rem 0;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 400px;
-}
-
-.search-input-wrapper {
-  position: relative;
-  max-width: 400px;
-}
 
 .search-input {
   width: 100%;
@@ -1516,63 +1525,16 @@ p {
   background: var(--bg-surface);
   color: var(--text-main);
   font-size: 1rem;
-  transition: var(--transition-fast);
 }
 
 .search-input:focus {
   outline: none;
+  color: var(--text-main);
   border-color: var(--accent-neon);
   box-shadow: 0 0 0 3px var(--accent-glow);
   background: var(--bg-main);
 }
 
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-.search-icon {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  transition: var(--transition-fast);
-}
-
-.search-input:focus+.search-clear+.search-icon,
-.search-input:focus+.search-icon {
-  color: var(--accent-neon);
-}
-
-.search-clear {
-  position: absolute;
-  right: 2.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  transition: var(--transition-fast);
-  padding: 2px;
-}
-
-.search-clear:hover {
-  background: var(--bg-hover);
-  color: var(--text-main);
-}
 
 /* Categories */
 .horizontal-category-menu {
@@ -1946,7 +1908,7 @@ p {
 .search-input {
   background: var(--bg-main);
   border: 1px solid var(--border-color);
-  color: white;
+  color: var(--text-main);
   padding: 0.8rem;
   border-radius: 6px;
   width: 100%;
@@ -2009,6 +1971,22 @@ p {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.availability-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.availability-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-neon);
+  cursor: pointer;
 }
 
 .meal-img-container {
@@ -2241,25 +2219,9 @@ button.danger:hover {
     font-size: 0.8rem;
   }
 
-  .search-container {
-    margin: 1rem 0;
-  }
-
   .search-input {
     padding: 0.7rem 3.2rem 0.7rem 0.9rem;
     font-size: 0.9rem;
-  }
-
-  .search-icon {
-    right: 0.9rem;
-    width: 18px;
-    height: 18px;
-  }
-
-  .search-clear {
-    right: 2.2rem;
-    width: 18px;
-    height: 18px;
   }
 
   .category-section {
@@ -2526,10 +2488,6 @@ button.danger:hover {
   .category-tab {
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
-  }
-
-  .search-container {
-    margin: 1rem 0;
   }
 
   .search-input {

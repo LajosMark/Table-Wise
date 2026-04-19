@@ -13,7 +13,7 @@ describe('Meal Management Page', () => {
       body: { data: [{ _id: 'meal1', name: 'Caesar Salad', price: 1500, categoryId: 'cat1' }] },
     }).as('getMeals');
 
-    cy.intercept('GET', '/api/ingridients', {
+    cy.intercept('GET', '/api/ingredients', {
       statusCode: 200,
       body: { data: [] },
     }).as('getIngredients');

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
+const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
 const AdminWorkSchedule = ({ user }) => {
   const [schedules, setSchedules] = useState([]);
@@ -25,7 +25,6 @@ const AdminWorkSchedule = ({ user }) => {
       minute: '2-digit',
     });
   };
-  console.log(new Date("2026-04-19T12:00:00.000Z"));
   useEffect(() => {
     if (!user || !user.token || !['admin', 'manager'].includes(user.data.role)) {
       setError('You do not have permission.');
@@ -45,7 +44,6 @@ const AdminWorkSchedule = ({ user }) => {
         },
       });
       const data = await response.json();
-      console.log(data)
       if (!response.ok) {
         if (response.status === 403 || response.status === 404) {
           throw new Error('errorNoPermissionSchedules');
@@ -92,7 +90,7 @@ const AdminWorkSchedule = ({ user }) => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg || 'Error updating schedule status');
-      fetchSchedules(); // Refresh the list
+      fetchSchedules();
     } catch (err) {
       setError(err.message);
     }
@@ -109,7 +107,7 @@ const AdminWorkSchedule = ({ user }) => {
         },
       });
       if (!response.ok) throw new Error('Error deleting schedule');
-      fetchSchedules(); // Refresh the list
+      fetchSchedules();
     } catch (err) {
       setError(err.message);
     }

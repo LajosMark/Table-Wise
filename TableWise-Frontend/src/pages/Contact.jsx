@@ -11,20 +11,25 @@ const Contact = () => {
         <aside className="contact-summary" data-cy="contact-summary">
           <h2 data-cy="contact-quick-contacts-title">Quick contacts</h2>
           <p data-cy="contact-quick-contacts-copy">Send us a message and we will reply within 24 hours.</p>
-          <div className="contact-pill" data-cy="contact-pill">Email: hello@example.com</div>
           <div className="contact-pill" data-cy="contact-pill">Phone: +36 20 123 4567</div>
         </aside>
       </div>
 
       <div className="contact-grid">
         <article className="contact-card contact-card--soft">
-          <h3>Send us a message</h3>
+          <h3>Join us</h3>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            at dictum mauris. Aliquam erat volutpat.
+           Want to be part of a dynamic team? Check out our current openings! <br />
+           <ul style={{ listStyleType: 'none', margin: 'auto' }}>
+            <li><strong>Pizza Chef</strong> <br />
+              Full Time - Complatitive salary
+            </li>
+            <li><strong>Delivery Driver</strong> <br />
+              Flexible schedule - immediate start
+            </li>
+           </ul>
           </p>
-          <p><strong>Email:</strong> hello@example.com</p>
-          <p><strong>Phone:</strong> +36 20 123 4567</p>
+
         </article>
 
         <article className="contact-card contact-card--soft">
@@ -33,8 +38,8 @@ const Contact = () => {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
             bibendum orci vitae augue lacinia, non tincidunt nunc aliquam.
           </p>
-          <p>Budapest, Main street 12.</p>
-          <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+          <p><strong>Address:</strong> 1052 Budapest, Deák Ferenc tér 1.</p>
+          <p><strong>Phone:</strong> +36 30 123 4567</p>
         </article>
       </div>
     </section>

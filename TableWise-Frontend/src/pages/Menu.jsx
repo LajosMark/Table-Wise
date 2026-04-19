@@ -87,47 +87,6 @@ const Menu = () => {
             ))}
           </div>
 
-          <div className="search-container" data-cy="menu-search-container">
-            <div className="search-input-wrapper">
-              <input
-                type="text"
-                placeholder="Search meals..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-                data-cy="menu-search-input"
-              />
-              {searchTerm && (
-                <button
-                  className="search-clear"
-                  onClick={() => setSearchTerm('')}
-                  aria-label="Clear search"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-              <div className="search-icon">
-                <svg
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
           <div className="categories-container">
             {categories.map((category) => {
               const meals = filteredMeals(category._id);
@@ -146,28 +105,30 @@ const Menu = () => {
                     <div className="meals-grid" data-cy="menu-meals-grid">
                       {meals.map((meal) => {
                         const image = meal.image;
-                        return (
-                          <article key={meal._id || meal.id} className="meal-card" data-cy="menu-meal-card">
-                            {image && (
-                              <div className="meal-card-image" data-cy="meal-card-image">
-                                <img
-                                  src={`${API_BASE}/images/${image}`}
-                                  alt={meal.name || meal.title || 'meal'}
-                                  loading="lazy"
-                                  onError={(e)=>{
-                                    e.target.src = `${API_BASE}/images/no-image.png`;
-                                    e.target.onerror = null;
-                                  }}
-                                />
+                        if (meal.isAvailable) {
+                          return (
+                            <article key={meal._id || meal.id} className="meal-card" data-cy="menu-meal-card">
+                              {image && (
+                                <div className="meal-card-image" data-cy="meal-card-image">
+                                  <img
+                                    src={`${API_BASE}/images/${image}`}
+                                    alt={meal.name || meal.title || 'meal'}
+                                    loading="lazy"
+                                    onError={(e)=>{
+                                      e.target.src = `${API_BASE}/images/no-image.png`;
+                                      e.target.onerror = null;
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              <div className="meal-card-content" data-cy="meal-card-content">
+                                <h3 data-cy="menu-meal-title">{meal.name || meal.title}</h3>
+                                {meal.description && <p className="meal-card-description" data-cy="menu-meal-description">{meal.description}</p>}
+                                {meal.price != null && <p className="price" data-cy="menu-meal-price">{meal.price} HUF</p>}
                               </div>
-                            )}
-                            <div className="meal-card-content" data-cy="meal-card-content">
-                              <h3 data-cy="menu-meal-title">{meal.name || meal.title}</h3>
-                              {meal.description && <p className="meal-card-description" data-cy="menu-meal-description">{meal.description}</p>}
-                              {meal.price != null && <p className="price" data-cy="menu-meal-price">{meal.price} HUF</p>}
-                            </div>
-                          </article>
-                        );
+                            </article>
+                          );
+                        }
                       })}
                     </div>
                   )}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
+const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
 const MealManagement = ({ user }) => {
   const [categories, setCategories] = useState([]);
@@ -11,7 +11,6 @@ const MealManagement = ({ user }) => {
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState('meals');
 
-  // Editing states
   const [editingMealId, setEditingMealId] = useState(null);
   const [mealEditData, setMealEditData] = useState({});
   const [editingCatId, setEditingCatId] = useState(null);
@@ -37,7 +36,7 @@ const MealManagement = ({ user }) => {
       const [catRes, mealRes, ingRes, fridgeRes] = await Promise.all([
         fetch(`${API_BASE}/api/meal-categories`, { headers: authHeaders() }),
         fetch(`${API_BASE}/api/meals`, { headers: authHeaders() }),
-        fetch(`${API_BASE}/api/ingridients`, { headers: authHeaders() }),
+        fetch(`${API_BASE}/api/ingredients`, { headers: authHeaders() }),
         fetch(`${API_BASE}/api/fridge-items`, { headers: authHeaders() }),
       ]);
 
@@ -59,7 +58,6 @@ const MealManagement = ({ user }) => {
 
   useEffect(() => { if (isAdminOrManager) loadData(); }, [isAdminOrManager]);
 
-  // --- FRIDGE ITEM EDIT ---
   const handleUpdateFridgeItem = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/fridge-items/${id}`, {
@@ -74,8 +72,6 @@ const MealManagement = ({ user }) => {
     } catch (err) { setError('Failed to update fridge item.'); }
   };
 
-
-  // --- CATEGORY EDIT ---
   const handleUpdateCategory = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/api/meal-categories/${id}`, {
@@ -108,6 +104,17 @@ const MealManagement = ({ user }) => {
     } catch (err) { setError('Save error.'); }
   };
 
+  const handleMealAvailabilityChange = async (mealId, isAvailable) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/meals/${mealId}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ isAvailable }),
+        });
+      if (res.ok) loadData();
+    } catch (err) { setError('Failed to update meal availability.'); }
+  };
+
   const handleImageUpload = async (mealId, file) => {
     if (!file) return;
     const formData = new FormData();
@@ -125,7 +132,7 @@ const MealManagement = ({ user }) => {
   const handleAddIngredientToMeal = async (mealId) => {
     if (!newIngredientRow.fridgeItemId || !newIngredientRow.amountOfIngredient) return;
     try {
-      const res = await fetch(`${API_BASE}/api/ingridients`, {
+      const res = await fetch(`${API_BASE}/api/ingredients`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
@@ -197,6 +204,9 @@ const MealManagement = ({ user }) => {
                   <div>
                     <h4>{meal.name}</h4>
                     <p className="price-tag">{meal.price} HUF</p>
+                    <label className="availability-toggle">
+                      Available: <input type='checkbox' checked={meal.isAvailable} onChange={(e) => handleMealAvailabilityChange(meal._id, e.target.checked)} />
+                    </label>
                   </div>
                 </div>
 
@@ -206,7 +216,7 @@ const MealManagement = ({ user }) => {
                     {ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).map(ing => (
                       <div key={ing._id} className="recipe-item">
                         <span>{ing.fridgeItemId?.name} - {ing.amountOfIngredient} {fridgeItems.find(f => String(f._id) === String(ing.fridgeItemId?._id))?.typeOfAmount || 'unit'}</span>
-                        <button onClick={() => genericDelete('/api/ingridients', ing._id)}>×</button>
+                        <button onClick={() => genericDelete('/api/ingredients', ing._id)}>×</button>
                       </div>
                     ))}
                     {ingredients.filter(i => String(i.mealId?._id || i.mealId) === String(meal._id)).length === 0 && (
