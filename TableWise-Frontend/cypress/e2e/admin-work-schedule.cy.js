@@ -1,4 +1,5 @@
-﻿describe('Admin Work Schedule Page', () => {
+﻿/* global describe, it, beforeEach, cy */
+describe('Admin Work Schedule Page', () => {
   beforeEach(() => {
     const adminUser = { token: 'admin-token', data: { role: 'admin' }, _id: 'admin1' };
     window.localStorage.setItem('user', JSON.stringify(adminUser));

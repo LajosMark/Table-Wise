@@ -1,4 +1,5 @@
-﻿describe('Work Schedule Page', () => {
+﻿/* global describe, it, beforeEach, cy */
+describe('Work Schedule Page', () => {
   beforeEach(() => {
     const user = { token: 'fake-token', data: { role: 'employee' }, _id: 'user1' };
     window.localStorage.setItem('user', JSON.stringify(user));

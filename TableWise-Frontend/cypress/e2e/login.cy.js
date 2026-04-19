@@ -1,4 +1,5 @@
-﻿describe('Login Page', () => {
+﻿/* global describe, it, beforeEach, cy, Cypress */
+describe('Login Page', () => {
   beforeEach(() => {
     cy.intercept('POST', '/api/users/login', {
       statusCode: 200,

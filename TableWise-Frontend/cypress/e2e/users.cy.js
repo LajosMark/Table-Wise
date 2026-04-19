@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, cy */
 describe('Users Page', () => {
   beforeEach(() => {
     const adminUser = { token: 'admin-token', data: { role: 'admin' }, _id: 'admin1' };

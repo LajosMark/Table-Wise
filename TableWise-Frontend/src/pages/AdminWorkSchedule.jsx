@@ -1,17 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
 const AdminWorkSchedule = ({ user }) => {
   const [schedules, setSchedules] = useState([]);
-  const [workHours, setWorkHours] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState({
-    usersId: '',
-    workHoursId: '',
-  });
 
   const formatDateTime = (dateString) => {
     if (!dateString) return '';
@@ -25,16 +18,8 @@ const AdminWorkSchedule = ({ user }) => {
       minute: '2-digit',
     });
   };
-  useEffect(() => {
-    if (!user || !user.token || !['admin', 'manager'].includes(user.data.role)) {
-      setError('You do not have permission.');
-      return;
-    }
-    fetchSchedules();
-    fetchWorkHours();
-  }, [user]);
 
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE}/api/schedules`, {
         method: 'GET',
@@ -54,29 +39,17 @@ const AdminWorkSchedule = ({ user }) => {
     } catch (err) {
       setError(err.message);
     }
-  };
+  }, [user.token]);
 
-  const fetchWorkHours = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/api/hours`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        if (response.status === 403 || response.status === 404) {
-          throw new Error('errorNoPermissionWorkHours');
-        }
-        throw new Error(data.msg || 'Error loading work hours');
-      }
-      setWorkHours(data.data || []);
-    } catch (err) {
-      setError(err.message);
+  useEffect(() => {
+    if (!user || !user.token || !['admin', 'manager'].includes(user.data.role)) {
+      setError('You do not have permission.');
+      return;
+    } else {
+      fetchSchedules();
     }
-  };
+  }, [fetchSchedules, user]);
+
 
   const handleAccept = async (scheduleId, isAccepted) => {
     try {
@@ -110,30 +83,6 @@ const AdminWorkSchedule = ({ user }) => {
       fetchSchedules();
     } catch (err) {
       setError(err.message);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE}/api/schedules`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.msg || 'Error creating schedule');
-      setShowAddForm(false);
-      setFormData({ usersId: '', workHoursId: '' });
-      fetchSchedules();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 

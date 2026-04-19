@@ -7,7 +7,6 @@ const Menu = () => {
   const [allMeals, setAllMeals] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
   const categoryRefs = useRef({});
 
   const fetchCategoriesAndMeals = async () => {
@@ -56,15 +55,6 @@ const Menu = () => {
     }
   };
 
-  const filteredMeals = (categoryId) => {
-    const meals = allMeals[categoryId] || [];
-    if (!searchTerm) return meals;
-    return meals.filter((meal) =>
-      (meal.name || meal.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (meal.description || '').toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
   return (
     <section className="page-container menu-page" data-cy="menu-page">
       <h1 data-cy="menu-title">Menu</h1>
@@ -89,7 +79,7 @@ const Menu = () => {
 
           <div className="categories-container">
             {categories.map((category) => {
-              const meals = filteredMeals(category._id);
+              const meals = allMeals[category._id];
               return (
                 <section
                   key={category._id}

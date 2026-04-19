@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
@@ -7,7 +7,6 @@ const MealManagement = ({ user }) => {
   const [meals, setMeals] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [fridgeItems, setFridgeItems] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState('meals');
 
@@ -24,14 +23,13 @@ const MealManagement = ({ user }) => {
 
   const isAdminOrManager = user?.token && ['admin', 'manager'].includes(user.data?.role);
 
-  const authHeaders = (isMultipart = false) => {
+  const authHeaders = useCallback((isMultipart = false) => {
     const headers = { Authorization: `Bearer ${user.token}` };
     if (!isMultipart) headers['Content-Type'] = 'application/json';
     return headers;
-  };
-
-  const loadData = async () => {
-    setLoading(true);
+  }, [user.token]);
+  
+  const loadData = useCallback(async () => {
     try {
       const [catRes, mealRes, ingRes, fridgeRes] = await Promise.all([
         fetch(`${API_BASE}/api/meal-categories`, { headers: authHeaders() }),
@@ -50,13 +48,15 @@ const MealManagement = ({ user }) => {
       setIngredients(Array.isArray(ingData) ? ingData : ingData.data || []);
       setFridgeItems(fridgeData || []);
     } catch (err) {
-      setError('Error synchronizing data.');
-    } finally {
-      setLoading(false);
+      setError('Error synchronizing data.' + (err.message || ''));
     }
-  };
+  }, [authHeaders]);
 
-  useEffect(() => { if (isAdminOrManager) loadData(); }, [isAdminOrManager]);
+  useEffect(() => { 
+    if (isAdminOrManager) {
+      loadData()
+    };
+  }, [isAdminOrManager, loadData]);
 
   const handleUpdateFridgeItem = async (id) => {
     try {
@@ -69,7 +69,7 @@ const MealManagement = ({ user }) => {
         setEditingFridgeItemId(null);
         loadData();
       }
-    } catch (err) { setError('Failed to update fridge item.'); }
+    } catch (err) { setError('Failed to update fridge item.' + (err.message || '')); }
   };
 
   const handleUpdateCategory = async (id) => {
@@ -83,7 +83,7 @@ const MealManagement = ({ user }) => {
         setEditingCatId(null);
         loadData();
       }
-    } catch (err) { setError('Failed to update category.'); }
+    } catch (err) { setError('Failed to update category.' + (err.message || '')); }
   };
 
   const handleMealSubmit = async (e) => {
@@ -101,7 +101,7 @@ const MealManagement = ({ user }) => {
         setMealEditData({});
         loadData();
       }
-    } catch (err) { setError('Save error.'); }
+    } catch (err) { setError('Save error.' + (err.message || '')); }
   };
 
   const handleMealAvailabilityChange = async (mealId, isAvailable) => {
@@ -110,9 +110,9 @@ const MealManagement = ({ user }) => {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ isAvailable }),
-        });
+      });
       if (res.ok) loadData();
-    } catch (err) { setError('Failed to update meal availability.'); }
+    } catch (err) { setError('Failed to update meal availability.' + (err.message || '')); }
   };
 
   const handleImageUpload = async (mealId, file) => {
@@ -126,7 +126,7 @@ const MealManagement = ({ user }) => {
         body: formData,
       });
       loadData();
-    } catch (err) { setError('Image upload failed.'); }
+    } catch (err) { setError('Image upload failed.' + (err.message || '')); }
   };
 
   const handleAddIngredientToMeal = async (mealId) => {
@@ -146,7 +146,7 @@ const MealManagement = ({ user }) => {
         loadData();
       }
     } catch (err) {
-      setError('Error adding ingredient.');
+      setError('Error adding ingredient.' + (err.message || ''));
     }
   };
 
@@ -195,7 +195,7 @@ const MealManagement = ({ user }) => {
               <div key={meal._id} className="meal-card card-surface">
                 <div className="meal-card-header">
                   <div className="meal-img-container">
-                    <img src={`${API_BASE}/images/${meal.image}`} alt={meal.name} onError={(e) => {e.target.src = `${API_BASE}/images/no-image.png`; e.target.onerror = null;}}/>
+                    <img src={`${API_BASE}/images/${meal.image}`} alt={meal.name} onError={(e) => { e.target.src = `${API_BASE}/images/no-image.png`; e.target.onerror = null; }} />
                     <label className="image-upload-overlay">
                       <input type="file" onChange={(e) => handleImageUpload(meal._id, e.target.files[0])} hidden />
                       <span>📸</span>
@@ -289,8 +289,10 @@ const MealManagement = ({ user }) => {
               <input className="search-input" placeholder="Name" value={newFridgeItem.name} onChange={e => setNewFridgeItem({ ...newFridgeItem, name: e.target.value })} required />
               <div style={{ display: 'flex', gap: '4px' }}>
                 <input className="search-input" type="number" placeholder="Quantity" value={newFridgeItem.amount} onChange={e => setNewFridgeItem({ ...newFridgeItem, amount: e.target.value })} required />
-                <input className="search-input" placeholder="Unit (e.g. kg, pcs)" value={newFridgeItem.typeOfAmount} onChange={e => setNewFridgeItem({ ...newFridgeItem, typeOfAmount
-                  : e.target.value })} required />
+                <input className="search-input" placeholder="Unit (e.g. kg, pcs)" value={newFridgeItem.typeOfAmount} onChange={e => setNewFridgeItem({
+                  ...newFridgeItem, typeOfAmount
+                    : e.target.value
+                })} required />
               </div>
               <input className="search-input" type="number" placeholder="Unit price" value={newFridgeItem.pricePerUnit} onChange={e => setNewFridgeItem({ ...newFridgeItem, pricePerUnit: e.target.value })} required />
               <input className="search-input" type="number" placeholder="Warning threshold (%)" value={newFridgeItem.warningAmountPercentage} onChange={e => setNewFridgeItem({ ...newFridgeItem, warningAmountPercentage: e.target.value })} required />

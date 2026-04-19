@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-const Header = ({ user, setUser }) => {
+const Header = ({ user }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    setMenuOpen(false);
-  };
   return (
     <nav className="navbar">
       <Link to="/" className="logo" style={{ textDecoration: 'none' }}>
