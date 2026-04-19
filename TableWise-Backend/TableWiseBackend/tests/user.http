@@ -5,8 +5,8 @@ POST {{baseUrl}}/api/users/login
 Content-Type: application/json
 
 {
-  "email": "admin@admin.com",
-  "password": "adminadmin"
+  "email": "daniel.kovacs@tablewise.local",
+  "password": "Admin123!"
 }
 
 @token =
@@ -33,23 +33,23 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "rest-user",
-  "email": "rest-user@example.com",
-  "password": "restpassword",
-  "role": "manager"
+  "name": "Kata Simon",
+  "email": "kata.simon@example.com",
+  "password": "Kata123!",
+  "role": "employee"
 }
 
 ### Update user (admin or owner)
-PATCH {{baseUrl}}/api/users/3
+PATCH {{baseUrl}}/api/users/4
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "admin-updated"
+  "name": "Lilla Farkas Updated"
 }
 
 ### Delete user (admin only)
-DELETE {{baseUrl}}/api/users/5
+DELETE {{baseUrl}}/api/users/10
 Authorization: Bearer {{token}}
 
 ### Test rate limiting (should fail after 5 attempts within 1 minute)
@@ -57,6 +57,6 @@ POST {{baseUrl}}/api/users/login
 Content-Type: application/json
 
 {
-  "email": "admin@admin.com",
+  "email": "daniel.kovacs@tablewise.local",
   "password": "wrongpassword"
 }

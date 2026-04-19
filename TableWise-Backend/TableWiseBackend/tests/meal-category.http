@@ -16,7 +16,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "REST Test Category"
+  "name": "Seasonal Specials"
 }
 
 ### Update meal category (admin only)
@@ -25,7 +25,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Updated Category Name"
+  "name": "Appetizers and Starters"
 }
 
 ### Delete meal category (admin only)

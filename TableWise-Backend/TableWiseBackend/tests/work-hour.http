@@ -21,7 +21,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "startDate": "2026-04-20T09:00:00Z"
+  "startDate": "2026-03-10T09:00:00Z"
 }
 
 ### Delete work hour (admin/manager only)

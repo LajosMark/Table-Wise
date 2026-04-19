@@ -15,9 +15,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "mealId": 101,
-  "fridgeItemId": 1,
-  "amountOfIngredient": 2
+  "mealId": 1,
+  "fridgeItemId": 12,
+  "amountOfIngredient": 0.1
 }
 
 ### Update ingredient (admin/manager only)
@@ -26,7 +26,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "amountOfIngredient": 3
+  "amountOfIngredient": 0.2
 }
 
 ### Delete ingredient (admin/manager only)

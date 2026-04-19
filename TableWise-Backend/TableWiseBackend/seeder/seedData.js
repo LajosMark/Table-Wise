@@ -17,15 +17,13 @@ module.exports.Data = {
     WorkSchedules:
         [
             { "_id": 1, "usersId": 1, "workHoursId": 1, "isAccepted": true },
-            { "_id": 2, "usersId": 2, "workHoursId": 1, "isAccepted": true },
+            { "_id": 2, "usersId": 2, "workHoursId": 1, "isAccepted": false },
             { "_id": 3, "usersId": 3, "workHoursId": 2, "isAccepted": true },
             { "_id": 4, "usersId": 4, "workHoursId": 2, "isAccepted": false },
             { "_id": 5, "usersId": 5, "workHoursId": 3, "isAccepted": true },
-            { "_id": 6, "usersId": 6, "workHoursId": 3, "isAccepted": true },
+            { "_id": 6, "usersId": 6, "workHoursId": 3, "isAccepted": false },
             { "_id": 7, "usersId": 7, "workHoursId": 4, "isAccepted": true },
             { "_id": 8, "usersId": 8, "workHoursId": 5, "isAccepted": true },
-            { "_id": 9, "usersId": 9, "workHoursId": 6, "isAccepted": false },
-            { "_id": 10, "usersId": 10, "workHoursId": 7, "isAccepted": true }
         ],
 
     WorkHours:

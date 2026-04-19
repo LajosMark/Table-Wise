@@ -13,11 +13,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "REST Test Meal",
-  "ingridientId": 101,
+  "name": "Roasted Tomato Crostini",
   "price": 2500,
   "categoryId": 1,
-  "isAvailable": true
+  "isAvailable": true,
+  "image": "roasted-tomato-crostini.png"
 }
 
 ### Upload image for meal 1 (admin/manager only)
@@ -39,7 +39,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "price": 2700
+  "price": 1350,
+  "image": "bruschetta.png"
 }
 
 ### Delete meal (admin only)

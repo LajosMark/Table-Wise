@@ -11,7 +11,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "usersId": 3,
+  "usersId": 9,
   "workHoursId": 1,
   "isAccepted": false
 }
@@ -21,7 +21,7 @@ GET {{baseUrl}}/api/schedules/my
 Authorization: Bearer {{token}}
 
 ### Get schedules for user (admin/manager only)
-GET {{baseUrl}}/api/schedules/users/3
+GET {{baseUrl}}/api/schedules/users/1
 Authorization: Bearer {{token}}
 
 ### Approve schedule (admin/manager only)
