@@ -1,0 +1,11 @@
+:root {
+  --bg-main: #2C2C2C;
+}
+
+[data-theme='light'] {
+  --bg-main: #E7EDEB;
+}
+
+body{
+    background-color: var(--bg-main);
+}
