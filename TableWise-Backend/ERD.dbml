@@ -1,0 +1,70 @@
+Table users {
+  _id int [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  role varchar [not null, default: 'employee']
+  password varchar [not null]
+  resetPasswordToken varchar
+  resetPasswordExpire datetime
+  tokenInvalidBefore datetime
+  createdAt datetime
+}
+
+Table mealCategories {
+  _id int [pk]
+  name varchar [not null, unique]
+}
+
+Table meals {
+  _id int [pk]
+  name varchar [not null]
+  price float [not null]
+  isAvailable boolean [not null, default: true]
+  categoryId int [not null]
+  image varchar [not null, default: 'no-image.png']
+}
+
+Table ingredients {
+  _id int [pk]
+  mealId int [not null]
+  fridgeItemId int [not null]
+  amountOfIngredient float [not null]
+}
+
+Table fridgeItems {
+  _id int [pk]
+  name varchar [not null]
+  amount float [not null]
+  typeOfAmount varchar [not null]
+  pricePerUnit float [not null]
+  warningAmountPercentage int [not null]
+}
+
+Table orders {
+  _id int [pk]
+  mealId int [not null]
+  discount float [not null, default: 0]
+  amount int [not null]
+  status varchar [not null, default: 'pending']
+  createdAt datetime
+}
+
+Table workHours {
+  _id int [pk]
+  startDate datetime [not null]
+  endDate datetime [not null]
+}
+
+Table workSchedules {
+  _id int [pk]
+  usersId int [not null]
+  workHoursId int [not null]
+  isAccepted boolean [not null, default: false]
+}
+
+Ref: meals.categoryId > mealCategories._id
+Ref: ingredients.mealId > meals._id
+Ref: ingredients.fridgeItemId > fridgeItems._id
+Ref: orders.mealId > meals._id
+Ref: workSchedules.usersId > users._id
+Ref: workSchedules.workHoursId > workHours._id

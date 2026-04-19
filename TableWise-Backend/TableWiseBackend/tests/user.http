@@ -1,0 +1,58 @@
+@baseUrl = http://localhost:3000
+@token =
+
+### Login as admin
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "daniel.kovacs@tablewise.local",
+  "password": "Admin123!"
+}
+
+
+### Get current user profile
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{token}}
+
+### Logout current user
+POST {{baseUrl}}/api/users/logout
+Authorization: Bearer {{token}}
+
+### List users (admin only)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+
+### Create a new user (admin only)
+POST {{baseUrl}}/api/users/register
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Kata Simon",
+  "email": "kata.simon@example.com",
+  "password": "Kata123!",
+  "role": "employee"
+}
+
+### Update user (admin or owner)
+PATCH {{baseUrl}}/api/users/4
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Lilla Farkas Updated"
+}
+
+### Delete user (admin only)
+DELETE {{baseUrl}}/api/users/10
+Authorization: Bearer {{token}}
+
+### Test rate limiting (should fail after 5 attempts within 1 minute)
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "daniel.kovacs@tablewise.local",
+  "password": "wrongpassword"
+}

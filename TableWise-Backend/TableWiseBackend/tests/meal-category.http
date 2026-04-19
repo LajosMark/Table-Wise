@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:3000
+@token = 
+
+### List meal categories
+GET {{baseUrl}}/api/meal-categories
+
+### Get category by id
+GET {{baseUrl}}/api/meal-categories/1
+
+### Get meals by category id
+GET {{baseUrl}}/api/meal-categories/1/meals
+
+### Create meal category (admin only)
+POST {{baseUrl}}/api/meal-categories
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Seasonal Specials"
+}
+
+### Update meal category (admin only)
+PATCH {{baseUrl}}/api/meal-categories/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Appetizers and Starters"
+}
+
+### Delete meal category (admin only)
+DELETE {{baseUrl}}/api/meal-categories/1
+Authorization: Bearer {{token}}
