@@ -11,13 +11,11 @@ namespace TableWise.Models
     public class FoodItem
     {
         [JsonPropertyName("_id")]
-        public int Id { get; set; } // Az adatbázisban 6-os, de lehet string is a MongoDB miatt
+        public int Id { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        // Mivel a DB-ben nincs 'Description', használjuk az 'ingridientId'-t ideiglenesen, 
-        // vagy hagyd üresen, de a JSON-ben nem létezik 'Description' kulcs!
         [JsonPropertyName("ingridientId")]
         public int ingridientId { get; set; }
 
@@ -26,6 +24,10 @@ namespace TableWise.Models
 
         [JsonPropertyName("image")]
         public string Image { get; set; }
+
+
+        [JsonIgnore] // Ez fontos, hogy ne akarja visszaküldeni a szervernek!
+        public string FullImageUrl => $"https://table-wise-backend-for-render-hosting-1.onrender.com/images/{Image}";
 
         [JsonPropertyName("price")]
         public int Price { get; set; }

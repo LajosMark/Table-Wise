@@ -10,7 +10,7 @@ namespace TableWise.Services
 {
     public static class DataService
     {
-        static string url = "http://10.0.2.2:3000";
+        static string url = "https://table-wise-backend-for-render-hosting-1.onrender.com";
         // Egy közös HttpClient, hogy ne kelljen minden metódusban újat létrehozni
         static HttpClient client = new HttpClient();
 
@@ -39,7 +39,7 @@ namespace TableWise.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return (true, "Sikeres regisztráció!");
+                    return (true, "Succesful registration!");
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace TableWise.Services
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
                         response.StatusCode == System.Net.HttpStatusCode.Forbidden)
                     {
-                        return (false, "Nincs jogosultságod (Admin/Manager szint szükséges)!");
+                        return (false, "Not authorized (Admin/Manager acces needed)!");
                     }
 
                     try
@@ -58,14 +58,14 @@ namespace TableWise.Services
                     }
                     catch
                     {
-                        return (false, "Hiba történt a regisztráció során.");
+                        return (false, "Error while registering.");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Regisztrációs hiba: {ex.Message}");
-                return (false, "Nem sikerült elérni a szervert.");
+                return (false, "Could not reach the server.");
             }
         }
 
@@ -119,7 +119,6 @@ namespace TableWise.Services
 
         public static void Logout()
         {
-            // Egyszerűen töröljük a tokent a telefonról
             Preferences.Remove("user_token");
         }
 
@@ -157,7 +156,8 @@ namespace TableWise.Services
         {
             try
             {
-                var response = await client.GetAsync($"{url}/api/mealCategories");
+
+                var response = await client.GetAsync($"{url}/api/meal-categories");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -175,7 +175,9 @@ namespace TableWise.Services
         {
             try
             {
-                var response = await client.GetAsync($"{url}/api/mealCategories/{categoryId}/meals");
+                var response = await client.GetAsync($"{url}/api/meal-categories/{categoryId}/meals");
+
+                //System.Diagnostics.Debug.WriteLine($"🌐 API Status: {response.StatusCode}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -198,7 +200,7 @@ namespace TableWise.Services
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
 
-                var response = await client.GetAsync($"{url}/api/fridgeItems");
+                var response = await client.GetAsync($"{url}/api/fridge-items");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -219,7 +221,7 @@ namespace TableWise.Services
             }
             catch (Exception ex)
             {
-                // Debug.WriteLine($"HIBA A FELDOLGOZÁSNÁL: {ex.Message}");
+                 Debug.WriteLine($"HIBA A FELDOLGOZÁSNÁL: {ex.Message}");
             }
             return new List<InventoryItem>();
         }
@@ -236,11 +238,11 @@ namespace TableWise.Services
                 DateTime endDateTime = date.Date.AddHours(endHour);
 
                 var scheduleData = new Dictionary<string, object>
-{
-    { "startDate", startDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
-    { "endDate", endDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
-    { "isAccepted", false } // Maradjon false, de nézzük meg a beállításokat
-};
+                {
+                    { "startDate", startDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+                    { "endDate", endDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+                    { "isAccepted", false }
+                };
 
                 var options = new JsonSerializerOptions
                 {

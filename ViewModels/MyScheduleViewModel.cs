@@ -37,33 +37,36 @@ namespace TableWise.ViewModels
         [RelayCommand]
         public async Task LoadSchedules()
         {
-            // Megakadályozzuk a dupla futást
-            if (IsBusy) return;
-            IsBusy = true;
-
-            IsBusy = true;
+            Debug.WriteLine("🔄 [DEBUG] LoadSchedules elindult...");
 
 
             try
             {
+                // 2. Csak akkor állítjuk kézzel true-ra, ha nem a RefreshView indította (pl. gombnyomás)
+                // De a biztonság kedvéért kényszerítjük
+                IsBusy = true;
+                Debug.WriteLine($"✅ [DEBUG] IsBusy beállítva: {IsBusy}");
+
                 var hours = await DataService.GetUpcomingSchedulesAsync();
 
-                var today = DateTime.Today;
+                // Biztonsági ellenőrzés, ha null jönne vissza
+                if (hours == null) hours = new List<WorkHour>();
 
+                var today = DateTime.Today;
                 var filteredHours = hours
                         .Where(h => h.Details != null && h.Details.StartDate.Date >= today)
                         .OrderBy(h => h.Details.StartDate)
                         .ToList();
 
-                // UI szálon frissítjük a listát
+                // 3. UI frissítése
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     MySchedules.Clear();
-                    foreach (var hour in filteredHours) // A szűrt listát adjuk hozzá
+                    foreach (var hour in filteredHours)
                     {
                         MySchedules.Add(hour);
                     }
-
+                    Debug.WriteLine("📋 [DEBUG] Lista frissítve a UI-on.");
                 });
             }
             catch (Exception ex)
@@ -72,7 +75,16 @@ namespace TableWise.ViewModels
             }
             finally
             {
-                IsBusy = false;
+                Debug.WriteLine("🏁 [DEBUG] Finally ág elérése...");
+                // Adunk a UI-nak egy lélegzetvételnyi szünetet
+                await Task.Delay(500);
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    IsBusy = false;
+                    OnPropertyChanged(nameof(IsBusy)); // Kézi kényszerítés
+                    Debug.WriteLine($"🛑 [DEBUG] IsBusy leállítva: {IsBusy}");
+                });
             }
         }
     }

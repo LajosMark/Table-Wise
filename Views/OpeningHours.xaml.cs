@@ -41,47 +41,34 @@ public partial class OpeningHours : ContentPage
     {
         try
         {
-            // 1. Jogosultság kérése
+            // 1. Jogosultság ellenőrzése
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
-                await DisplayAlert("Error", "Please enable location access in your settings to measure distance.", "OK");
+                await DisplayAlert("Error", "Please enable location access!", "OK");
                 return;
             }
 
-            // 2. Először megpróbáljuk a legutolsó ismert pozíciót lekérni (ez azonnali!)
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
-
-            // 3. Ha nincs elmentett pozíció, vagy frissebbet akarunk, kérünk egy újat
-            if (location == null)
-            {
-                location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest
-                {
-                    DesiredAccuracy = GeolocationAccuracy.Medium,
-                    Timeout = TimeSpan.FromSeconds(10) // 3-ról felemeltem 10-re a biztonság kedvéért
-                });
-            }
+            // 2. KÖZVETLENÜL a friss pozíciót kérjük le! 
+            // Kihagyjuk a GetLastKnownLocation-t, mert az nem frissül.
+            var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+            Location location = await Geolocation.Default.GetLocationAsync(request);
 
             if (location != null)
             {
+                // Számítás és kiírás
+                Location restaurantLoc = new Location(restaurantLat, restaurantLon);
+                double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
+
                 MainThread.BeginInvokeOnMainThread(() => {
                     LocationLabel.Text = $"Lat: {Math.Round(location.Latitude, 3)}, Lon: {Math.Round(location.Longitude, 3)}";
-
-                    Location restaurantLoc = new Location(restaurantLat, restaurantLon);
-                    double distance = location.CalculateDistance(restaurantLoc, DistanceUnits.Kilometers);
-
                     DistanceLabel.Text = $"{Math.Round(distance, 2)} km away from you";
                 });
-            }
-            else
-            {
-                await DisplayAlert("GPS error", "Could not get your position. Try again!", "OK");
             }
         }
         catch (Exception ex)
         {
-            // System.Diagnostics.Debug.WriteLine($"❌ GPS hiba: {ex.Message}");
-            await DisplayAlert("Error", "Check your GPW settings and your network!", "OK");
+            await DisplayAlert("Error", "Check your GPS settings!", "OK");
         }
     }
 }

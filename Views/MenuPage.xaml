@@ -37,7 +37,7 @@
                                         BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2C2C2C}" 
                                         StrokeThickness="2"
                                         Stroke="{AppThemeBinding Light=#69A481, Dark=Yellow}">
-                                            <Image Source="{Binding Icon}" Aspect="AspectFit" Margin="10" />
+                                            <Image Source="{Binding LocalIconSource}" Aspect="AspectFill" />
                                         </Border>
                                         <Label Text="{Binding Name}" HorizontalOptions="Center" FontSize="12"
                                        TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
@@ -66,7 +66,7 @@
                             </Border.GestureRecognizers>
                             <Grid ColumnDefinitions="100, *, Auto" ColumnSpacing="15">
                                 <Border Grid.Column="0" StrokeShape="RoundRectangle 10" HeightRequest="80" WidthRequest="80" StrokeThickness="0">
-                                    <Image Source="{Binding Image}" Aspect="AspectFill" />
+                                <Image Source="{Binding FullImageUrl}" Aspect="AspectFill" />
                                 </Border>
                                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                     <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16"

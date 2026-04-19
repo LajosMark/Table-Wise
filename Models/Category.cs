@@ -19,5 +19,21 @@ namespace TableWise.Models
         // Feltételezve, hogy az API-ban 'icon' vagy 'image' néven jön az ikon
         [JsonPropertyName("icon")]
         public string Image { get; set; }
+
+        [JsonIgnore]
+        public string LocalIconSource => Id switch
+        {
+            1 => "bruschetta.png",   // appetizers
+            2 => "tomatosoup.png",  // soup
+            3 => "grilledchiken.jpg", //maincourse
+            4 => "margaritapizza.jpg", // pizza
+            5 => "pastacarbonara.jpg", // pasta
+            6 => "greeksalad.jpg", // salad
+            7 => "tiramisu.jpg", // dessert
+            8 => "espresso.jpg", // bevarages
+            9 => "frenchfries.jpg", // sides
+            10 => "smallpizza.jpg", // kids menu
+            _ => "cheese_burger.jpg"   // Minden más esetben
+        };
     }
 }

@@ -8,7 +8,8 @@
              Title="My Shifts 🗓️">
     <Grid>
         <RefreshView x:Name="MyRefreshView"
-                 Command="{Binding LoadSchedulesCommand}">
+                 Command="{Binding LoadSchedulesCommand}"
+                     IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
 
             <CollectionView ItemsSource="{Binding MySchedules}">
 

@@ -150,8 +150,26 @@ namespace TableWise.ViewModels
                 await Application.Current.MainPage.DisplayAlert("Error", "User id not found. Please login again", "OK");
                 return;
             }
-            // 1. Validálás (ezt már megírtad)
-            if (StartHour >= EndHour) { /* ... */ return; }
+
+            double duration = EndHour - StartHour;
+
+            if (StartHour >= EndHour)
+            {
+                await Application.Current.MainPage.DisplayAlert("Validation Error", "The end time must be later than the start time!", "OK");
+                return;
+            }
+
+            if (duration < 4)
+            {
+                await Application.Current.MainPage.DisplayAlert("Validation Error", "A shift must be at least 4 hours long!", "OK");
+                return;
+            }
+
+            if (duration > 10)
+            {
+                await Application.Current.MainPage.DisplayAlert("Validation Error", "A shift cannot exceed 10 hours!", "OK");
+                return;
+            }
 
             // 2. Első lépés: Idősáv létrehozása
             var hourResult = await DataService.SubmitWorkScheduleAsync(SelectedDate, (int)Math.Floor(StartHour), (int)Math.Floor(EndHour));
