@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
 namespace TableWise.Models
@@ -14,19 +9,21 @@ namespace TableWise.Models
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
+        // Ha a backend egy listát küld "ingredients" néven:
         [JsonPropertyName("ingridientId")]
         public int ingridientId { get; set; }
 
-        [JsonPropertyName("description")]
-        public string Description { get; set; }
+        [JsonIgnore]
+        public ObservableCollection<string> Ingredients { get; set; } = new ObservableCollection<string>();
+
+
 
         [JsonPropertyName("image")]
         public string Image { get; set; }
 
-
-        [JsonIgnore] // Ez fontos, hogy ne akarja visszaküldeni a szervernek!
+        [JsonIgnore]
         public string FullImageUrl => $"https://table-wise-backend-for-render-hosting-1.onrender.com/images/{Image}";
 
         [JsonPropertyName("price")]

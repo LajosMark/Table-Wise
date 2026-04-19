@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+Ôªøusing System.Collections.ObjectModel;
 using TableWise.Models;
 using TableWise.Services;
 using TableWise.Views;
@@ -33,7 +33,7 @@ public partial class MenuPage : ContentPage
 
             if (liveCategories != null)
             {
-                // 1. Elıszˆr ¸rÌt¸nk mindent a fısz·lon
+                // 1. El≈ësz√∂r √ºr√≠t√ºnk mindent a f≈ësz√°lon
                 MainThread.BeginInvokeOnMainThread(() => {
                     Categories.Clear();
                     FoodGroups.Clear();
@@ -60,7 +60,7 @@ public partial class MenuPage : ContentPage
 
     private void OnScrollToTopClicked(object sender, EventArgs e)
     {
-        // Csak ha az elızı nem v·lna be:
+        // Csak ha az el≈ëz≈ë nem v√°lna be:
         var firstItem = FoodGroups.FirstOrDefault()?.FirstOrDefault();
         if (firstItem != null)
         {
@@ -72,13 +72,23 @@ public partial class MenuPage : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is Category selectedCategory)
         {
-            // Megkeress¸k a csoportot, aminek a neve megegyezik a v·lasztott kategÛri·val
+            // 1. Megkeress√ºk a csoportot
             var targetGroup = FoodGroups.FirstOrDefault(g => g.Name == selectedCategory.Name);
 
-            if (targetGroup != null)
+            if (targetGroup != null && targetGroup.Count > 0)
             {
-                // A CollectionView mag·tÛl oda tud gˆrgetni a csoporthoz!
-                // Itt a 'FoodCollectionView' a CollectionView x:Name-je legyen!
+                // üöÄ A tr√ºkk: Nem a csoportra, hanem a csoport ELS≈ê elem√©re g√∂rget√ºnk
+                var firstItemInGroup = targetGroup[0];
+
+                FoodCollectionView.ScrollTo(
+                    item: firstItemInGroup,
+                    group: targetGroup, // Megadjuk a csoportot is, hogy tudja, hol keresse
+                    position: ScrollToPosition.Start,
+                    animate: true);
+            }
+            else if (targetGroup != null)
+            {
+                // Ha √ºres a csoport, marad a csoportra g√∂rget√©s
                 FoodCollectionView.ScrollTo(targetGroup, position: ScrollToPosition.Start, animate: true);
             }
 

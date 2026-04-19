@@ -139,13 +139,23 @@ namespace TableWise
         {
             if (e.CurrentSelection.FirstOrDefault() is Category selectedCategory)
             {
-                // Megkeressük a csoportot, aminek a neve megegyezik a választott kategóriával
+                // 1. Megkeressük a csoportot
                 var targetGroup = FoodGroups.FirstOrDefault(g => g.Name == selectedCategory.Name);
 
-                if (targetGroup != null)
+                if (targetGroup != null && targetGroup.Count > 0)
                 {
-                    // A CollectionView magától oda tud görgetni a csoporthoz!
-                    // Itt a 'FoodCollectionView' a CollectionView x:Name-je legyen!
+                    // 🚀 A trükk: Nem a csoportra, hanem a csoport ELSŐ elemére görgetünk
+                    var firstItemInGroup = targetGroup[0];
+
+                    FoodCollectionView.ScrollTo(
+                        item: firstItemInGroup,
+                        group: targetGroup, // Megadjuk a csoportot is, hogy tudja, hol keresse
+                        position: ScrollToPosition.Start,
+                        animate: true);
+                }
+                else if (targetGroup != null)
+                {
+                    // Ha üres a csoport, marad a csoportra görgetés
                     FoodCollectionView.ScrollTo(targetGroup, position: ScrollToPosition.Start, animate: true);
                 }
 

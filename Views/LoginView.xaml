@@ -71,8 +71,8 @@
                 Command="{Binding LoginCommand}" />
 
         <Label Text="{Binding ErrorMessage}" 
-               Style="{StaticResource errorMessage}"
-               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"/>
+       Style="{StaticResource errorMessage}"
+       HorizontalTextAlignment="Center" />
 
     </VerticalStackLayout>
 </ContentPage>

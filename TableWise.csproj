@@ -79,15 +79,6 @@
 	  <MauiImage Update="Resources\Images\chocolate_cake.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </MauiImage>
-	  <MauiImage Update="Resources\Images\diakedvezmeny.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </MauiImage>
-	  <MauiImage Update="Resources\Images\dolgozznalunk.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </MauiImage>
-	  <MauiImage Update="Resources\Images\egyetfizet.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </MauiImage>
 	  <MauiImage Update="Resources\Images\ham_pizza.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </MauiImage>

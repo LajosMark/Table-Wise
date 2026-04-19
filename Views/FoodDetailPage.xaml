@@ -4,7 +4,7 @@
              xmlns:models="clr-namespace:TableWise.Models"
              x:Class="TableWise.Views.FoodDetailPage"
              x:DataType="models:FoodItem"
-             Title=""
+             Title="Details"
              BackgroundColor="{AppThemeBinding Light=#FAF9F6, Dark=#121212}">
 
     <ScrollView>
@@ -33,31 +33,39 @@
                            Margin="10,0,0,0" />
                 </Grid>
 
-                <Label Text="Description" 
-                       FontSize="18" 
-                       FontAttributes="Bold" 
-                       TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
-                       Margin="0,10,0,0" />
-
-                <Label Text="{Binding Description}" 
-                       FontSize="16" 
-                       TextColor="{AppThemeBinding Light=#444444, Dark=#E7EDEB}" 
-                       LineHeight="1.4" />
+                <BoxView HeightRequest="1" 
+         BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}" 
+         HorizontalOptions="Fill"
+         Margin="0,10" />
 
                 <Label Text="Ingredients" 
-                       FontSize="18" 
-                       FontAttributes="Bold" 
-                       TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
-                       Margin="0,10,0,0" />
+       FontSize="18" 
+       FontAttributes="Bold" 
+       TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
+       Margin="0,10,0,5" />
 
-                <Border StrokeShape="RoundRectangle 10" 
-                        Padding="15" 
-                        BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#1E1E1E}"
-                        StrokeThickness="0">
-                    <Label Text="🍕 Premium ingredients, based on our secret recipe." 
-                           TextColor="{AppThemeBinding Light=#555555, Dark=#BBBBBB}" 
-                           FontAttributes="Italic" />
-                </Border>
+                <VerticalStackLayout x:Name="IngredientsList"
+                    BindableLayout.ItemsSource="{Binding Ingredients}" 
+                     Spacing="5"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="FillAndExpand"
+                     >
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding .}" 
+                   FontSize="18" 
+                   TextColor="Blue" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Start" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Loading ingredients..." 
+       IsVisible="{Binding Ingredients.Count, Converter={StaticResource IntToBoolConverter}, ConverterParameter='Inverted'}"
+       FontSize="12"
+       HorizontalOptions="Center"
+       TextColor="Gray" />
 
             </VerticalStackLayout>
         </VerticalStackLayout>

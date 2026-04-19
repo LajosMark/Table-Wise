@@ -64,7 +64,7 @@ namespace TableWise.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Regisztrációs hiba: {ex.Message}");
+               // Debug.WriteLine($"Regisztrációs hiba: {ex.Message}");
                 return (false, "Could not reach the server.");
             }
         }
@@ -373,6 +373,44 @@ namespace TableWise.Services
                 // Debug.WriteLine($"❌ Lekérési hiba: {ex.Message}");
             }
             return new List<WorkHour>();
+        }
+
+        public static async Task<List<string>> GetMealIngredientsAsync(int mealId)
+        {
+            try
+            {
+                var response = await client.GetAsync($"{url}/api/ingredients");
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                var result = new List<string>();
+
+                foreach (var item in doc.RootElement.EnumerateArray())
+                {
+                    // MEAL ID kinyerése és kényszerített szöveggé alakítása
+                    string dbMealId = "";
+                    if (item.TryGetProperty("mealId", out var mealProp))
+                    {
+                        // Ha a mealId egy objektum, vegyük ki az _id-t, különben a sima értéket
+                        dbMealId = mealProp.ValueKind == JsonValueKind.Object && mealProp.TryGetProperty("_id", out var subId)
+                                   ? subId.ToString()
+                                   : mealProp.ToString();
+                    }
+
+                    // DEBUG: Ezt figyeld a konzolon!
+                    Debug.WriteLine($"---> Összehasonlítás: DB '{dbMealId}' | Keresett: '{mealId}'");
+
+                    // Trimeljük le az esetleges szóközöket és idézőjeleket
+                    if (dbMealId.Trim('"') == mealId.ToString())
+                    {
+                        if (item.TryGetProperty("fridgeItemId", out var fridgeProp) && fridgeProp.TryGetProperty("name", out var nProp))
+                        {
+                            result.Add(nProp.GetString());
+                        }
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex) { return new List<string> { "Hiba: " + ex.Message }; }
         }
 
         // --- HELPER MODELS ---
