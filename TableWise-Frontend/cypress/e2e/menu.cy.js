@@ -1,3 +1,4 @@
+/* global describe, it, beforeEach, cy */
 describe('Menu Page', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/meal-categories', {

@@ -18,7 +18,7 @@ const Contact = () => {
       <div className="contact-grid">
         <article className="contact-card contact-card--soft">
           <h3>Join us</h3>
-          <p>
+          <div>
            Want to be part of a dynamic team? Check out our current openings! <br />
            <ul style={{ listStyleType: 'none', margin: 'auto' }}>
             <li><strong>Pizza Chef</strong> <br />
@@ -28,7 +28,7 @@ const Contact = () => {
               Flexible schedule - immediate start
             </li>
            </ul>
-          </p>
+          </div>
 
         </article>
 

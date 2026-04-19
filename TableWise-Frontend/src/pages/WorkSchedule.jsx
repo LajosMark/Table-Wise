@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const API_BASE = 'https:table-wise-backend-for-render-hosting-1.onrender.com';
 
@@ -46,15 +46,8 @@ const WorkSchedule = ({ user }) => {
     }
     return days;
   };
-  useEffect(() => {
-    if (!user || !user.token) {
-      setError('You do not have permission.');
-      return;
-    }
-    fetchMySchedules();
-  }, [user]);
-
-  const fetchMySchedules = async () => {
+  
+  const fetchMySchedules = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE}/api/schedules/my`, {
         method: 'GET',
@@ -74,7 +67,17 @@ const WorkSchedule = ({ user }) => {
     } catch (err) {
       setError(err.message);
     }
-  };
+  }, [user.token]);
+
+  useEffect(() => {
+    if (!user || !user.token) {
+      setError('You do not have permission.');
+      return;
+    } else {
+      fetchMySchedules();
+    }
+  }, [fetchMySchedules, user]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

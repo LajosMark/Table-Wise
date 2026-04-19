@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const API_BASE = 'https://table-wise-backend-for-render-hosting-1.onrender.com';
 
-const Users = ({user }) => {
+const Users = ({ user }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,33 +21,33 @@ const Users = ({user }) => {
       return;
     }
 
-    fetchUsers();
-  }, [user]);
+    const fetchUsers = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await fetch(`${API_BASE}/api/users`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await fetch(`${API_BASE}/api/users`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Error loading users');
+        }
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Error loading users');
+        setUsers(Array.isArray(data) ? data : data.data || []);
+      } catch (err) {
+        setError(err.message || 'Ismeretlen hiba');
+      } finally {
+        setLoading(false);
       }
-
-      setUsers(Array.isArray(data) ? data : data.data || []);
-    } catch (err) {
-      setError(err.message || 'Ismeretlen hiba');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    fetchUsers();
+    
+  }, [user]);
 
   const handleDelete = async (userId) => {
     if (!confirm('Are you sure you want to delete this user?')) return;

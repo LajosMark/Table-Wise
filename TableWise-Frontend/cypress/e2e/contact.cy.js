@@ -1,3 +1,4 @@
+/* global describe, it, cy */
 describe('Contact Page', () => {
   it('loads the Contact page and shows contact information', () => {
     cy.visit('/contact');

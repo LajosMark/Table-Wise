@@ -35,7 +35,7 @@ function App() {
   return (
     <Router>
       <div className="app-layout">
-        <Header user={user} setUser={setUser} />
+        <Header user={user} />
 
         <main className="content">
           <Routes>

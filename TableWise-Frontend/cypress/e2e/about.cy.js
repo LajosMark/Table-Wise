@@ -1,3 +1,4 @@
+/* global describe, it, cy */
 describe('About Page', () => {
   it('loads the About page and shows the hero section', () => {
     cy.visit('/about');
