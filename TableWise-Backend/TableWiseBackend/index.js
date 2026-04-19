@@ -16,7 +16,7 @@ app.use(express.json());
 // NoSQL injection protection
 app.use(mongoSanitize());
 
-// Rate limiting (100 / 15 min)
+// Rate limiting
 const limiter = rateLimit({
      windowMs: 1 * 60 * 1000, // 1 min
      max: 100, // limit each IP to 100 requests per windowMs
@@ -25,10 +25,10 @@ const limiter = rateLimit({
     legacyHeaders: false,
 });
 
-// Login limiting (5 / 1 min)
+// Login limiting
 const loginLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 5,
+    windowMs: 1 * 60 * 1000, // 1 min
+    max: 10, // limit each IP to 10 login attempts per windowMs
     message: 'Too many login attempts, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
