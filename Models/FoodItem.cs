@@ -11,14 +11,11 @@ namespace TableWise.Models
         [JsonPropertyName("name")]
         public string? Name { get; set; }
 
-        // Ha a backend egy listát küld "ingredients" néven:
         [JsonPropertyName("ingridientId")]
         public int ingridientId { get; set; }
 
-        [JsonIgnore]
+        // Vegyük le a JsonIgnore-t, és maradjunk az ObservableCollection-nél
         public ObservableCollection<string> Ingredients { get; set; } = new ObservableCollection<string>();
-
-
 
         [JsonPropertyName("image")]
         public string Image { get; set; }

@@ -6,6 +6,10 @@
              x:DataType="models:FoodItem"
              Title="Details"
              BackgroundColor="{AppThemeBinding Light=#FAF9F6, Dark=#121212}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Spacing="0">
@@ -48,24 +52,31 @@
                     BindableLayout.ItemsSource="{Binding Ingredients}" 
                      Spacing="5"
                     BackgroundColor="Transparent"
-                    HorizontalOptions="FillAndExpand"
                      >
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
-                            <Label Text="{Binding .}" 
-                   FontSize="18" 
-                   TextColor="Blue" 
+                        <DataTemplate x:DataType="x:String">
+                            <Border Margin="0,2" 
+                Padding="12,8" 
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 10">
+                                <Border.Stroke>
+                                    <AppThemeBinding Light="#69A481" Dark="Yellow" />
+                                </Border.Stroke>
+                                <Border.BackgroundColor>
+                                    <AppThemeBinding Light="#F5F5F5" Dark="#2C2C2C" />
+                                </Border.BackgroundColor>
+
+                                <Label Text="{Binding .}" 
+                   FontSize="16" 
                    FontAttributes="Bold"
-                   HorizontalOptions="Start" />
+                   HorizontalOptions="Start"
+                   TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
+                            </Border>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
-                <Label Text="Loading ingredients..." 
-       IsVisible="{Binding Ingredients.Count, Converter={StaticResource IntToBoolConverter}, ConverterParameter='Inverted'}"
-       FontSize="12"
-       HorizontalOptions="Center"
-       TextColor="Gray" />
+
 
             </VerticalStackLayout>
         </VerticalStackLayout>

@@ -20,7 +20,36 @@ public partial class MenuPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        // 1. Kategóriák frissítése (ahogy eddig is volt)
         await RefreshCategoriesFromApi();
+
+        // 2. Ételek és csoportosítás újratöltése
+        await ReloadFoodGroups();
+    }
+
+    private async Task ReloadFoodGroups()
+    {
+        // Lekérjük az összes kategóriát
+        var categories = await DataService.GetCategories();
+        var newGroups = new ObservableCollection<CategoryGroup>();
+
+        foreach (var cat in categories)
+        {
+            // A DataService.GetMealsByCategory már tartalmazza a .Where(m => m.IsAvailable) szűrést!
+            var meals = await DataService.GetMealsByCategory(cat.Id);
+
+            if (meals.Any())
+            {
+                newGroups.Add(new CategoryGroup(cat.Name, meals));
+            }
+        }
+
+        // Frissítjük a Binding-ot, hogy a UI észrevegye a változást
+        FoodGroups = newGroups;
+
+        // Kényszerítjük a CollectionView-t a frissítésre
+        OnPropertyChanged(nameof(FoodGroups));
     }
 
     private async Task RefreshCategoriesFromApi()

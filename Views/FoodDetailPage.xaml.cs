@@ -1,3 +1,4 @@
+Ôªøusing Microsoft.Maui.Controls.Shapes;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using TableWise.Models;
@@ -18,37 +19,44 @@ public partial class FoodDetailPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        Debug.WriteLine($"---> [DEBUG] OnAppearing ind√≠tva: {_item.Name} (ID: {_item.Id})");
 
-        // 1. LekÈrÈs
-        var list = await Services.DataService.GetMealIngredientsAsync(_item.Id);
+        try
+        {
+            var list = await Services.DataService.GetMealIngredientsAsync(_item.Id);
 
-        // 2. Debug: L·tjuk a konzolon, ha megjˆtt?
-        System.Diagnostics.Debug.WriteLine($"---> UI frissÌtÈs indul. Lista elemek: {list?.Count ?? 0}");
-
-        MainThread.BeginInvokeOnMainThread(() => {
-            IngredientsList.Children.Clear();
-
-            if (list != null && list.Count > 0)
+            if (list == null)
             {
-                foreach (var ing in list)
-                {
-                    // Manu·lis label lÈtrehoz·s
-                    var label = new Label
-                    {
-                        Text = $"ï {ing}",
-                        FontSize = 18,
-                        TextColor = Colors.White, // Fix fehÈr, a piros h·ttÈren l·tszÛdnia KELL
-                        Margin = new Thickness(5)
-                    };
-
-                    IngredientsList.Children.Add(label);
-                    System.Diagnostics.Debug.WriteLine($"---> Label hozz·adva: {ing}");
-                }
+                Debug.WriteLine("---> [DEBUG] A kapott lista NULL!");
             }
             else
             {
-                IngredientsList.Children.Add(new Label { Text = "Nincs alapanyag...", TextColor = Colors.Yellow });
+                Debug.WriteLine($"---> [DEBUG] API v√°lasz meg√©rkezett. Elemek sz√°ma: {list.Count}");
+                foreach (var ing in list) Debug.WriteLine($"---> [DEBUG] √ñsszetev≈ë: {ing}");
             }
-        });
+
+            MainThread.BeginInvokeOnMainThread(() => {
+                Debug.WriteLine($"Lista felt√∂lt√©se indul... Elemek sz√°ma: {list.Count}");
+                _item.Ingredients.Clear();
+
+                if (list != null && list.Count > 0)
+                {
+                    foreach (var ing in list) _item.Ingredients.Add(ing);
+                }
+                else
+                {
+                    _item.Ingredients.Add("ü§´ Titkos recept");
+                }
+
+                // K√©nyszer√≠tett UI friss√≠t√©s
+                BindingContext = null;
+                BindingContext = _item;
+                Debug.WriteLine("---> [DEBUG] UI friss√≠t√©s k√©sz (BindingContext resetelve)");
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"---> [DEBUG] CRASH AKAD√ÅLYOZVA: {ex.Message}");
+        }
     }
 }

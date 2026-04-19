@@ -177,17 +177,21 @@ namespace TableWise.Services
             {
                 var response = await client.GetAsync($"{url}/api/meal-categories/{categoryId}/meals");
 
-                //System.Diagnostics.Debug.WriteLine($"🌐 API Status: {response.StatusCode}");
-
                 if (response.IsSuccessStatusCode)
                 {
                     string result = await response.Content.ReadAsStringAsync();
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     var wrapper = JsonSerializer.Deserialize<FoodResponse>(result, options);
-                    return wrapper?.Meals ?? new List<FoodItem>();
+
+                    // --- ITT A SZŰRÉS ---
+                    // Csak azokat adjuk vissza, ahol az IsAvailable értéke true
+                    var allMeals = wrapper?.Meals ?? new List<FoodItem>();
+                    return allMeals.Where(m => m.IsAvailable).ToList();
                 }
             }
-            catch (Exception ex) { //Debug.WriteLine($"Hiba az ételek lekérésekor: {ex.Message}");
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Hiba az ételek lekérésekor: {ex.Message}");
             }
             return new List<FoodItem>();
         }
@@ -380,37 +384,60 @@ namespace TableWise.Services
             try
             {
                 var response = await client.GetAsync($"{url}/api/ingredients");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new List<string> { "🤫 Titkos recept (jelentkezz be!)" };
+                }
+
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
                 var result = new List<string>();
 
-                foreach (var item in doc.RootElement.EnumerateArray())
+                // BIZTONSÁGI ELLENŐRZÉS: Csak akkor ciklusozzunk, ha tömböt kaptunk!
+                if (doc.RootElement.ValueKind != JsonValueKind.Array)
                 {
-                    // MEAL ID kinyerése és kényszerített szöveggé alakítása
-                    string dbMealId = "";
-                    if (item.TryGetProperty("mealId", out var mealProp))
+                    // Ha objektum jött, nézzük meg, nincs-e benne egy "data" nevű tömb
+                    if (doc.RootElement.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == JsonValueKind.Array)
                     {
-                        // Ha a mealId egy objektum, vegyük ki az _id-t, különben a sima értéket
-                        dbMealId = mealProp.ValueKind == JsonValueKind.Object && mealProp.TryGetProperty("_id", out var subId)
-                                   ? subId.ToString()
-                                   : mealProp.ToString();
+                        // Ha igen, használjuk azt!
+                        return ProcessIngredients(dataProp, mealId);
                     }
+                    return new List<string> { "🤫 Titkos recept" };
+                }
 
-                    // DEBUG: Ezt figyeld a konzolon!
-                    Debug.WriteLine($"---> Összehasonlítás: DB '{dbMealId}' | Keresett: '{mealId}'");
+                return ProcessIngredients(doc.RootElement, mealId);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"---> API Hiba: {ex.Message}");
+                return new List<string> { "🤫 Titkos recept" };
+            }
+        }
 
-                    // Trimeljük le az esetleges szóközöket és idézőjeleket
-                    if (dbMealId.Trim('"') == mealId.ToString())
+        // Segédmetódus a feldolgozáshoz, hogy ne ismételjük a kódot
+        private static List<string> ProcessIngredients(JsonElement arrayElement, int mealId)
+        {
+            var result = new List<string>();
+            foreach (var item in arrayElement.EnumerateArray())
+            {
+                string dbMealId = "";
+                if (item.TryGetProperty("mealId", out var mealProp))
+                {
+                    dbMealId = mealProp.ValueKind == JsonValueKind.Object && mealProp.TryGetProperty("_id", out var subId)
+                               ? subId.ToString()
+                               : mealProp.ToString();
+                }
+
+                if (dbMealId.Trim('"') == mealId.ToString())
+                {
+                    if (item.TryGetProperty("fridgeItemId", out var fridgeProp) && fridgeProp.TryGetProperty("name", out var nProp))
                     {
-                        if (item.TryGetProperty("fridgeItemId", out var fridgeProp) && fridgeProp.TryGetProperty("name", out var nProp))
-                        {
-                            result.Add(nProp.GetString());
-                        }
+                        result.Add(nProp.GetString());
                     }
                 }
-                return result;
             }
-            catch (Exception ex) { return new List<string> { "Hiba: " + ex.Message }; }
+            return result.Count > 0 ? result : new List<string> { "🤫 Titkos recept" };
         }
 
         // --- HELPER MODELS ---
