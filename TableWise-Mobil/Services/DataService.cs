@@ -1,0 +1,474 @@
+﻿using System.Data;
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using TableWise.Models;
+
+namespace TableWise.Services
+{
+    public static class DataService
+    {
+        static string url = "https://table-wise-backend-for-render-hosting-1.onrender.com";
+
+        static HttpClient client = new HttpClient();
+
+        public static async Task<(bool Success, string Message)> RegisterAsync(string name, string email, string password, string role)
+        {
+            try
+            {
+
+                string token = Preferences.Get("user_token", string.Empty);
+
+                client.DefaultRequestHeaders.Authorization = null; // Régi törlése
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // ADATOK 
+                var userData = new { name = name, email = email, password = password, role = role };
+                var json = JsonSerializer.Serialize(userData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+
+                var response = await client.PostAsync($"{url}/api/users/register", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, "Succesful registration!");
+                }
+                else
+                {
+                    // jogosultság
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                        response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        return (false, "Not authorized (Admin/Manager acces needed)!");
+                    }
+
+                    try
+                    {
+                        var errorDoc = JsonDocument.Parse(responseString);
+                        var msg = errorDoc.RootElement.GetProperty("msg").GetString();
+                        return (false, msg);
+                    }
+                    catch
+                    {
+                        return (false, "Error while registering.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               // Debug.WriteLine($"Regisztrációs hiba: {ex.Message}");
+                return (false, "Could not reach the server.");
+            }
+        }
+
+        public static async Task<bool> LoginAsync(string email, string password)
+        {
+            try
+            {
+                var loginData = new { email = email, password = password };
+                var json = JsonSerializer.Serialize(loginData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{url}/api/users/login", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
+                    };
+
+
+                    var result = JsonSerializer.Deserialize<LoginResponse>(responseString, options);
+
+                    if (result != null && !string.IsNullOrEmpty(result.Token))
+                    {
+                        Preferences.Set("user_token", result.Token);
+
+
+                        var user = await GetCurrentUserAsync();
+                        if (user != null)
+                        {
+
+                            Preferences.Set("user_id", user.id.ToString());
+                            // Debug.WriteLine($" ID: {user.id}");
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Login Error: {ex.Message}");
+            }
+            return false;
+        }
+
+        public static void Logout()
+        {
+            Preferences.Remove("user_token");
+        }
+
+        // --- DATA FETCHING ---
+
+        public static async Task<RegisterModel> GetCurrentUserAsync()
+        {
+            try
+            {
+                string token = Preferences.Get("user_token", string.Empty);
+                if (string.IsNullOrEmpty(token)) return null;
+
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var response = await client.GetAsync($"{url}/api/users/me"); 
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+
+                    var wrapper = JsonSerializer.Deserialize<UserWrapper>(json, options);
+                    return wrapper?.Data;
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
+            return null;
+        }
+
+        // Segédosztály
+        public class UserWrapper { public RegisterModel Data { get; set; } }
+
+        public static async Task<List<Category>> GetCategories()
+        {
+            try
+            {
+
+                var response = await client.GetAsync($"{url}/api/meal-categories");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var wrapper = JsonSerializer.Deserialize<CategoryResponse>(result, options);
+                    return wrapper?.Categories ?? new List<Category>();
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"Error: {ex.Message}"); }
+            return new List<Category>();
+        }
+
+        public static async Task<List<FoodItem>> GetMealsByCategory(int categoryId)
+        {
+            try
+            {
+                var response = await client.GetAsync($"{url}/api/meal-categories/{categoryId}/meals");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var wrapper = JsonSerializer.Deserialize<FoodResponse>(result, options);
+
+
+                    var allMeals = wrapper?.Meals ?? new List<FoodItem>();
+                    return allMeals.Where(m => m.IsAvailable).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Hiba az ételek lekérésekor: {ex.Message}");
+            }
+            return new List<FoodItem>();
+        }
+
+        public static async Task<List<InventoryItem>> GetFridgeItemsAsync()
+        {
+            try
+            {
+                string token = Preferences.Get("user_token", string.Empty);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+
+                var response = await client.GetAsync($"{url}/api/fridge-items");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    // Debug.WriteLine($" JSON: {json}");
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+
+                    var list = JsonSerializer.Deserialize<List<InventoryItem>>(json, options);
+
+                    return list ?? new List<InventoryItem>();
+                }
+                else
+                {
+                    // Debug.WriteLine($" API hiba: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                 Debug.WriteLine($"HIBA A FELDOLGOZÁSNÁL: {ex.Message}");
+            }
+            return new List<InventoryItem>();
+        }
+
+
+        public static async Task<(bool Success, string Message, string NewId)> SubmitWorkScheduleAsync(DateTime date, int startHour, int endHour)
+        {
+            try
+            {
+                string token = Preferences.Get("user_token", string.Empty);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                DateTime startDateTime = date.Date.AddHours(startHour);
+                DateTime endDateTime = date.Date.AddHours(endHour);
+
+                var scheduleData = new Dictionary<string, object>
+                {
+                    { "startDate", startDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+                    { "endDate", endDateTime.ToString("yyyy-MM-ddTHH:mm:ss") },
+                    { "isAccepted", false }
+                };
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(scheduleData, options);
+                // Debug.WriteLine($"json: {json}");
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{url}/api/hours/", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    using var doc = JsonDocument.Parse(responseString);
+
+                    int newId = doc.RootElement.GetProperty("data").GetProperty("_id").GetInt32();
+
+                    return (true, "Schedule created!", newId.ToString());
+                }
+                else
+                {
+                    var errorDoc = JsonDocument.Parse(responseString);
+                    var errorMessage = errorDoc.RootElement.TryGetProperty("msg", out var msgElement)
+                                       ? msgElement.GetString() : "Error at Schedule.";
+                    return (false, errorMessage, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Network error: {ex.Message}", null);
+            }
+        }
+
+        public static async Task<(bool Success, string Message)> LinkScheduleToUserAsync(string workHoursId)
+        {
+            try
+            {
+                string token = Preferences.Get("user_token", string.Empty);
+                string userId = Preferences.Get("user_id", string.Empty);
+
+                if (string.IsNullOrEmpty(userId)) return (false, "Try to log in again!");
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+                var assignmentData = new
+                {
+                    usersId = userId, // String marad
+                    workHoursId = workHoursId, // String marad
+                    isAccepted = false
+                };
+
+                var json = JsonSerializer.Serialize(assignmentData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{url}/api/schedules", content);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+
+                });
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, "Succesful link to schedule!");
+                }
+                else
+                {
+                    using var doc = JsonDocument.Parse(responseString);
+                    string msg = doc.RootElement.TryGetProperty("msg", out var m) ? m.GetString() : "Saving error.";
+                    return (false, msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Network error: {ex.Message}");
+            }
+        }
+
+        public static async Task<List<WorkHour>> GetUpcomingSchedulesAsync()
+        {
+            try
+            {
+                string token = Preferences.Get("user_token", string.Empty);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+
+                var response = await client.GetAsync($"{url}/api/schedules/my");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+
+                        NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
+                    };
+
+
+                    var wrapper = JsonSerializer.Deserialize<WorkHourResponse>(json, options);
+
+
+                    if (wrapper?.Data == null || wrapper.Data.Count == 0)
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty("data", out var dataArray))
+                        {
+                            var manualList = JsonSerializer.Deserialize<List<WorkHour>>(dataArray.GetRawText(), options);
+                            if (manualList != null) return manualList;
+                        }
+                    }
+
+                    return wrapper?.Data ?? new List<WorkHour>();
+                }
+                else
+                {
+                   // Debug.WriteLine($" API Rrror: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Debug.WriteLine($" error: {ex.Message}");
+            }
+            return new List<WorkHour>();
+        }
+
+        public static async Task<List<string>> GetMealIngredientsAsync(int mealId)
+        {
+            try
+            {
+                var response = await client.GetAsync($"{url}/api/ingredients");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new List<string> { "🤫 Secret recipe (Log in!)" };
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                var result = new List<string>();
+
+
+                if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                {
+
+                    if (doc.RootElement.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == JsonValueKind.Array)
+                    {
+                        // Ha igen, használjuk azt!
+                        return ProcessIngredients(dataProp, mealId);
+                    }
+                    return new List<string> { "🤫 Secret recipe" };
+                }
+
+                return ProcessIngredients(doc.RootElement, mealId);
+            }
+            catch (Exception ex)
+            {
+                return new List<string> { "🤫 Secret recipe" };
+            }
+        }
+
+
+        private static List<string> ProcessIngredients(JsonElement arrayElement, int mealId)
+        {
+            var result = new List<string>();
+            foreach (var item in arrayElement.EnumerateArray())
+            {
+                string dbMealId = "";
+                if (item.TryGetProperty("mealId", out var mealProp))
+                {
+                    dbMealId = mealProp.ValueKind == JsonValueKind.Object && mealProp.TryGetProperty("_id", out var subId)
+                               ? subId.ToString()
+                               : mealProp.ToString();
+                }
+
+                if (dbMealId.Trim('"') == mealId.ToString())
+                {
+                    if (item.TryGetProperty("fridgeItemId", out var fridgeProp) && fridgeProp.TryGetProperty("name", out var nProp))
+                    {
+                        result.Add(nProp.GetString());
+                    }
+                }
+            }
+            return result.Count > 0 ? result : new List<string> { "🤫 Titkos recept" };
+        }
+
+        // --- HELPER MODELS ---
+        public class LoginResponse
+        {
+            public string Token { get; set; }
+            public UserData User { get; set; }
+        }
+
+        public class UserData
+        {
+
+            [JsonPropertyName("_id")]
+            public object _id { get; set; }
+
+            [JsonPropertyName("id")]
+            public object id { get; set; }
+
+            public string email { get; set; }
+        }
+
+
+
+        public class CategoryResponse
+        {
+            [JsonPropertyName("data")]
+            public List<Category> Categories { get; set; }
+        }
+
+        public class FoodResponse
+        {
+            [JsonPropertyName("data")]
+            public List<FoodItem> Meals { get; set; }
+        }
+    }
+}

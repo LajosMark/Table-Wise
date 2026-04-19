@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="TableWise.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TableWise"
+    xmlns:views="clr-namespace:TableWise.Views"
+    Shell.FlyoutBehavior="Flyout"
+    FlowDirection="LeftToRight"
+    FlyoutIsPresented="{Binding IsPresented}"
+    Title="TableWise"
+    
+    Shell.ForegroundColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+    
+    Shell.TitleColor="{AppThemeBinding Light=#333333, Dark=White}"
+    
+    Shell.BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}"
+    
+    FlyoutBackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+    <Shell.FlyoutHeader>
+        <ContentView x:Name="HeaderContainer" />
+    </Shell.FlyoutHeader>
+
+    <ShellContent
+        Title="Mainpage"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+    <ShellContent
+        Title="Menu"
+        ContentTemplate="{DataTemplate views:MenuPage}"/>
+
+    <ShellContent 
+    Title="Registration" 
+    ContentTemplate="{DataTemplate views:RegisterView}" 
+    IsVisible="{Binding IsAdminOrManager}"/>
+
+    <ShellContent 
+        Title="Login" 
+        ContentTemplate="{DataTemplate views:LoginView}"
+        IsVisible="{Binding isNotLoggedIn}"/>
+
+    <ShellContent 
+        Title="About us" 
+        ContentTemplate="{DataTemplate views:AboutUsPage}"
+        IsVisible="{Binding isNotLoggedIn}"/>
+
+    <ShellContent 
+        Title="Career" 
+        ContentTemplate="{DataTemplate views:CareerPage}"
+        IsVisible="{Binding isNotLoggedIn}"/>
+
+    <ShellContent 
+        Title="Open hours" 
+        ContentTemplate="{DataTemplate views:OpeningHours}"/>
+
+    <ShellContent 
+        Title="Request a Shift"  
+        ContentTemplate="{DataTemplate views:WorkSchedulePage}"
+        IsVisible="{Binding isLoggedIn}"/>
+    <ShellContent 
+        Title="Shift Schedule"  
+        ContentTemplate="{DataTemplate views:MySchedulePage}"
+        IsVisible="{Binding isLoggedIn}"/>
+    <ShellContent 
+        Title="Inventory"  
+        ContentTemplate="{DataTemplate views:WarehousePage}"
+        IsVisible="{Binding IsAdminOrManager}"/>
+    <ShellContent 
+        Title="Settings"  
+        ContentTemplate="{DataTemplate views:SettingsPage}" />
+
+    <Shell.FlyoutFooter>
+        <VerticalStackLayout Padding="10">
+            <Button Text="Logout" 
+                    Margin="10" 
+                    ImageSource="logout_white.png" 
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
+                    ContentLayout="Right, 20"
+                    BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=#333333}"
+                    TextColor="White"
+                    Command="{Binding logoutCommand}"
+                    IsVisible="{Binding isLoggedIn}"/>
+        </VerticalStackLayout>
+    </Shell.FlyoutFooter>
+
+</Shell>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TableWise.Views.RegisterView"
+             Title=""
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+
+    <ContentPage.Resources>
+        <Style x:Key="errorMessage" TargetType="Label">
+            <Setter Property="TextColor" Value="#D2042D"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="10,0,0,5"/>
+            <Setter Property="FontAttributes" Value="Italic"/>
+        </Style>
+
+        <Style TargetType="Border">
+            <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,5,0,15"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#69A481, Dark=#444444}"/>
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1E1E1E}"/>
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="Margin" Value="10,0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+            <Setter Property="PlaceholderColor" Value="Gray"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" VerticalOptions="Center" Spacing="5">
+            <Label Text="📝" FontSize="50" HorizontalOptions="Center" Margin="0,0,0,10"/>
+            <Label Text="Registration" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,30" />
+
+            <Label Text="Full name" FontAttributes="Bold" TextColor="#69A481"/>
+            <Border>
+                <Entry Placeholder="John Doe" Text="{Binding RegisterData.name, Mode=TwoWay}"/>
+            </Border>
+
+            <Label Text="Role" FontAttributes="Bold" TextColor="#69A481"/>
+            <Border>
+                <Picker Title="Pick a role..."
+            ItemsSource="{Binding Roles}"
+            SelectedItem="{Binding RegisterData.role, Mode=TwoWay}"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            Margin="10,0" />
+            </Border>
+
+            <Label Text="E-mail" FontAttributes="Bold" TextColor="#69A481"/>
+            <Border>
+                <Entry Placeholder="example@email.com" Keyboard="Email" Text="{Binding RegisterData.email, Mode=TwoWay}"/>
+            </Border>
+
+            <Label Text="Password" FontAttributes="Bold" TextColor="#69A481"/>
+            <Border>
+                <Entry Placeholder="••••••••" IsPassword="True" Text="{Binding RegisterData.password, Mode=TwoWay}"/>
+            </Border>
+
+            <Label Text="{Binding InfoMessage}" Style="{StaticResource errorMessage}" />
+
+            <Button Text="REGISTER" 
+            Margin="0,20,0,10"
+            HeightRequest="55"
+            CornerRadius="25"
+            BackgroundColor="#D2042D"
+            TextColor="White"
+            Command="{Binding RegisterCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

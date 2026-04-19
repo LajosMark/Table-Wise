@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             x:Class="TableWise.Views.WorkSchedulePage"
+             xmlns:vm="clr-namespace:TableWise.ViewModels"
+             xmlns:converters="clr-namespace:TableWise.Converters"
+             x:DataType="vm:WorkScheduleViewModel"
+             Title=""
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+    <ContentPage.Resources>
+        <converters:EnglishDateConverter x:Key="EngDate" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <VerticalStackLayout IsVisible="{Binding IsWeekView}" Spacing="15">
+                <Label Text="Wich week do you want to work? 📅" 
+                       FontSize="22" 
+                       FontAttributes="Bold" 
+                       TextColor="{AppThemeBinding Light=#333333, Dark=White}" 
+                       HorizontalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding Weeks}" HeightRequest="350">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Grid Padding="5">
+                                <Button Text="{Binding}" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkScheduleViewModel}}, Path=SelectWeekCommand}"
+                                        CommandParameter="{Binding}"
+                                        BackgroundColor="{AppThemeBinding Light=#69A481, Dark=#1E1E1E}"
+                                        BorderColor="{AppThemeBinding Light=Transparent, Dark=Yellow}"
+                                        BorderWidth="{AppThemeBinding Light=0, Dark=1}"
+                                        TextColor="{AppThemeBinding Light=White, Dark=White}"
+                                        FontSize="18"
+                                        HeightRequest="60"
+                                        CornerRadius="12" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding IsDayView}" Spacing="10">
+                <Button Text="⬅ Back to weeks" 
+            Command="{Binding BackToWeeksCommand}" 
+            HorizontalOptions="Start" 
+            BackgroundColor="{AppThemeBinding Light=Gray, Dark=#333333}" 
+            TextColor="White"
+            Margin="0,0,0,10" />
+
+                <Label Text="Wich day do you want to work? 👇" 
+           FontSize="20" 
+           FontAttributes="Bold" 
+           TextColor="{AppThemeBinding Light=#333333, Dark=White}"
+           HorizontalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding Days}" HeightRequest="500">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="sys:DateTime">
+                            <Grid Padding="8">
+                                <Border StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                            HeightRequest="70">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="15" />
+                                    </Border.StrokeShape>
+                                    <Border.Shadow>
+                                        <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.1" />
+                                    </Border.Shadow>
+
+                                    <Button Text="{Binding Converter={StaticResource EngDate}}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkScheduleViewModel}}, Path=SelectDayCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                CornerRadius="15" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding IsTimeView}" Spacing="20">
+                <Button Text="⬅ Back to days" 
+                        Command="{Binding BackToDaysCommand}" 
+                        HorizontalOptions="Start" 
+                        BackgroundColor="{AppThemeBinding Light=Gray, Dark=#333333}"
+                        TextColor="White" />
+
+                <Label Text="{Binding SelectedDate, StringFormat='Beosztás: {0:yyyy. MM. dd.}'}" 
+                       FontAttributes="Bold" 
+                       FontSize="18"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+                <Label Text="{Binding TimeRangeText}" 
+                       FontSize="32" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" 
+                       TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
+
+                <Label Text="{Binding StartHour, StringFormat='Kezdés: {0:F0}:00'}" 
+                       FontAttributes="Bold" 
+                       TextColor="{AppThemeBinding Light=#333333, Dark=#BBBBBB}" />
+                <Slider Minimum="0" Maximum="23" 
+                        Value="{Binding StartHour}" 
+                        ThumbColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
+                        MinimumTrackColor="{AppThemeBinding Light=#69A481, Dark=Yellow}" />
+
+                <Label Text="{Binding EndHour, StringFormat='Befejezés: {0:F0}:00'}" 
+                       FontAttributes="Bold" 
+                       TextColor="{AppThemeBinding Light=#333333, Dark=#BBBBBB}" />
+                <Slider Minimum="0" Maximum="23" 
+                        Value="{Binding EndHour}" 
+                        ThumbColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
+                        MinimumTrackColor="{AppThemeBinding Light=#69A481, Dark=Yellow}" />
+
+                <Button Text="SEND"
+                        Command="{Binding SubmitCommand}" 
+                        HeightRequest="65" 
+                        CornerRadius="32"
+                        FontAttributes="Bold"
+                        BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}"
+                        TextColor="{AppThemeBinding Light=White, Dark=Black}"
+                        Margin="0,20,0,0" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

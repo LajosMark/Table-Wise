@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:TableWise.Views"
+             x:Class="TableWise.Views.OpeningHours"
+             x:DataType="views:OpeningHours"
+             Title=""
+             BackgroundColor="{AppThemeBinding Light=#E7EDEB, Dark=#121212}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="25" Spacing="20">
+
+            <Label Text="🕒" FontSize="60" HorizontalOptions="Center" Margin="0,10" />
+
+            <Label Text="Will you be joining us?" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
+
+            <Border StrokeThickness="2" 
+                    Padding="20" 
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}" 
+                    Stroke="{AppThemeBinding Light=#69A481, Dark=Yellow}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Monday - Thursday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                        <Label Grid.Column="1" Text="10:00 - 22:00" TextColor="{AppThemeBinding Light=#444444, Dark=#BBBBBB}" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Friday - Saturday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
+                        <Label Grid.Column="1" Text="10:00 - 00:00" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#D2042D, Dark=Yellow}" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Sunday" FontAttributes="Bold" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                        <Label Grid.Column="1" Text="12:00 - 20:00" TextColor="{AppThemeBinding Light=#444444, Dark=#BBBBBB}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="⚠️ Opening hours may vary on public holidays" 
+                   FontSize="12" 
+                   TextColor="{AppThemeBinding Light=#D2042D, Dark=#FF6B6B}" 
+                   HorizontalOptions="Center" 
+                   Margin="0,5" />
+
+            <Label Text="Find us:" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   TextColor="{AppThemeBinding Light=#333333, Dark=White}"
+                   Margin="0,10,0,0" />
+
+            <Border Stroke="{AppThemeBinding Light=#69A481, Dark=#444444}" 
+                    StrokeThickness="1" 
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Padding="20" Spacing="15" HorizontalOptions="Center">
+                    <Label Text="📍" FontSize="40" HorizontalOptions="Center" />
+
+                    <Label Text="TableWise Restaurant" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+                    <Label Text="1052 Budapest, Deák Ferenc tér 1." 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}"
+                           HorizontalOptions="Center" 
+                           HorizontalTextAlignment="Center" />
+
+                    <Button Text="Plan Route" 
+                            Clicked="OnOpenMapClicked"
+                            BackgroundColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+                            TextColor="{AppThemeBinding Light=White, Dark=Black}"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            WidthRequest="280" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1A1A1A}" 
+                    Padding="15" 
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="You are here:" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light=#333333, Dark=White}"
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="LocationLabel" 
+                           Text="Position: unknown" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=Gray, Dark=#BBBBBB}"
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="DistanceLabel" 
+                           Text="Distance from restaurant: -- km" 
+                           FontSize="16" 
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#69A481, Dark=Yellow}"
+                           HorizontalOptions="Center" />
+
+                    <Button Text="Get Distance" 
+                            Clicked="OnGetLocationClicked"
+                            BackgroundColor="{AppThemeBinding Light=#D2042D, Dark=#333333}"
+                            TextColor="White"
+                            CornerRadius="20"
+                            HeightRequest="45" />
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
